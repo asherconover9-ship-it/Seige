@@ -1,28 +1,16 @@
+![Dustline](logo.png)
 
-# 🎯 Vector Siege
+# Dustline
 
-**A free arena shooter you play right in your browser. No download, no account.**
+**A free tactical arena shooter you play in your browser. No download, no account.**
 
-## ▶️ [PLAY NOW](https://asherconover9-ship-it.github.io/Seige/)
+## ▶️ Play: `https://YOUR-USERNAME.github.io/Seige/`
 
-https://asherconover9-ship-it.github.io/Seige/
+(Settings → Pages shows your exact link.)
 
-### How to join
-1. Open the link above on your phone, tablet or computer.
-2. Type a callsign and tap **Team Battle 5v5**.
-3. You're in! Everyone on the link plays in the same match, and AI bots fill empty spots.
+- **Team Battle:** Delta vs Viper, 5 v 5. Everyone online joins the same match, and AI soldiers fill empty slots.
+- **Drone Holdout:** solo survival against waves of drones.
+- **Loadouts:** M7 Rifle, K9 SMG or R4 Marksman.
+- **Private match:** type a match code on the Play tab. Friends who type the same code play together.
 
-**iPhone / iPad:** open the link in Safari, tap **Share**, then **Add to Home Screen** to play full-screen like an app. Turn your device sideways.
-
-**Private match:** add a code to the end of the link and send it to your friends. Only people with that exact link play together:
-`https://asherconover9-ship-it.github.io/Seige/#yourcode`
-
-### Controls
-| | Touch | Keyboard + mouse |
-|---|---|---|
-| Move | Left thumb | W A S D (Shift to sprint) |
-| Aim | Right thumb | Mouse |
-| Shoot | Hold FIRE (slide to aim) | Click |
-| Jump | JUMP | Space |
-| Reload | RELOAD | R |
-`
+iPhone and iPad: open the link in Safari, tap Share, then **Add to Home Screen**, and play sideways.
