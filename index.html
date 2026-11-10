@@ -218,6 +218,21 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
 </style>
 </head>
 <body>
+<script>
+/* Auto-update: fetch the live page past any cache and reload if a newer build is published. */
+(function () {
+  var BUILD = '20261110172516';
+  try {
+    fetch(location.pathname + '?check=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+      var m = t.match(/var BUILD = '(\d+)'/);
+      if (m && m[1] !== BUILD && sessionStorage.getItem('dl-reloaded') !== m[1]) {
+        sessionStorage.setItem('dl-reloaded', m[1]);
+        location.replace(location.pathname + '?v=' + m[1] + location.hash);
+      }
+    }).catch(function () {});
+  } catch (e) {}
+})();
+</script>
 <canvas id="view"></canvas>
 
 <div id="hud" hidden>
