@@ -1,22 +1,4 @@
 
-There are two good places to put it. Doing both works best.
-
-## 1. Add the link to the repository's About box (1 minute)
-This puts a clickable link at the top right of the repository page.
-
-1. Open **https://github.com/asherconover9-ship-it/Seige**
-2. Next to **About** on the right side, tap the **⚙️ gear icon**. On iPad you may need **aA**, then **Request Desktop Website**, to see it.
-3. Tick **"Use your GitHub Pages website"**. That fills in your game link automatically.
-4. Optionally add a description like *"Free 5v5 arena shooter. Play in your browser, no download."*
-5. Tap **Save changes**.
-
-## 2. Put a big Play button in the README
-The README is the text people see when they open your repository.
-
-1. Open **https://github.com/asherconover9-ship-it/Seige/edit/main/README.md**
-2. Delete everything in the editor and paste this:
-
-```markdown
 # 🎯 Vector Siege
 
 **A free arena shooter you play right in your browser. No download, no account.**
