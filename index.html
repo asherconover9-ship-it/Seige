@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dustline">
 <meta name="theme-color" content="#0f110d">
-<meta name="description" content="Dustline — a tactical arena shooter. Online 5v5 with AI soldiers, 7 weapons with real scopes, slide and mantle. Plays in any browser, no install.">
+<meta name="description" content="Dustline — a tactical arena shooter. 5v5, 1v1 duels, and solo, with 7 weapons, real scopes, slide and mantle. Plays in any browser, no install.">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -56,7 +56,7 @@ function makeRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? makeRoom('dustline-lobby') : null); } };
 })();
 </script>
-<script>(function(){var B='20261112202605';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261112203134';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -326,6 +326,11 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
             <span class="mode-name">Team Battle</span>
             <span class="mode-desc" id="tdmDesc">Delta vs Viper. First team to 30 eliminations wins. Players online join the same match, and AI soldiers fill every empty slot.</span>
             <span class="chips"><span class="chip hot">Online</span><span class="chip">5 v 5</span><span class="chip">Bots fill</span></span>
+          </button>
+          <button class="mode" id="duelBtn" type="button">
+            <span class="mode-name">Duel 1v1</span>
+            <span class="mode-desc" id="duelDesc">Put in a match code and face the one player who types the same code. No bots, first to 7 eliminations. Share your code with a friend.</span>
+            <span class="chips"><span class="chip hot">Online</span><span class="chip">1 v 1</span><span class="chip">By code</span></span>
           </button>
           <button class="mode" id="siegeBtn" type="button">
             <span class="mode-name">Drone Holdout</span>
@@ -1138,7 +1143,7 @@ function clearSiege() {
 /* =========================================================
    TEAM BATTLE 5v5 (online, bots fill empty slots)
    ========================================================= */
-const SCORE_LIMIT = 30, TEAM_SIZE = 5;
+let SCORE_LIMIT = 30; const TEAM_SIZE = 5; let duel = false;
 const BOT_NAMES = { b0: 'Hayes', b1: 'Okafor', b2: 'Lindqvist', b3: 'Moreau', b4: 'Tanaka', r0: 'Vance', r1: 'Petrov', r2: 'Silva', r3: 'Kade', r4: 'Ibarra' };
 const TEAM_COL = { b: 0x6aa8e0, r: 0xe0603f }, TEAM_NAME = { b: 'DELTA', r: 'VIPER' };
 const other = t => t === 'b' ? 'r' : 'b';
@@ -1206,6 +1211,7 @@ function makeBot(id, from) {
   T.bots.push(b); T.botMap[id] = b; return b;
 }
 function ensureRoster(hs) {
+  if (duel) { for (const id in T.botMap) { T.bots.splice(T.bots.indexOf(T.botMap[id]), 1); delete T.botMap[id]; } return; }
   const counts = { b: 0, r: 0 }; hs.forEach(h => counts[h.pr.tm]++);
   for (const team of ['b', 'r']) {
     const need = Math.max(0, TEAM_SIZE - counts[team]);
@@ -1488,6 +1494,7 @@ function showMenu(which) {
 function hideMenu() {
   $('menu').hidden = true; $('hud').hidden = false;
   const tdm = mode === 'tdm';
+  if (tdm) { const bl = document.querySelector('#scorebar .tn.t-b'), rl = document.querySelector('#scorebar .tn.t-r'); if (bl && rl) { bl.textContent = duel ? (P.team === 'b' ? 'YOU' : 'RIVAL') : 'DELTA'; rl.textContent = duel ? (P.team === 'r' ? 'YOU' : 'RIVAL') : 'VIPER'; } }
   $('scorebar').hidden = !tdm; $('waveTag').hidden = tdm; hud.kd.hidden = !tdm;
   $('statLabel').textContent = tdm ? 'Eliminations' : 'Score';
   $('scGoal').textContent = 'TO ' + SCORE_LIMIT;
@@ -1622,21 +1629,22 @@ codeIn.addEventListener('input', () => { matchCode = codeIn.value.replace(/[^a-z
 /* ---------- flow ---------- */
 function startSiege() {
   ensureAudio(); leaveBattle(); clearSiege();
-  mode = 'siege'; buildMap(selMap); equip(loadout);
+  mode = 'siege'; duel = false; buildMap(selMap); equip(loadout);
   Object.assign(P, { yaw: 0, pitch: 0, hp: 100, alive: true, vx: 0, vz: 0, jy: 0, jvy: 0, crouch: false, ads: false, stamina: 100, kick: 0, bloom: 0, prot: 0 });
   P.pos.set(0, 1.6, 9); if (insideSolid(P.pos, 0.6)) { const o = randomOpenPoint(); P.pos.set(o.x, 1.6, o.z); }
   hud.death.hidden = true;
   score = 0; wave = 0; betweenWaves = 1; toSpawn = 0;
   state = 'play'; hideMenu(); updHud(); lockPointer();
 }
-async function startTDM() {
+async function startTDM(isDuel) {
   ensureAudio(); clearSiege(); lockPointer();
-  const btn = $('tdmBtn'), desc = $('tdmDesc'), oldDesc = desc.textContent;
+  duel = !!isDuel; SCORE_LIMIT = duel ? 7 : 30;
+  const btn = duel ? $('duelBtn') : $('tdmBtn'), desc = duel ? $('duelDesc') : $('tdmDesc'), oldDesc = desc.textContent;
   btn.disabled = true; mode = 'tdm'; equip(loadout);
   resetTDM();
   if (room) {
-    desc.textContent = 'Joining the battle…';
-    try { troom = await Promise.race([room.join('battle-' + (matchCode || 'main')), sleep(6000).then(() => null)]); } catch (e) { troom = null; }
+    desc.textContent = duel ? 'Finding your rival…' : 'Joining the battle…';
+    try { troom = await Promise.race([room.join((duel ? 'duel-' : 'battle-') + (matchCode || (duel ? 'open' : 'main'))), sleep(6000).then(() => null)]); } catch (e) { troom = null; }
     if (troom) await sleep(1200);
   }
   const counts = { b: 0, r: 0 };
@@ -1649,7 +1657,8 @@ async function startTDM() {
   newMatchLocal();
   state = 'play'; hideMenu(); updHud();
   const others = counts.b + counts.r;
-  banner(TEAM_NAME[P.team] + ' · ' + MAPS[curMap].name.toUpperCase(), others > 0 ? others + ' other player' + (others > 1 ? 's' : '') + ' here · bots fill the rest' : 'No other players online · bots fill every slot', 3);
+  if (duel) banner(TEAM_NAME[P.team] + ' · ' + MAPS[curMap].name.toUpperCase(), others > 0 ? 'Rival found · first to ' + SCORE_LIMIT : 'Waiting for a rival — share code “' + (matchCode || 'open') + '”. First to ' + SCORE_LIMIT + '.', 4);
+  else banner(TEAM_NAME[P.team] + ' · ' + MAPS[curMap].name.toUpperCase(), others > 0 ? others + ' other player' + (others > 1 ? 's' : '') + ' here · bots fill the rest' : 'No other players online · bots fill every slot', 3);
 }
 function leaveBattle() { if (troom) { troom.leave().catch(() => {}); troom = null; } resetTDM(); }
 function pause() {
@@ -1673,7 +1682,8 @@ function renderRoster() {
   });
 }
 function resume() { state = 'play'; hideMenu(); lockPointer(); clock.getDelta(); }
-$('tdmBtn').addEventListener('click', () => { if (!$('tdmBtn').disabled) startTDM(); });
+$('tdmBtn').addEventListener('click', () => { if (!$('tdmBtn').disabled) startTDM(false); });
+$('duelBtn').addEventListener('click', () => { if (!$('duelBtn').disabled) startTDM(true); });
 $('siegeBtn').addEventListener('click', startSiege);
 $('resumeBtn').addEventListener('click', resume);
 $('quitBtn').addEventListener('click', () => { leaveBattle(); clearSiege(); state = 'menu'; buildMap(selMap); showMenu('main'); });
