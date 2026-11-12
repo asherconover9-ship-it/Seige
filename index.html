@@ -8,12 +8,59 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dustline">
 <meta name="theme-color" content="#0f110d">
-<meta name="description" content="Dustline: a tactical arena shooter for phones, tablets and computers. Online 5v5 with AI soldiers filling empty slots.">
+<meta name="description" content="Dustline — a tactical arena shooter. Online 5v5 with AI soldiers, 7 weapons with real scopes, slide and mantle. Plays in any browser, no install.">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<style>body { margin: 0; font: 14px system-ui, -apple-system, sans-serif; } img { max-width: 100%; }</style>
+<style>html,body{margin:0;background:#0f110d}</style>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>/* Hollow Pines co-op over PeerJS — no accounts. One player per room becomes the hub. */
+(function(){
+function makeRoom(hubId){
+  var self={ id:null, pr:{}, listeners:[], peersMap:{}, isHub:false, hub:null, conns:{}, dead:false, timer:null, lastSend:0, started:false };
+  function snapshot(){ var out=[{peer:self.id||'me',sameTab:true,presence:self.pr}]; for(var id in self.peersMap){ if(id===self.id)continue; out.push({peer:id,sameTab:false,presence:self.peersMap[id]||{}}); } return out; }
+  function emit(){ var s=snapshot(); self.listeners.forEach(function(fn){ try{fn({peers:s});}catch(e){} }); }
+  function startHub(){ self.isHub=true; self.id=hubId; self.peersMap[self.id]=self.pr;
+    self.hub.on('connection',function(c){ c.on('open',function(){ self.conns[c.peer]=c; }); c.on('data',function(d){ if(d&&d.t==='p'){ self.peersMap[c.peer]=d.pr||{}; } });
+      var drop=function(){ delete self.conns[c.peer]; delete self.peersMap[c.peer]; }; c.on('close',drop); c.on('error',drop); });
+    emit();
+  }
+  function connectHub(){ self.peer=new Peer(undefined,{debug:0});
+    self.peer.on('open',function(id){ self.id=id; self.peersMap[self.id]=self.pr; self.conn=self.peer.connect(hubId,{reliable:true,serialization:'json'});
+      self.conn.on('open',function(){}); self.conn.on('data',function(d){ if(d&&d.t==='s'&&d.s){ var keep={}; keep[self.id]=self.pr; for(var k in d.s){ if(k!==self.id) keep[k]=d.s[k]; } self.peersMap=keep; emit(); } });
+      self.conn.on('close',function(){ reconnect(800); }); self.conn.on('error',function(){ reconnect(1200); }); emit(); });
+    self.peer.on('disconnected',function(){ try{self.peer.reconnect();}catch(e){} });
+    self.peer.on('error',function(){ reconnect(3000); });
+  }
+  function reconnect(ms){ if(self.dead)return; try{ if(self.peer)self.peer.destroy(); }catch(e){} self.peer=null; self.hub=null; self.conn=null; self.isHub=false; self.conns={}; setTimeout(claim,ms||600); }
+  function claim(){ if(self.dead)return; var settled=false; self.hub=new Peer(hubId,{debug:0});
+    self.hub.on('open',function(){ settled=true; self.peer=self.hub; startHub(); });
+    self.hub.on('disconnected',function(){ try{self.hub.reconnect();}catch(e){} });
+    self.hub.on('error',function(e){ if(!settled&&e&&e.type==='unavailable-id'){ settled=true; try{self.hub.destroy();}catch(x){} connectHub(); } else if(!settled){ reconnect(3000); } });
+  }
+  function ensure(){ if(self.started)return; self.started=true; if(!window.Peer){ return; } claim();
+    self.timer=setInterval(function(){ if(self.dead||!self.id)return; var now=Date.now();
+      if(self.isHub){ self.peersMap[self.id]=self.pr; var snap={}; for(var id in self.peersMap) snap[id]=self.peersMap[id]; for(var k in self.conns){ var c=self.conns[k]; if(c&&c.open){ try{c.send({t:'s',s:snap});}catch(e){} } } emit(); }
+      else if(self.conn&&self.conn.open&&(now-self.lastSend>60)){ self.lastSend=now; try{self.conn.send({t:'p',pr:self.pr});}catch(e){} }
+    },66);
+  }
+  var api={
+    onPeers:function(fn){ self.listeners.push(fn); ensure(); setTimeout(emit,0); return function(){}; },
+    peers:function(){ ensure(); return snapshot(); },
+    presence:function(obj){ self.pr=obj||{}; ensure(); return Promise.resolve(); },
+    join:function(sub){ return Promise.resolve(makeRoom('dustline-'+String(sub))); },
+    leave:function(){ self.dead=true; clearInterval(self.timer); setTimeout(function(){ try{ if(self.peer)self.peer.destroy(); if(self.hub)self.hub.destroy(); }catch(e){} },200); return Promise.resolve(); }
+  };
+  return api;
+}
+window.claude={ use:function(n){ return Promise.resolve(n==='room' ? makeRoom('dustline-lobby') : null); } };
+})();
+</script>
+<script>(function(){var B='20261112202605';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+</head>
+<body>
 <title>Dustline</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
@@ -196,9 +243,7 @@ details.kb { font-size: 13px; color: var(--dim); }
 details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spacing: .16em; text-transform: uppercase; }
 .kbd { display: grid; grid-template-columns: auto 1fr; gap: 5px 14px; margin-top: 8px; }
 .kbd b { color: var(--ink); font: 500 12px var(--mono); }
-#scope { position: absolute; inset: 0; opacity: 0; --r: min(42vh, 42vw); background: radial-gradient(circle at center, transparent 0 var(--r), rgba(0,0,0,.65) calc(var(--r) + 1px), #000 calc(var(--r) + 10px)); }
-#scope i { position: absolute; left: 50%; top: 50%; width: calc(var(--r) * 2); height: calc(var(--r) * 2); transform: translate(-50%, -50%); background: linear-gradient(#000, #000) center / 100% 1.5px no-repeat, linear-gradient(#000, #000) center / 1.5px 100% no-repeat; }
-#scope i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: #e5533d; }
+#scopeCv { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
 #vote { position: absolute; left: 50%; top: 44%; transform: translateX(-50%); display: grid; gap: 8px; justify-items: center; width: min(640px, calc(100% - 32px)); pointer-events: auto; }
 #vote .vt { font: 600 13px var(--display); letter-spacing: .18em; text-transform: uppercase; color: var(--accent); text-shadow: 0 1px 4px #000; text-align: center; }
 #vote .vrow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%; }
@@ -216,23 +261,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
 .mcard:focus-visible, .vbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { #banner, #hurt, #hpfill, #cross, .switch span, .switch span::after { transition: none; } }
 </style>
-</head>
-<body>
-<script>
-/* Auto-update: fetch the live page past any cache and reload if a newer build is published. */
-(function () {
-  var BUILD = '20261110172516';
-  try {
-    fetch(location.pathname + '?check=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
-      var m = t.match(/var BUILD = '(\d+)'/);
-      if (m && m[1] !== BUILD && sessionStorage.getItem('dl-reloaded') !== m[1]) {
-        sessionStorage.setItem('dl-reloaded', m[1]);
-        location.replace(location.pathname + '?v=' + m[1] + location.hash);
-      }
-    }).catch(function () {});
-  } catch (e) {}
-})();
-</script>
+
 <canvas id="view"></canvas>
 
 <div id="hud" hidden>
@@ -252,7 +281,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
   </div>
   <div id="scorebar" hidden><span class="tn t-b">DELTA</span><span class="sc t-b" id="scB">0</span><span class="goal" id="scGoal">TO 30</span><span class="sc t-r" id="scR">0</span><span class="tn t-r">VIPER</span></div>
   <div id="waveTag" hidden>WAVE <b id="wave">1</b></div>
-  <div id="scope"><i></i></div>
+  <canvas id="scopeCv"></canvas>
   <div id="cross"><i></i><i></i><i></i><i></i><b></b></div>
   <div id="hit"><i></i><i></i><i></i><i></i></div>
   <div id="dmgDir"><i></i></div>
@@ -336,11 +365,11 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
           <b>Mouse</b><span>Look. Click the game to lock the cursor.</span>
           <b>Left click</b><span>Fire</span>
           <b>Right click</b><span>Aim down sights</span>
-          <b>C</b><span>Crouch</span>
-          <b>Space</b><span>Jump</span>
+          <b>C</b><span>Crouch — tap while sprinting to <b>slide</b></span>
+          <b>Space</b><span>Jump — at low cover it <b>vaults</b> you over</span>
           <b>R</b><span>Reload</span>
           <b>Esc</b><span>Pause</span>
-          <b>Touch</b><span>Left thumb moves (push to the edge to sprint), right thumb aims. Hold FIRE and slide to aim while shooting.</span>
+          <b>Touch</b><span>Left thumb moves (edge = sprint), right thumb aims. Hold FIRE to shoot. CROUCH while sprinting = slide; JUMP at low cover = vault.</span>
         </div>
       </details>
       <div class="btnrow"><button class="btn ghost" id="resetSettings" type="button">Reset to defaults</button></div>
@@ -354,7 +383,6 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 (() => {
 "use strict";
@@ -390,6 +418,8 @@ const WEAPONS = {
   snp: { name: 'Kestrel .338', cls: 'Sniper rifle', mag: 5, rate: 1.25, dmg: 92, head: 2.5, r0: 80, r1: 140, fall: 0.85, spread: 0.0012, hip: 0.05, move: 0.06, recoil: 0.05, reload: 3.0, zoom: 4, mob: 0.9, snd: 'snp', stats: [1, 0.1, 1, 0.2] },
   pst: { name: 'P9 Sidearm', cls: 'Pistol', mag: 15, rate: 0.15, dmg: 28, head: 2, r0: 15, r1: 40, fall: 0.55, spread: 0.008, move: 0.01, recoil: 0.016, reload: 1.3, zoom: 1.25, mob: 1.1, snd: 'pst', stats: [0.45, 0.5, 0.4, 1] },
 };
+// optic per weapon: holo/reddot keep the gun up with a centred reticle; scope/sniper magnify and hide the gun
+Object.assign(WEAPONS.ar,{optic:'holo',zoom:1.6}); Object.assign(WEAPONS.smg,{optic:'holo'}); Object.assign(WEAPONS.sg,{optic:'irons'}); Object.assign(WEAPONS.lmg,{optic:'reddot'}); Object.assign(WEAPONS.dmr,{optic:'scope',zoom:3}); Object.assign(WEAPONS.snp,{optic:'sniper',zoom:4.5}); Object.assign(WEAPONS.pst,{optic:'reddot'});
 let loadout = store.get('loadout', 'ar');
 if (!WEAPONS[loadout]) loadout = 'ar';
 let selMap = store.get('map', 'outpost');
@@ -890,6 +920,8 @@ const sfx = {
   land: () => { noise(0.12, 0.16, 300); },
   reload(t) { noise(0.05, 0.22, 3000, 'bandpass', 2); noise(0.06, 0.25, 2200, 'bandpass', 2, t * 0.55); noise(0.07, 0.3, 1600, 'bandpass', 2, t * 0.85); },
   empty: () => noise(0.03, 0.2, 4000, 'bandpass', 3),
+  slide: () => { noise(0.5, 0.18, 900, 'bandpass', 0.8); noise(0.4, 0.1, 260); },
+  vault: () => { noise(0.14, 0.14, 520, 'bandpass', 1); tone(180, 0.1, 'sine', 0.05, 110); },
   drone: () => tone(620, 0.12, 'sawtooth', 0.05, 220),
   heal: () => tone(600, 0.25, 'sine', 0.08, 1200),
 };
@@ -898,7 +930,8 @@ const sfx = {
 const P = { pos: new THREE.Vector3(0, 1.6, 0), yaw: 0, pitch: 0, hp: 100, w: loadout, ammo: 30, reloading: 0, cooldown: 0, bob: 0, kick: 0, bloom: 0,
   alive: true, respawn: 0, team: 'b', deaths: 0, matchDeaths: 0, kills: 0, killer: '', shots: 0, lastHurt: 0, prot: 0,
   vx: 0, vz: 0, jy: 0, jvy: 0, flashT: 0, sway: 0, swayY: 0, roll: 0, lastYaw: 0, lastPitch: 0, shake: 0,
-  crouch: false, crouchT: 0, ads: false, adsT: 0, stamina: 100, stWait: 0 };
+  crouch: false, crouchT: 0, ads: false, adsT: 0, stamina: 100, stWait: 0,
+  slideT: 0, slideCd: 0, sprinting: false, vault: null };
 const W = () => WEAPONS[P.w];
 let state = 'menu', mode = 'siege';
 const input = { mx: 0, mz: 0, fire: false, keys: {}, looked: 0, ldx: 0, ldy: 0, jump: false };
@@ -929,7 +962,7 @@ function tracer(from, to, color) {
   t.l.material.color.setHex(color); t.life = 0.06; t.l.visible = true;
 }
 
-/* ---------- HUD ---------- */
+/* ---------- HUD (game) ---------- */
 const hud = { hp: $('hpfill'), hpNum: $('hpNum'), st: $('stfill'), score: $('score'), wave: $('wave'), ammo: $('ammo'), reload: $('reloadTag'), hurt: $('hurt'), hit: $('hit'), banner: $('banner'), cross: $('cross'), kd: $('kd'), death: $('deathMsg'), feed: $('feed'), wName: $('wName'), fps: $('fpsTag') };
 let hitT = 0, hurtT = 0, bannerT = 0;
 function updHud() {
@@ -944,7 +977,59 @@ function updHud() {
 }
 function banner(text, sub, t = 2) { hud.banner.textContent = text; if (sub) { const s = document.createElement('small'); s.textContent = sub; hud.banner.appendChild(s); } bannerT = t; }
 function hitMarker(kind) { hud.hit.className = kind || ''; hitT = kind === 'kill' ? 0.3 : 0.12; }
-const scopeEl = $('scope');
+const scv = $('scopeCv'), sctx = scv.getContext('2d'); let scopeKey = '';
+function drawScope(optic, t){
+  const magnified = optic === 'scope' || optic === 'sniper';
+  const show = optic && optic !== 'irons' && t > 0.3 && P.alive && state === 'play';
+  if (!show){ if (scopeKey){ scv.style.opacity = 0; scopeKey = ''; } return false; }
+  const ds = Math.min(window.devicePixelRatio || 1, 2), w = window.innerWidth, h = window.innerHeight;
+  if (scv.width !== Math.round(w*ds) || scv.height !== Math.round(h*ds)){ scv.width = Math.round(w*ds); scv.height = Math.round(h*ds); scopeKey=''; }
+  scv.style.opacity = clamp((t - 0.3) / 0.4, 0, 1).toFixed(2);
+  const key = optic + w + 'x' + h;
+  if (scopeKey === key) return magnified && t > 0.6;
+  scopeKey = key;
+  const g = sctx, cx = w/2, cy = h/2, m = Math.min(w,h);
+  g.setTransform(ds,0,0,ds,0,0); g.clearRect(0,0,w,h);
+  const glow=(c,b)=>{ g.shadowColor=c; g.shadowBlur=b; };
+  const line=(x1,y1,x2,y2,lw,col='#050505')=>{ g.strokeStyle=col; g.lineWidth=lw; g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.stroke(); };
+  const tube=r=>{
+    g.fillStyle='#000'; g.beginPath(); g.rect(0,0,w,h); g.arc(cx,cy,r,0,Math.PI*2,true); g.fill();
+    const eg=g.createRadialGradient(cx,cy,r*0.7,cx,cy,r); eg.addColorStop(0,'rgba(0,0,0,0)'); eg.addColorStop(0.86,'rgba(0,0,0,0.3)'); eg.addColorStop(1,'rgba(0,0,0,0.96)');
+    g.fillStyle=eg; g.beginPath(); g.arc(cx,cy,r,0,7); g.fill();
+    g.fillStyle='rgba(120,150,120,0.05)'; g.beginPath(); g.arc(cx,cy,r,0,7); g.fill();
+    g.strokeStyle='#15110c'; g.lineWidth=m*0.03; g.beginPath(); g.arc(cx,cy,r+m*0.013,0,7); g.stroke();
+    g.fillStyle='rgba(255,255,255,0.06)'; g.beginPath(); g.arc(cx,cy,r*0.95,Math.PI*1.08,Math.PI*1.5); g.arc(cx,cy,r*0.82,Math.PI*1.5,Math.PI*1.08,true); g.fill();
+  };
+  if (optic === 'scope' || optic === 'sniper'){
+    const r = m * (optic==='sniper'?0.46:0.42); tube(r);
+    line(cx-r,cy,cx+r,cy,1.4); line(cx,cy-r,cx,cy+r,1.4);
+    line(cx-r,cy,cx-r*0.42,cy,6); line(cx+r*0.42,cy,cx+r,cy,6); line(cx,cy+r*0.42,cx,cy+r,6); line(cx,cy-r,cx,cy-r*0.42,6);
+    g.fillStyle='#050505';
+    for (let k=1;k<=4;k++){ const d=r*0.09*k; [[d,0],[-d,0],[0,d],[0,-d]].forEach(([dx,dy])=>{ g.beginPath(); g.arc(cx+dx,cy+dy,2.4,0,7); g.fill(); }); }
+    if (optic==='sniper'){
+      g.font='600 10px monospace'; g.textAlign='left';
+      [1,2,3].forEach(k=>{ const y=cy+r*0.09*k; line(cx-r*0.05*(1+k*0.3),y,cx+r*0.05*(1+k*0.3),y,1.2); g.fillStyle='#8a8a8a'; g.fillText(String(k*200), cx+r*0.06*(1+k*0.3)+4, y+3); g.fillStyle='#050505'; });
+      glow('#ff3b1f',8); g.fillStyle='#ff3b2a'; g.beginPath(); g.arc(cx,cy,2.2,0,7); g.fill(); glow('transparent',0);
+    }
+  } else if (optic === 'holo'){
+    const ww=m*0.6, wh=m*0.42, x0=cx-ww/2, y0=cy-wh/2, rr=m*0.05, fw=m*0.05;
+    const rrect=(x,y,a,b,rad)=>{ g.beginPath(); g.moveTo(x+rad,y); g.arcTo(x+a,y,x+a,y+b,rad); g.arcTo(x+a,y+b,x,y+b,rad); g.arcTo(x,y+b,x,y,rad); g.arcTo(x,y,x+a,y,rad); g.closePath(); };
+    g.fillStyle='#14110c'; rrect(x0-fw,y0-fw,ww+fw*2,wh+fw*2,rr*1.6); g.fill();
+    g.globalCompositeOperation='destination-out'; rrect(x0,y0,ww,wh,rr); g.fill(); g.globalCompositeOperation='source-over';
+    g.fillStyle='rgba(120,180,200,0.05)'; rrect(x0,y0,ww,wh,rr); g.fill();
+    g.strokeStyle='#2a241b'; g.lineWidth=2; rrect(x0,y0,ww,wh,rr); g.stroke();
+    glow('#ff2a1a',12); g.strokeStyle='#ff4a2e'; g.lineWidth=Math.max(2,m*0.004);
+    const rc=m*0.07; for (let q=0;q<4;q++){ const a=q*Math.PI/2+Math.PI/4; g.beginPath(); g.arc(cx,cy,rc,a-0.6,a+0.6); g.stroke(); }
+    g.fillStyle='#ff4a2e'; g.beginPath(); g.arc(cx,cy,Math.max(2,m*0.004),0,7); g.fill(); glow('transparent',0);
+  } else if (optic === 'reddot'){
+    const r=m*0.26;
+    g.strokeStyle='#15110c'; g.lineWidth=m*0.06; g.beginPath(); g.arc(cx,cy,r+m*0.03,0,7); g.stroke();
+    g.strokeStyle='#2a241b'; g.lineWidth=2; g.beginPath(); g.arc(cx,cy,r,0,7); g.stroke();
+    const eg=g.createRadialGradient(cx,cy,r*0.72,cx,cy,r); eg.addColorStop(0,'rgba(0,0,0,0)'); eg.addColorStop(1,'rgba(0,0,0,0.4)'); g.fillStyle=eg; g.beginPath(); g.arc(cx,cy,r,0,7); g.fill();
+    glow('#ff2a1a',14); g.fillStyle='#ff4a2e'; g.beginPath(); g.arc(cx,cy,Math.max(2.5,m*0.006),0,7); g.fill(); glow('transparent',0);
+  }
+  return magnified && t > 0.6;
+}
 const dmgDir = $('dmgDir'); let dmgDirT = 0, dmgAng = 0;
 function showDmgDir(x, z) { dmgAng = Math.atan2(-(x - P.pos.x), -(z - P.pos.z)); dmgDirT = 1.1; }
 
@@ -1180,7 +1265,7 @@ function respawnPlayer() {
   const sp = spawnPoint(P.team);
   P.pos.set(sp.x, 1.6, sp.z); P.yaw = P.team === 'b' ? 0 : Math.PI; P.pitch = 0;
   if (P.w !== loadout) equip(loadout); else { P.ammo = W().mag; P.reloading = 0; }
-  Object.assign(P, { hp: 100, alive: true, prot: 1.5, lastHurt: 99, vx: 0, vz: 0, jy: 0, jvy: 0, crouch: false, ads: false, stamina: 100, kick: 0, bloom: 0 });
+  Object.assign(P, { hp: 100, alive: true, prot: 1.5, lastHurt: 99, vx: 0, vz: 0, jy: 0, jvy: 0, crouch: false, ads: false, stamina: 100, kick: 0, bloom: 0, slideT: 0, slideCd: 0, vault: null });
   hud.death.hidden = true; updHud();
 }
 function newMatchLocal() {
@@ -1361,103 +1446,6 @@ function resetTDM() {
   hud.feed.textContent = '';
 }
 
-
-/* ---------- peer-to-peer online play (no accounts) ----------
-   Everyone connects to one "hub" browser through PeerJS. The first player to arrive
-   becomes the hub; if the hub leaves, the remaining players race to take over. */
-function makeNetRoom(code) {
-  return new Promise(resolve => {
-    if (!window.Peer) { resolve(null); return; }
-    code = code || 'lobby';
-    const HUB = 'dustline-hub-v1-' + code;
-    let stopped = false, timer = null;
-    const my = { l: {}, b: null };
-    let myId = null, peer = null, isHub = false, hubConn = null, reconnecting = false, resolved = false, dirty = true, lastSend = 0;
-    const conns = new Map(), listeners = [];
-    let state = {}, peersArr = [];
-    const done = v => { if (!resolved) { resolved = true; resolve(v); } };
-    const merge = (obj, patch) => { for (const k in patch) { if (patch[k] === null) delete obj[k]; else obj[k] = patch[k]; } };
-    function rebuild(snap) {
-      const out = [{ peer: myId || 'me', sameTab: true, presence: { ...my.l }, bpr: my.b }];
-      for (const id in snap) { if (id === myId || !snap[id]) continue; out.push({ peer: id, sameTab: false, presence: snap[id].l || {}, bpr: snap[id].b || null }); }
-      peersArr = out;
-      listeners.forEach(cb => { try { cb({ peers: peersArr }); } catch (e) {} });
-    }
-    function reconnect(delay) {
-      if (reconnecting || stopped) return; reconnecting = true;
-      try { if (peer) peer.destroy(); } catch (e) {}
-      peer = null; hubConn = null; isHub = false; conns.clear(); state = {};
-      setTimeout(() => { reconnecting = false; if (!stopped) claim(); }, delay || (300 + Math.random() * 1500));
-    }
-    function startHub() {
-      isHub = true; myId = HUB; rebuild({});
-      peer.on('connection', c => {
-        c.on('open', () => conns.set(c.peer, c));
-        c.on('data', d => { if (d && d.t === 'p') state[c.peer] = { l: d.l || {}, b: d.b || null, at: Date.now() }; });
-        const drop = () => { conns.delete(c.peer); delete state[c.peer]; };
-        c.on('close', drop); c.on('error', drop);
-      });
-      done(api);
-    }
-    function connectHub() {
-      peer = new Peer(undefined, { debug: 0 });
-      peer.on('open', id => {
-        myId = id; rebuild({});
-        hubConn = peer.connect(HUB, { reliable: true, serialization: 'json' });
-        hubConn.on('open', () => { dirty = true; done(api); });
-        hubConn.on('data', d => { if (d && d.t === 's' && d.s) rebuild(d.s); });
-        hubConn.on('close', () => reconnect());
-        hubConn.on('error', () => reconnect());
-      });
-      peer.on('disconnected', () => { try { peer.reconnect(); } catch (e) {} });
-      peer.on('error', () => { if (!resolved) done(null); reconnect(resolved ? 0 : 4000); });
-    }
-    function claim() {
-      let settled = false;
-      peer = new Peer(HUB, { debug: 0 });
-      peer.on('open', () => { settled = true; startHub(); });
-      peer.on('disconnected', () => { try { peer.reconnect(); } catch (e) {} });
-      peer.on('error', e => {
-        if (!settled && e.type === 'unavailable-id') { settled = true; try { peer.destroy(); } catch (x) {} connectHub(); }
-        else if (!settled) { settled = true; done(null); reconnect(5000); }
-      });
-    }
-    timer = setInterval(() => {
-      if (!myId || stopped) return;
-      const now = Date.now();
-      if (isHub) {
-        state[myId] = { l: my.l, b: my.b, at: now };
-        for (const id in state) if (id !== myId && now - state[id].at > 6000) delete state[id];
-        const snap = {}; for (const id in state) snap[id] = { l: state[id].l, b: state[id].b };
-        for (const c of conns.values()) if (c.open) { try { c.send({ t: 's', s: snap }); } catch (e) {} }
-        rebuild(snap);
-      } else if (hubConn && hubConn.open && (dirty || now - lastSend > 1000)) {
-        dirty = false; lastSend = now;
-        try { hubConn.send({ t: 'p', l: my.l, b: my.b }); } catch (e) {}
-      }
-    }, 66);
-    const api = {
-      onPeers(cb) { listeners.push(cb); setTimeout(() => cb({ peers: peersArr }), 0); return () => {}; },
-      presence(patch) { merge(my.l, patch || {}); dirty = true; return Promise.resolve(); },
-      join(name) {
-        const c = 'b-' + (String(name || '').replace(/^battle-/, '') || 'main');
-        if (c !== code) return makeNetRoom(c).then(sub => sub ? sub._own() : null);
-        return api._own();
-      },
-      _own() {
-        my.b = my.b || {}; dirty = true;
-        return Promise.resolve({
-          peers: () => peersArr.filter(p => p.sameTab || p.bpr).map(p => ({ peer: p.peer, sameTab: p.sameTab, presence: p.sameTab ? (my.b || {}) : p.bpr })),
-          presence(patch) { if (my.b) { merge(my.b, patch || {}); dirty = true; } return Promise.resolve(); },
-          leave() { my.b = null; dirty = true; stopped = true; clearInterval(timer); setTimeout(() => { try { if (peer) peer.destroy(); } catch (e) {} }, 300); return Promise.resolve(); },
-        });
-      },
-    };
-    claim();
-    setTimeout(() => done(null), 12000);
-  });
-}
-
 /* ---------- online lobby ---------- */
 function setLobby() {
   if (!room) return;
@@ -1471,7 +1459,7 @@ function renderOnline() {
   el.textContent = n > 1 ? `${n} online${inBattle ? ' · ' + inBattle + ' in battle' : ''}` : 'Only you online · bots fill every slot';
 }
 (async () => {
-  try { room = await makeNetRoom('lobby'); } catch (e) { room = null; }
+  try { room = window.claude && window.claude.use ? await window.claude.use('room') : null; } catch (e) { room = null; }
   if (!room) { renderOnline(); return; }
   room.onPeers(ch => { lobbyPeers = ch.peers; const me = ch.peers.find(p => p.sameTab); if (me) myPeer = me.peer; renderOnline(); }, () => { room = null; renderOnline(); });
   setLobby(); renderOnline();
@@ -1787,7 +1775,7 @@ window.addEventListener('keydown', ev => {
     if (ev.code === 'KeyR') startReload();
     if (/^Digit[1-3]$/.test(ev.code) && mode === 'tdm' && T.win) castVote(Object.keys(MAPS)[+ev.code.slice(5) - 1]);
     if (ev.code === 'Space') { input.jump = true; ev.preventDefault(); }
-    if (ev.code === 'KeyC' || ev.code === 'ControlLeft') P.crouch = !P.crouch;
+    if (ev.code === 'KeyC' || ev.code === 'ControlLeft'){ if (!(P.sprinting && startSlide())) P.crouch = !P.crouch; }
     if (ev.code === 'Escape' || ev.code === 'KeyP') pause();
   } else if (state === 'paused' && ev.code === 'KeyP') resume();
 });
@@ -1829,7 +1817,7 @@ function onTouchStart(ev) {
     if (el.closest('#reloadBtn')) { startReload(); continue; }
     if (el.closest('#jumpBtn')) { input.jump = true; continue; }
     if (el.closest('#adsBtn')) { P.ads = !P.ads; continue; }
-    if (el.closest('#crouchBtn')) { P.crouch = !P.crouch; continue; }
+    if (el.closest('#crouchBtn')) { if (!(P.sprinting && startSlide())) P.crouch = !P.crouch; continue; }
     if (el.closest('#pauseBtn') || el.closest('#vote')) continue;
     const moveSide = S.lefty ? t.clientX > window.innerWidth * 0.55 : t.clientX < window.innerWidth * 0.45;
     if (moveSide && stickId === null) {
@@ -1868,6 +1856,30 @@ function onTouchEnd(ev) {
 });
 document.addEventListener('gesturestart', ev => ev.preventDefault());
 
+/* ---------- slide & mantle ---------- */
+function startSlide(){
+  if (!P.alive || P.jy > 0.05 || P.slideT > 0 || P.slideCd > 0 || P.vault || state !== 'play') return false;
+  const hsp = Math.hypot(P.vx, P.vz); if (hsp < 3.4) return false;
+  const k = 10.5 / hsp; P.vx *= k; P.vz *= k;
+  P.slideT = 0.75; P.slideCd = 1.1; P.crouch = true; P.ads = false;
+  sfx.slide();
+  return true;
+}
+function tryVault(){
+  if (!P.alive || P.jy > 0.05 || P.vault) return false;
+  const fx = -Math.sin(P.yaw), fz = -Math.cos(P.yaw);
+  const probe = { x: P.pos.x + fx * 0.75, z: P.pos.z + fz * 0.75 };
+  let box = null;
+  for (const b of boxes){ if (b.h > 1.8 || b.h < 0.5) continue; if (probe.x > b.minX - 0.1 && probe.x < b.maxX + 0.1 && probe.z > b.minZ - 0.1 && probe.z < b.maxZ + 0.1){ box = b; break; } }
+  if (!box) return false;
+  let clearPt = null;
+  for (let d = 0.9; d < 3.4; d += 0.2){ const px = P.pos.x + fx * d, pz = P.pos.z + fz * d; if (!(px > box.minX - 0.1 && px < box.maxX + 0.1 && pz > box.minZ - 0.1 && pz < box.maxZ + 0.1)){ clearPt = { x: P.pos.x + fx * (d + 0.4), z: P.pos.z + fz * (d + 0.4) }; break; } }
+  if (!clearPt || insideSolid(clearPt, 0.3)) return false;
+  P.vault = { t: 0, dur: 0.42, sx: P.pos.x, sz: P.pos.z, ex: clearPt.x, ez: clearPt.z, peak: box.h + 0.35 };
+  P.crouch = false; P.ads = false; P.slideT = 0; P.vx = P.vz = 0; sfx.vault();
+  return true;
+}
+
 /* ---------- player step ---------- */
 function stepPlayer(dt) {
   const kL = Math.min(1, dt * 40), ax = input.ldx * kL, ay = input.ldy * kL;
@@ -1887,14 +1899,25 @@ function stepPlayer(dt) {
   const mob = W().mob || 1, speed = (sprint ? 8.2 : P.crouch ? 2.7 : 5.2 * (P.ads ? 0.65 : 1)) * mob, sin = Math.sin(P.yaw), cos = Math.cos(P.yaw);
   const tvx = P.alive ? (mx * cos + mz * sin) * speed : 0, tvz = P.alive ? (-mx * sin + mz * cos) * speed : 0;
   const acc = Math.min(1, dt * (len > 0.05 ? 10 : 13) * (P.jy > 0 ? 0.3 : 1));
-  P.vx += (tvx - P.vx) * acc; P.vz += (tvz - P.vz) * acc;
+  P.sprinting = sprint;
+  if (P.slideT > 0 || P.vault) { P.vx += (tvx - P.vx) * dt * 0.9; P.vz += (tvz - P.vz) * dt * 0.9; }
+  else { P.vx += (tvx - P.vx) * acc; P.vz += (tvz - P.vz) * acc; }
+  if (P.slideT > 0){ P.slideT -= dt; const sp0 = Math.hypot(P.vx, P.vz) || 1, ns = Math.max(2.6, sp0 - dt * 9); P.vx = P.vx * ns / sp0; P.vz = P.vz * ns / sp0; if (ns <= 2.7) P.slideT = 0; }
+  P.slideCd = Math.max(0, P.slideCd - dt);
   if (P.alive) {
-    const ox = P.pos.x, oz = P.pos.z;
-    P.pos.x += P.vx * dt; P.pos.z += P.vz * dt;
-    collide(P.pos, 0.45);
-    const idt = 1 / Math.max(dt, 1e-4); P.vx = (P.pos.x - ox) * idt; P.vz = (P.pos.z - oz) * idt;
-    if (input.jump && P.jy <= 0 && P.jvy <= 0 && !P.crouch && P.stamina > 10) { P.jvy = 5; P.stamina -= 10; sfx.jump(); }
-    if (P.jy > 0 || P.jvy > 0) { P.jvy -= 15 * dt; P.jy += P.jvy * dt; if (P.jy <= 0) { P.jy = 0; P.jvy = 0; sfx.land(); P.bob += 0.6; } }
+    if (P.vault){
+      P.vault.t += dt; const u = Math.min(1, P.vault.t / P.vault.dur);
+      P.pos.x = THREE.MathUtils.lerp(P.vault.sx, P.vault.ex, u); P.pos.z = THREE.MathUtils.lerp(P.vault.sz, P.vault.ez, u);
+      P.jy = Math.sin(u * Math.PI) * P.vault.peak;
+      if (u >= 1){ P.jy = 0; P.vault = null; sfx.land(); }
+    } else {
+      const ox = P.pos.x, oz = P.pos.z;
+      P.pos.x += P.vx * dt; P.pos.z += P.vz * dt;
+      collide(P.pos, 0.45);
+      const idt = 1 / Math.max(dt, 1e-4); P.vx = (P.pos.x - ox) * idt; P.vz = (P.pos.z - oz) * idt;
+      if (input.jump){ if (!tryVault()){ if (P.slideT > 0) P.slideT = 0; if (P.jy <= 0 && P.jvy <= 0 && P.stamina > 10){ P.jvy = 5; P.stamina -= 10; sfx.jump(); } } }
+      if (P.jy > 0 || P.jvy > 0){ P.jvy -= 15 * dt; P.jy += P.jvy * dt; if (P.jy <= 0){ P.jy = 0; P.jvy = 0; sfx.land(); P.bob += 0.6; } }
+    }
   }
   input.jump = false;
   const hsp = Math.hypot(P.vx, P.vz), moveAmt = Math.min(1, hsp / 5.2), motion = S.motion ? 1 : 0;
@@ -1911,20 +1934,21 @@ function stepPlayer(dt) {
   hud.cross.classList.toggle('lock', onTarget);
   const spr = currentSpread(), gap = 3 + Math.tan(spr) / Math.tan(camera.fov * Math.PI / 360) * window.innerHeight / 2;
   hud.cross.style.setProperty('--gap', gap.toFixed(1) + 'px');
-  hud.cross.style.opacity = (1 - P.adsT * (P.w === 'dmr' || P.w === 'snp' ? 1 : 0.7)).toFixed(2);
-  const scoped = P.w === 'snp' && P.adsT > 0.85 && P.alive; scopeEl.style.opacity = scoped ? 1 : 0;
-  const breath = scoped ? Math.sin(performance.now() / 900) * 0.0012 : 0;
+  const optic = W().optic;
+  hud.cross.style.opacity = (1 - P.adsT * (optic !== 'irons' ? 1 : 0.6)).toFixed(2);
+  const scoped = drawScope(optic, P.adsT);
+  const breath = scoped ? Math.sin(performance.now() / 900) * (optic === 'sniper' ? 0.0013 : 0.0008) : 0;
 
   const eye = 1.6 - P.crouchT * 0.48;
   if (P.alive) camera.position.set(P.pos.x, eye + P.jy + Math.sin(P.bob) * 0.03 * moveAmt * motion * (1 - P.adsT * 0.7), P.pos.z);
   else camera.position.set(P.pos.x, Math.min(4, camera.position.y + dt * 1.5), P.pos.z);
   if (P.shake > 0) { P.shake = Math.max(0, P.shake - dt); camera.position.x += (Math.random() - .5) * P.shake * 0.1 * motion; camera.position.y += (Math.random() - .5) * P.shake * 0.1 * motion; }
   const lateral = P.vx * cos - P.vz * sin;
-  P.roll += (-lateral * 0.003 * motion - P.roll) * Math.min(1, dt * 8);
+  P.roll += (-lateral * 0.003 * motion - (P.slideT > 0 ? 0.07 * motion : 0) - P.roll) * Math.min(1, dt * 8);
   P.kick = Math.max(0, P.kick - P.kick * Math.min(1, dt * 9));
   P.bloom = Math.max(0, P.bloom - dt * 0.06);
   camera.rotation.set(P.alive ? P.pitch + P.kick + breath : -0.6, P.yaw + breath * 0.6, P.alive ? P.roll : 0);
-  const wantFov = (baseFov + (sprint && hsp > 6.5 ? 6 : 0)) / (1 + P.adsT * (W().zoom - 1));
+  const wantFov = (baseFov + (sprint && hsp > 6.5 ? 6 : 0) + (P.slideT > 0 ? 9 : 0) + (P.vault ? 6 : 0)) / (1 + P.adsT * (W().zoom - 1));
   if (Math.abs(camera.fov - wantFov) > 0.03) { camera.fov += (wantFov - camera.fov) * Math.min(1, dt * 12); camera.updateProjectionMatrix(); }
   const ks = Math.min(1, dt * 10), dyaw = angDiff(P.lastYaw, P.yaw), dpit = P.pitch - P.lastPitch, idt2 = 1 / Math.max(dt, 1e-3);
   P.lastYaw = P.yaw; P.lastPitch = P.pitch;
@@ -2016,5 +2040,6 @@ showMenu('main');
 loop();
 })();
 </script>
+
 </body>
 </html>
