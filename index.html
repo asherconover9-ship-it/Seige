@@ -14,8 +14,15 @@
 <link rel="manifest" href="manifest.webmanifest">
 <style>html,body{margin:0;background:#0f110d}</style>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script>/* Hollow Pines co-op over PeerJS — no accounts. One player per room becomes the hub. */
+<script>/* Dustline online over PeerJS — no accounts. One player per room becomes the hub. */
 (function(){
+var ICE={ iceServers:[
+  { urls:'stun:stun.l.google.com:19302' },
+  { urls:'stun:stun1.l.google.com:19302' },
+  { urls:'turn:openrelay.metered.ca:80', username:'openrelayproject', credential:'openrelayproject' },
+  { urls:'turn:openrelay.metered.ca:443', username:'openrelayproject', credential:'openrelayproject' },
+  { urls:'turn:openrelay.metered.ca:443?transport=tcp', username:'openrelayproject', credential:'openrelayproject' }
+] };
 function makeRoom(hubId){
   var self={ id:null, pr:{}, listeners:[], peersMap:{}, isHub:false, hub:null, conns:{}, dead:false, timer:null, lastSend:0, started:false };
   function snapshot(){ var out=[{peer:self.id||'me',sameTab:true,presence:self.pr}]; for(var id in self.peersMap){ if(id===self.id)continue; out.push({peer:id,sameTab:false,presence:self.peersMap[id]||{}}); } return out; }
@@ -25,7 +32,7 @@ function makeRoom(hubId){
       var drop=function(){ delete self.conns[c.peer]; delete self.peersMap[c.peer]; }; c.on('close',drop); c.on('error',drop); });
     emit();
   }
-  function connectHub(){ self.peer=new Peer(undefined,{debug:0});
+  function connectHub(){ self.peer=new Peer(undefined,{debug:0,config:ICE});
     self.peer.on('open',function(id){ self.id=id; self.peersMap[self.id]=self.pr; self.conn=self.peer.connect(hubId,{reliable:true,serialization:'json'});
       self.conn.on('open',function(){}); self.conn.on('data',function(d){ if(d&&d.t==='s'&&d.s){ var keep={}; keep[self.id]=self.pr; for(var k in d.s){ if(k!==self.id) keep[k]=d.s[k]; } self.peersMap=keep; emit(); } });
       self.conn.on('close',function(){ reconnect(800); }); self.conn.on('error',function(){ reconnect(1200); }); emit(); });
@@ -33,7 +40,7 @@ function makeRoom(hubId){
     self.peer.on('error',function(){ reconnect(3000); });
   }
   function reconnect(ms){ if(self.dead)return; try{ if(self.peer)self.peer.destroy(); }catch(e){} self.peer=null; self.hub=null; self.conn=null; self.isHub=false; self.conns={}; setTimeout(claim,ms||600); }
-  function claim(){ if(self.dead)return; var settled=false; self.hub=new Peer(hubId,{debug:0});
+  function claim(){ if(self.dead)return; var settled=false; self.hub=new Peer(hubId,{debug:0,config:ICE});
     self.hub.on('open',function(){ settled=true; self.peer=self.hub; startHub(); });
     self.hub.on('disconnected',function(){ try{self.hub.reconnect();}catch(e){} });
     self.hub.on('error',function(e){ if(!settled&&e&&e.type==='unavailable-id'){ settled=true; try{self.hub.destroy();}catch(x){} connectHub(); } else if(!settled){ reconnect(3000); } });
@@ -56,7 +63,7 @@ function makeRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? makeRoom('dustline-lobby') : null); } };
 })();
 </script>
-<script>(function(){var B='20261112203134';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261112204540';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -1188,6 +1195,7 @@ function nameOf(id) { if (!id) return 'Someone'; if (id === myPeer) return playe
 function teamOf(id) { if (id === myPeer) return P.team; if (BOT_NAMES[id]) return id[0]; const e = T.ents.get(id); return e ? e.team : ''; }
 
 function collectHumans() {
+  if (troom) { const meTr = troom.peers().find(p => p.sameTab); if (meTr) myPeer = meTr.peer; }
   const now = performance.now(), list = [{ peer: myPeer, me: true, pr: { tm: P.team, x: P.pos.x, z: P.pos.z, y: P.yaw, a: P.alive ? 1 : 0, h: P.hp, n: playerName } }];
   if (troom) {
     for (const p of troom.peers()) {
@@ -1383,6 +1391,10 @@ function netTick(dt) {
   const wasHost = T.isHost;
   T.isHost = !!(host && host.me); T.hostPeer = host ? host.peer : null;
   if (T.isHost && !wasHost) becomeHost();
+  if (duel) {
+    const opp = hs.find(h => !h.me);
+    if (opp) { const want = myPeer < opp.peer ? 'b' : 'r'; if (P.team !== want) { P.team = want; respawnPlayer(); banner('RIVAL FOUND', TEAM_NAME[P.team] + ' · first to ' + SCORE_LIMIT, 2.5); } }
+  }
   if (!T.isHost && host) {
     const hp = host.pr;
     if (MAPS[hp.mp] && hp.mp !== curMap) { buildMap(hp.mp); if (P.alive && insideSolid(P.pos, 0.3)) respawnPlayer(); }
@@ -1467,7 +1479,7 @@ function renderOnline() {
 (async () => {
   try { room = window.claude && window.claude.use ? await window.claude.use('room') : null; } catch (e) { room = null; }
   if (!room) { renderOnline(); return; }
-  room.onPeers(ch => { lobbyPeers = ch.peers; const me = ch.peers.find(p => p.sameTab); if (me) myPeer = me.peer; renderOnline(); }, () => { room = null; renderOnline(); });
+  room.onPeers(ch => { lobbyPeers = ch.peers; const me = ch.peers.find(p => p.sameTab); if (me && !troom) myPeer = me.peer; renderOnline(); }, () => { room = null; renderOnline(); });
   setLobby(); renderOnline();
 })();
 setTimeout(() => { if (!room) renderOnline(); }, 2500);

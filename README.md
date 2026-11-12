@@ -4,7 +4,7 @@
 
 **A free tactical arena shooter you play in your browser. No download, no account, no app store.**
 
-## ▶️ [PLAY NOW](https://gaayyynesss.github.io/Seige/?v=8)
+## ▶️ [PLAY NOW](https://gaayyynesss.github.io/Seige/)
 
 https://gaayyynesss.github.io/Seige/
 
