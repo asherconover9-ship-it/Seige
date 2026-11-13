@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113205416';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113210308';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -350,6 +350,21 @@ button { font-family: inherit; }
 .rar-common { color: #c8c8c0; } .rar-rare { color: #4aa8ff; } .rar-epic { color: #c08aff; } .rar-legendary { color: #ffb02e; }
 .skin.rb-common { border-color: rgba(200,200,192,.35); } .skin.rb-rare { border-color: rgba(74,168,255,.55); } .skin.rb-epic { border-color: rgba(192,138,255,.6); } .skin.rb-legendary { border-color: rgba(255,176,46,.7); }
 .skin.notown { opacity: .45; }
+.crate.vault { border-color: rgba(255,176,46,.7); background: linear-gradient(160deg, rgba(255,176,46,.16), var(--panel2) 60%); }
+.crate .chead { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.qbtn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(239,232,214,.4); background: rgba(0,0,0,.3); color: var(--ink, #efe8d6); font: 700 16px var(--display); cursor: pointer; flex: none; }
+#oddsBox { position: fixed; inset: 0; z-index: 51; display: grid; place-items: center; background: rgba(8,9,7,.88); padding: 16px; }
+#oddsBox[hidden] { display: none; }
+#oddsBox .ob { width: min(440px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; display: grid; gap: 6px; padding: 18px; background: var(--panel); border: 2px solid var(--line); }
+#oddsBox .obh { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+#oddsBox .obh .rvname { font: 700 20px var(--display); letter-spacing: .1em; text-transform: uppercase; }
+#oddsBox .orar { display: flex; justify-content: space-between; margin-top: 8px; padding-bottom: 3px; border-bottom: 1px solid rgba(239,232,214,.18); font: 700 14px var(--display); letter-spacing: .16em; text-transform: uppercase; }
+#oddsBox .oitem { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; font-size: 13px; }
+#oddsBox .oitem .ov { width: 44px; height: 34px; display: grid; place-items: center; overflow: hidden; }
+#oddsBox .oitem .ov img { height: 34px; width: auto; }
+#oddsBox .oitem .ov .sw { display: flex; width: 40px; height: 22px; } #oddsBox .oitem .ov .sw i { flex: 1; }
+#oddsBox .oitem .op { font-family: var(--mono); }
+#oddsBox .oitem.own .on { opacity: .6; }
 #reveal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(8,9,7,.88); padding: 16px; }
 #reveal[hidden] { display: none; }
 #reveal .rv { width: min(380px, 100%); display: grid; gap: 10px; justify-items: center; text-align: center; padding: 22px 18px; background: var(--panel); border: 2px solid var(--line); }
@@ -385,6 +400,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
 @media (prefers-reduced-motion: reduce) { #banner, #hurt, #hpfill, #cross, .switch span, .switch span::after { transition: none; } }
 </style>
 
+<div id="oddsBox" hidden><div class="ob"><div class="obh"><span class="rvname" id="oddsTitle"></span><button class="btn ghost" id="oddsClose" type="button">Close</button></div><div class="pmsg" id="oddsNote"></div><div id="oddsList"></div></div></div>
 <div id="reveal" hidden><div class="rv" id="rvBox"><div class="rvimg" id="rvImg"></div><div class="rvrar" id="rvRar"></div><div class="rvname" id="rvName"></div><div class="pmsg" id="rvMsg"></div><div class="btnrow"><button class="btn go" id="rvEquip" type="button">Equip</button><button class="btn ghost" id="rvClose" type="button">Close</button></div></div></div>
 <canvas id="view"></canvas>
 
@@ -533,7 +549,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
       <div class="bp-head">
         <span class="label">Shop · crates</span>
         <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><span class="num" style="color:#f2c84b">◎ <span id="shopCoins">0</span></span><span>coins</span></div>
-        <span class="pmsg">You earn 10 coins for every elimination, in Team Battle, Duels and Holdout. Duplicates refund coins.</span>
+        <span class="pmsg">You earn 10 coins for every elimination, in Team Battle, Duels and Holdout. Duplicates refund coins. Tap <b>?</b> on a crate to see its odds and every item inside.</span>
       </div>
       <div class="crates" id="crateList"></div>
       <h3 class="subh">Crate collection</h3>
@@ -620,6 +636,7 @@ const SKINS = {
   royal:     { name: 'Royal Guard', vest: 0x1c2a5a, helm: 0xd8aa48, tint: 0x9fb0ff, metal: true, crate: 'rare' },
   neon:      { name: 'Neon Runner', vest: 0x101820, helm: 0x22ff88, tint: 0x9cffc8, glow: 0x0a8f4a, crate: 'epic' },
   magma:     { name: 'Magma', vest: 0x2a0c06, helm: 0xff5a1a, tint: 0xff9a6a, glow: 0x8a2000, crate: 'legendary' },
+  phantom:   { name: 'Phantom', vest: 0x08080e, helm: 0x2a2440, tint: 0xc0b0ff, glow: 0x5a2aff, metal: true, crate: 'legendary', only: 'vault' },
 };
 const CAMOS = {
   none:   { name: 'Factory', c: [0xffffff, 0xffffff, 0xffffff] },
@@ -643,6 +660,7 @@ const CAMOS = {
   neonc:   { name: 'Neon', c: [0x22ff88, 0x062a14, 0x9cffc8], crate: 'epic' },
   galaxy:  { name: 'Galaxy', c: [0x5a2aa0, 0x0a0618, 0x9a6aff], crate: 'epic' },
   lava:    { name: 'Lava', c: [0xff6a1a, 0x2a0802, 0xffb040], crate: 'legendary', metal: true },
+  aurora:  { name: 'Aurora', c: [0x2affc0, 0x1a0a3a, 0xa06aff], crate: 'legendary', metal: true, only: 'vault' },
 };
 const SW = v => '#' + ((v == null ? 0x4d5a68 : v) >>> 0).toString(16).padStart(6, '0');
 const BP_XP = 1000, BP_TIERS = 50;
@@ -2051,13 +2069,13 @@ function renderSkins() {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'skin'; b.setAttribute('aria-pressed', String(pressed));
     const sw = '<span class="sw">' + [d.helm == null ? 0x4d5a68 : d.helm, d.vest, d.solid != null ? d.solid : (d.tint || 0x5f6b78)].map(c => '<i style="background:' + SW(c) + '"></i>').join('') + '</span>';
     b.innerHTML = (SKINPREV[k] ? '<img class="skinimg" alt="" src="' + SKINPREV[k] + '">' : sw) + '<span></span><small></small>';
-    b.children[1].textContent = d.name; b.children[2].textContent = locked ? (d.crate ? 'Shop crate' : PREMIUM_SKINS.has(k) ? 'Premium pass' : 'Locked') : (pressed ? 'Equipped' : 'Tap to equip');
+    b.children[1].textContent = d.name; b.children[2].textContent = locked ? (d.crate ? (d.only ? 'Vault crate' : 'Shop crate') : PREMIUM_SKINS.has(k) ? 'Premium pass' : 'Locked') : (pressed ? 'Equipped' : 'Tap to equip');
     if (locked) b.disabled = true; else b.addEventListener('click', () => { mySkin = k; store.set('skin', k); renderSkins(); });
     sb.appendChild(b);
   }
   const w = loadout, cur = camoOf(w);
   $('camoHead').textContent = 'Weapon camo · ' + WEAPONS[w].name + ' · Level ' + wLevel(w);
-  for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), cur === k, !camoOwned(k, w), d.crate ? 'Shop crate' : d.lvl ? 'Gun level ' + d.lvl : 'Pass tier ' + unlockTier('camo', k),
+  for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), cur === k, !camoOwned(k, w), d.crate ? (d.only ? 'Vault crate' : 'Shop crate') : d.lvl ? 'Gun level ' + d.lvl : 'Pass tier ' + unlockTier('camo', k),
     () => { WCAMO[w] = k; store.set('wcamo', WCAMO); if (P.w === w) applyCamo(); renderSkins(); }));
 }
 function ownedTitles() { const l = ['']; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === 'title' && bpTier() >= +t) l.push(r[1]); if (BP.premium) l.push('VIP'); return l; }
@@ -2072,12 +2090,13 @@ function renderTitles() {
 const RAR = { common: { n: 'Common', refund: 50 }, rare: { n: 'Rare', refund: 100 }, epic: { n: 'Epic', refund: 200 }, legendary: { n: 'Legendary', refund: 400 } };
 const RAR_COL = { common: '#c8c8c0', rare: '#4aa8ff', epic: '#c08aff', legendary: '#ffb02e' };
 const CRATES = {
-  field: { name: 'Field Crate', icon: '📦', price: 250, odds: { common: 55, rare: 28, epic: 13, legendary: 4 } },
-  elite: { name: 'Elite Crate', icon: '🎁', price: 600, odds: { common: 20, rare: 40, epic: 28, legendary: 12 } },
+  field: { name: 'Field Crate', icon: '📦', price: 320, odds: { common: 55, rare: 28, epic: 13, legendary: 4 } },
+  elite: { name: 'Elite Crate', icon: '🎁', price: 750, odds: { common: 20, rare: 40, epic: 28, legendary: 12 } },
+  vault: { name: 'Vault Crate', icon: '💎', price: 1000, odds: { rare: 25, epic: 45, legendary: 30 }, note: 'No commons. Only crate with Phantom and Aurora.' },
 };
 function crateItems() {
-  return [...Object.entries(SKINS).filter(([k, d]) => d.crate).map(([k, d]) => ({ kind: 'skin', id: k, name: d.name, r: d.crate })),
-          ...Object.entries(CAMOS).filter(([k, d]) => d.crate).map(([k, d]) => ({ kind: 'camo', id: k, name: d.name, r: d.crate }))];
+  return [...Object.entries(SKINS).filter(([k, d]) => d.crate).map(([k, d]) => ({ kind: 'skin', id: k, name: d.name, r: d.crate, only: d.only })),
+          ...Object.entries(CAMOS).filter(([k, d]) => d.crate).map(([k, d]) => ({ kind: 'camo', id: k, name: d.name, r: d.crate, only: d.only }))];
 }
 const itemOwned = it => (it.kind === 'skin' ? WALLET.skins : WALLET.camos).includes(it.id);
 function itemVisual(it) {
@@ -2089,8 +2108,27 @@ function itemVisual(it) {
 function rollCrate(key) {
   const o = CRATES[key].odds; let x = Math.random() * 100, r = 'common';
   for (const [k, v] of Object.entries(o)) { if ((x -= v) < 0) { r = k; break; } }
-  const pool = crateItems().filter(i => i.r === r);
+  const pool = cratePool(key, r);
   return pool[Math.floor(Math.random() * pool.length)];
+}
+function cratePool(key, r) { return crateItems().filter(i => i.r === r && (!i.only || i.only === key)); }
+function showOdds(key) {
+  const c = CRATES[key], box = $('oddsList'); box.textContent = '';
+  $('oddsTitle').textContent = c.name + ' · ◎ ' + c.price;
+  $('oddsNote').textContent = c.note || 'Duplicates refund coins: Common 50 · Rare 100 · Epic 200 · Legendary 400.';
+  for (const [r, v] of Object.entries(c.odds)) {
+    const pool = cratePool(key, r); if (!v || !pool.length) continue;
+    const h = document.createElement('div'); h.className = 'orar rar-' + r; h.innerHTML = '<span></span><span></span>';
+    h.children[0].textContent = RAR[r].n; h.children[1].textContent = v + '%'; box.appendChild(h);
+    pool.forEach(it => {
+      const row = document.createElement('div'); row.className = 'oitem' + (itemOwned(it) ? ' own' : '');
+      row.innerHTML = '<span class="ov">' + itemVisual(it) + '</span><span class="on"></span><span class="op"></span>';
+      row.children[1].textContent = it.name + (it.kind === 'skin' ? ' · skin' : ' · camo') + (it.only ? ' ★' : '') + (itemOwned(it) ? ' ✓' : '');
+      row.children[2].textContent = (Math.round(v / pool.length * 100) / 100) + '%';
+      box.appendChild(row);
+    });
+  }
+  $('oddsBox').hidden = false;
 }
 let revealItem = null;
 function openCrate(key) {
@@ -2100,7 +2138,7 @@ function openCrate(key) {
   if (dupe) WALLET.coins += RAR[it.r].refund; else list.push(it.id);
   saveWallet(); updCoins(); renderShop();
   // little roll animation, then the reveal
-  const all = crateItems(), rv = $('reveal'); rv.hidden = false; revealItem = null;
+  const all = crateItems().filter(i => !i.only || i.only === key), rv = $('reveal'); rv.hidden = false; revealItem = null;
   $('rvEquip').hidden = true; $('rvClose').hidden = true; $('rvMsg').textContent = 'Opening ' + c.name + '…';
   let n = 0; const spin = setInterval(() => {
     const f = all[Math.floor(Math.random() * all.length)];
@@ -2118,6 +2156,8 @@ function showReveal(it, dupe) {
   try { sfx.head(); } catch (e) {}
 }
 $('rvClose').addEventListener('click', () => { $('reveal').hidden = true; });
+$('oddsClose').addEventListener('click', () => { $('oddsBox').hidden = true; });
+$('oddsBox').addEventListener('click', ev => { if (ev.target.id === 'oddsBox') $('oddsBox').hidden = true; });
 $('rvEquip').addEventListener('click', () => {
   const it = revealItem; if (!it) return;
   if (it.kind === 'skin') { mySkin = it.id; store.set('skin', it.id); }
@@ -2128,12 +2168,13 @@ function renderShop() {
   updCoins();
   const cl = $('crateList'); cl.textContent = '';
   for (const [key, c] of Object.entries(CRATES)) {
-    const d = document.createElement('div'); d.className = 'crate' + (key === 'elite' ? ' elite' : '');
-    d.innerHTML = '<span class="cname"></span><div class="cbox"></div><div class="odds"></div><button class="btn go" type="button"></button>';
+    const d = document.createElement('div'); d.className = 'crate' + (key === 'field' ? '' : ' ' + key);
+    d.innerHTML = '<div class="chead"><span class="cname"></span><button class="qbtn" type="button" aria-label="Show odds and items">?</button></div><div class="cbox"></div><div class="odds"></div><button class="btn go" type="button"></button>';
+    d.querySelector('.qbtn').addEventListener('click', () => showOdds(key));
     d.querySelector('.cname').textContent = c.name; d.querySelector('.cbox').textContent = c.icon;
     const od = d.querySelector('.odds');
     for (const [r, v] of Object.entries(c.odds)) { const a = document.createElement('span'), b = document.createElement('span'); a.className = 'rar-' + r; a.textContent = RAR[r].n; b.textContent = v + '%'; od.append(a, b); }
-    const btn = d.querySelector('button'); btn.textContent = 'Open · ◎ ' + c.price;
+    const btn = d.querySelector('.btn'); btn.textContent = 'Open · ◎ ' + c.price;
     if (WALLET.coins < c.price) { btn.disabled = true; btn.textContent = 'Need ◎ ' + c.price + ' (' + (c.price - WALLET.coins) + ' more)'; }
     btn.addEventListener('click', () => openCrate(key));
     cl.appendChild(d);

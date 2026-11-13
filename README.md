@@ -4,16 +4,17 @@
 
 **A free tactical arena shooter you play in your browser. No download, no account, no app store.**
 
-## ▶️ [PLAY NOW — latest version (v28)](https://gaayyynesss.github.io/Seige/?v=28)
+## ▶️ [PLAY NOW — latest version (v29)](https://gaayyynesss.github.io/Seige/?v=29)
 
-**Latest:** https://gaayyynesss.github.io/Seige/?v=28
+**Latest:** https://gaayyynesss.github.io/Seige/?v=29
 
 If the game looks like an older version, open the latest link above (the `?v=` number makes your browser load the newest copy).
 
 ### Version history
 | Version | Link | What's new |
 |---|---|---|
-| **v28** | https://gaayyynesss.github.io/Seige/?v=28 | Sliding no longer leaves you crouched — you stand back up when the slide ends |
+| **v29** | https://gaayyynesss.github.io/Seige/?v=29 | Crate prices 320 / 750, new 1,000-coin **Vault Crate** (Phantom skin + Aurora camo), and a **?** on each crate showing its odds and items |
+| v28 | https://gaayyynesss.github.io/Seige/?v=28 | Sliding no longer leaves you crouched — you stand back up when the slide ends |
 | v27 | https://gaayyynesss.github.io/Seige/?v=27 | Map vote between matches is now 5 seconds (was 12) |
 | v26 | https://gaayyynesss.github.io/Seige/?v=26 | Shop tab always visible (tab row wraps instead of scrolling off-screen) |
 | v25 | https://gaayyynesss.github.io/Seige/?v=25 | Coins (10 per elimination) and the **Shop** with Field and Elite crates |
@@ -52,10 +53,11 @@ You earn **10 coins** for every elimination in Team Battle, Duels and Drone Hold
 
 | Crate | Price | Common | Rare | Epic | Legendary |
 |---|---|---|---|---|---|
-| Field Crate | 250 coins | 55% | 28% | 13% | 4% |
-| Elite Crate | 600 coins | 20% | 40% | 28% | 12% |
+| Field Crate | 320 coins | 55% | 28% | 13% | 4% |
+| Elite Crate | 750 coins | 20% | 40% | 28% | 12% |
+| Vault Crate | 1,000 coins | — | 25% | 45% | 30% |
 
-Crates hold shop-only operator skins (Sand Viper, Midnight, Royal Guard, Neon Runner, Magma) and camos that work on every gun (Olive Drab, Rust, Zebra, Bubblegum, Neon, Galaxy, Lava). A duplicate refunds coins. Your coins and crate items are saved on your device and in your backup code.
+Crates hold shop-only operator skins (Sand Viper, Midnight, Royal Guard, Neon Runner, Magma) and camos that work on every gun (Olive Drab, Rust, Zebra, Bubblegum, Neon, Galaxy, Lava). The **Vault Crate** has no commons and is the only crate with the legendary **Phantom** skin and **Aurora** camo. Tap the **?** on any crate to see its odds and every item inside with its exact drop chance. A duplicate refunds coins (Common 50, Rare 100, Epic 200, Legendary 400). Your coins and crate items are saved on your device and in your backup code.
 
 ## Battle pass & skins
 A free **Season 1** battle pass with **50 tiers**. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.
