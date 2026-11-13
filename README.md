@@ -4,9 +4,9 @@
 
 **A free tactical arena shooter you play in your browser. No download, no account, no app store.**
 
-## ▶️ [PLAY NOW](https://gaayyynesss.github.io/Seige/?v=14)
+## ▶️ [PLAY NOW](https://gaayyynesss.github.io/Seige/)
 
-https://gaayyynesss.github.io/Seige/?v=14
+https://gaayyynesss.github.io/Seige/
 
 ---
 
@@ -33,7 +33,10 @@ Everyone who opens the link plays in the same Team Battle. AI soldiers fill ever
 | **Drone Holdout** | Solo survival against endless waves of armed drones. Grab green supply cases to heal. |
 
 ## Battle pass & skins
-A free **Season 1** battle pass with 25 tiers. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **operator skins**, **weapon camos** and **titles**, which you equip on the **Loadout** tab. Progress is saved on your device and travels with your backup code.
+A free **Season 1** battle pass with **50 tiers**. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.
+
+### Premium pass
+An optional **Premium Pass** unlocks 3 exclusive operator skins (Gold Rush, Obsidian, Prism), the **VIP** title, and **+25% XP**. It's unlocked by entering a premium code on the **Pass** tab. (The code is set by the game's creator — see the note in the project files for how to change it.)
 
 ## Loadouts
 | Weapon | Type | Best for |
