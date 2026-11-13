@@ -13,7 +13,7 @@ If the game looks like an older version, open the latest link above (the `?v=` n
 ### Version history
 | Version | Link | What's new |
 |---|---|---|
-| **v32** | https://gaayyynesss.github.io/Seige/?v=32 | Back to 1,000 XP per tier; Season 1 runs until Nov 19 and weekly seasons start Nov 20; new Premium code and the **SC-7 Scythe** premium SMG for Season 2 |
+| **v32** | https://gaayyynesss.github.io/Seige/?v=32 | Back to 1,000 XP per tier; Season 1 runs until Nov 19 and weekly seasons start Nov 20; Season 2 Premium code **`SCYTHE26`** (works from Nov 20) and the **SC-7 Scythe** premium SMG |
 | v31 | https://gaayyynesss.github.io/Seige/?v=31 | Battle pass tiers now take 400 XP each (was 1,000) |
 | v30 | https://gaayyynesss.github.io/Seige/?v=30 | **Weekly seasons** (75 tiers, new colors + map decorations each week, Christmas season), **daily rewards & challenges**, **kill streaks** (Map Scan at 10, Missile at 30), match coin bonuses, Team Battle to 100, bigger maps, shop daily item and bad-luck protection |
 | v29 | https://gaayyynesss.github.io/Seige/?v=29 | Crate prices 320 / 750, new 1,000-coin **Vault Crate** (Phantom skin + Aurora camo), and a **?** on each crate showing its odds and items |
@@ -82,15 +82,15 @@ Crates hold shop-only operator skins (Sand Viper, Midnight, Royal Guard, Neon Ru
 ## Seasons
 **Season 1** runs until Nov 19. From **Season 2 (Nov 20)** a **new season starts every week** (Fridays). Each season has its own **color scheme**, **map decorations**, and a new season camo at tier 60. Everything you unlocked in earlier seasons stays yours.
 
-| Season | Dates (2026) | Theme |
-|---|---|---|
-| 1 | until Nov 19 | Dust Storm (50 tiers) · Premium weapon: VX-9 Tempest |
-| 2 | Nov 20–26 | Harvest: pumpkins and hay bales · Premium weapon: **SC-7 Scythe** |
-| 3 | Nov 27–Dec 3 | Neon Grid: glowing neon posts |
-| 4 | Dec 4–10 | Frostbite: ice crystals and snowfall |
-| 5 | Dec 11–17 | Midnight: floating violet orbs |
-| 6 | Dec 18–24 | **Christmas:** snow on every map, decorated trees with presents, snowmen, candy canes |
-| 7 | Dec 25–31 | **Christmas & New Year:** Christmas decorations with gold |
+| Season | Dates (2026) | Theme | Premium code | Premium weapon |
+|---|---|---|---|---|
+| 1 | until Nov 19 | Dust Storm (50 tiers) | `DUSTVIP` | VX-9 Tempest rifle |
+| 2 | Nov 20–26 | Harvest: pumpkins and hay bales | `SCYTHE26` | SC-7 Scythe SMG |
+| 3 | Nov 27–Dec 3 | Neon Grid: glowing neon posts | added the day before | added the day before |
+| 4 | Dec 4–10 | Frostbite: ice crystals and snowfall | added the day before | added the day before |
+| 5 | Dec 11–17 | Midnight: floating violet orbs | added the day before | added the day before |
+| 6 | Dec 18–24 | **Christmas:** snow on every map, decorated trees with presents, snowmen, candy canes | added the day before | added the day before |
+| 7 | Dec 25–31 | **Christmas & New Year:** Christmas decorations with gold | added the day before | added the day before |
 
 ## Battle pass & skins
 Each season has a free battle pass with **1,000 XP per tier**: Season 1 has 50 tiers, and every season from Season 2 has **75 tiers**, with coins every 5 tiers. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.
