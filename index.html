@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113201811';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113202119';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -280,6 +280,9 @@ button { font-family: inherit; }
 .wcard[aria-pressed="true"] .equipped { visibility: visible; }
 .wcard.prem { border-color: rgba(216,170,72,.55); background: linear-gradient(160deg, rgba(216,170,72,.12), var(--panel2) 55%); }
 .wcard.prem .wname { color: #e8c060; }
+.bp-tier.prem { grid-column: span 2; border-color: #d8aa48; background: linear-gradient(160deg, rgba(216,170,72,.22), var(--panel2) 60%); }
+.bp-tier.prem img { width: 100%; aspect-ratio: 12 / 5; object-fit: contain; }
+.bp-tier.prem .rw { color: #e8c060; font-weight: 600; }
 .wcard.locked { opacity: .55; }
 .wcard.locked img { filter: grayscale(.85) brightness(.7); }
 .sets { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
@@ -508,6 +511,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
         <div class="prow" style="display:flex;gap:18px;align-items:baseline;flex-wrap:wrap"><span class="num" id="bpTier">Tier 1</span><span id="bpXp"></span></div>
         <div class="bp-bar"><i id="bpFill" style="width:0%"></i></div>
         <span class="pmsg" id="bpNext"></span>
+        <span class="pmsg" id="bpVx" style="color:#e8c060"></span>
       </div>
       <div class="acct" id="premiumBox">
         <span class="label">Premium Pass</span>
@@ -2014,6 +2018,7 @@ function renderPass() {
   $('bpXp').textContent = BP.xp.toLocaleString() + ' XP' + (myTitle ? ' · “' + myTitle + '”' : '');
   $('bpFill').style.width = (t >= BP_TIERS ? 100 : Math.round(into / BP_XP * 100)) + '%';
   let nx = null; for (let i = t + 1; i <= BP_TIERS; i++) if (BP_REWARDS[i]) { nx = i; break; }
+  const vxLine = $('bpVx'); if (vxLine) vxLine.textContent = weaponOwned('vx') ? 'VX-9 Tempest unlocked — equip it in the Loadout tab.' : 'Premium reward: the VX-9 Tempest rifle at tier ' + BP_TIERS + (BP.premium ? ' — ' + (BP_TIERS - t) + ' tiers to go.' : ' — needs the Premium pass.');
   $('bpNext').textContent = t >= BP_TIERS ? 'Battle pass complete. Every reward is yours.' : (BP_XP - into) + ' XP to tier ' + (t + 1) + (nx ? ' · next reward at tier ' + nx + ': ' + rewardName(BP_REWARDS[nx]) : '');
   const box = $('bpTiers'); box.textContent = '';
   for (let i = 1; i <= BP_TIERS; i++) {
@@ -2024,6 +2029,7 @@ function renderPass() {
     d.innerHTML = '<span class="tn"></span>' + (cols.length ? '<span class="sw">' + cols.map(c => '<i style="background:' + SW(c) + '"></i>').join('') + '</span>' : '') + '<span class="rw"></span><span class="st"></span>';
     d.querySelector('.tn').textContent = 'TIER ' + i;
     d.querySelector('.rw').textContent = (i === 1 ? 'Standard skin + Factory camo' : r ? rewardName(r) : '+ Pass XP badge') + (i === BP_TIERS ? ' · PREMIUM: VX-9 Tempest rifle' : '');
+    if (i === BP_TIERS) { d.classList.add('prem'); if (PREV.vx) { const im = document.createElement('img'); im.src = PREV.vx; im.alt = 'VX-9 Tempest'; d.insertBefore(im, d.querySelector('.rw')); } }
     const st = d.querySelector('.st'); st.style.opacity = '.7';
     if (r && r[0] === 'title' && i <= t) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost'; b.style.cssText = 'padding:4px 8px;font-size:11px'; b.textContent = myTitle === r[1] ? 'Shown' : 'Show title'; b.addEventListener('click', () => { myTitle = r[1]; store.set('title', myTitle); renderPass(); }); st.appendChild(b); }
     else st.textContent = i <= t ? 'Unlocked' : 'Locked';
