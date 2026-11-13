@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113204404';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113205328';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -1678,7 +1678,7 @@ function onDeath(victim, killer, vteam) {
   T.kf.push({ s: ++T.kfSeq, k: nameOf(killer).slice(0, 16), kt: teamOf(killer) || winner, v: nameOf(victim).slice(0, 16), vt: vteam, ki: killer || '' });
   if (T.kf.length > 5) T.kf.shift();
   showFeed(T.kf);
-  if (T.sc[winner] >= SCORE_LIMIT) { T.win = winner; T.winT = 12; }
+  if (T.sc[winner] >= SCORE_LIMIT) { T.win = winner; T.winT = 5; }
 }
 function showFeed(list) {
   for (const e of list) {
