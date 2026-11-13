@@ -4,9 +4,21 @@
 
 **A free tactical arena shooter you play in your browser. No download, no account, no app store.**
 
-## ▶️ [PLAY NOW](https://gaayyynesss.github.io/Seige/?v=24)
+## ▶️ [PLAY NOW — latest version (v25)](https://gaayyynesss.github.io/Seige/?v=25)
 
-https://gaayyynesss.github.io/Seige/?v=24
+**Latest:** https://gaayyynesss.github.io/Seige/?v=25
+
+If the game looks like an older version, open the latest link above (the `?v=` number makes your browser load the newest copy).
+
+### Version history
+| Version | Link | What's new |
+|---|---|---|
+| **v25** | https://gaayyynesss.github.io/Seige/?v=25 | Coins (10 per elimination) and the **Shop** with Field and Elite crates |
+| v24 | https://gaayyynesss.github.io/Seige/?v=24 | Tier 50 on the Pass tab shows the VX-9 Tempest |
+| v23 | https://gaayyynesss.github.io/Seige/?v=23 | VX-9 Tempest custom rifle for finishing the Premium pass |
+| v22 | https://gaayyynesss.github.io/Seige/?v=22 | Match leaderboard and personal leaderboards |
+| v21 | https://gaayyynesss.github.io/Seige/?v=21 | B60 LMG buff |
+| v20 | https://gaayyynesss.github.io/Seige/?v=20 | Weapon levels, per-gun camos, tap-to-toggle aim |
 
 ---
 
@@ -31,6 +43,16 @@ Everyone who opens the link plays in the same Team Battle. AI soldiers fill ever
 | **Team Battle** | Delta vs Viper, 5 v 5, across five maps. The first team to 30 eliminations wins. Party members play on the same team. |
 | **Duel 1v1** | Face your party member one on one, no bots, first to 7 eliminations. Make a party and share the code first. |
 | **Drone Holdout** | Solo survival against endless waves of armed drones. Grab green supply cases to heal. |
+
+## Coins & shop
+You earn **10 coins** for every elimination in Team Battle, Duels and Drone Holdout. Spend them on the **Shop** tab:
+
+| Crate | Price | Common | Rare | Epic | Legendary |
+|---|---|---|---|---|---|
+| Field Crate | 250 coins | 55% | 28% | 13% | 4% |
+| Elite Crate | 600 coins | 20% | 40% | 28% | 12% |
+
+Crates hold shop-only operator skins (Sand Viper, Midnight, Royal Guard, Neon Runner, Magma) and camos that work on every gun (Olive Drab, Rust, Zebra, Bubblegum, Neon, Galaxy, Lava). A duplicate refunds coins. Your coins and crate items are saved on your device and in your backup code.
 
 ## Battle pass & skins
 A free **Season 1** battle pass with **50 tiers**. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.

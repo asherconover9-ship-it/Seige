@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113202119';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113203707';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -147,6 +147,8 @@ button { font-family: inherit; }
 #ammo small { font-size: 14px; color: var(--dim); }
 #reloadTag { font: 600 12px var(--display); letter-spacing: .16em; color: var(--accent); min-height: 14px; }
 .sideStat { display: grid; justify-items: end; }
+.coinTag { font: 700 13px var(--mono); color: #f2c84b; margin-top: 2px; transition: transform .15s; }
+.coinTag.pop { transform: scale(1.35); }
 #score { font-size: 18px; }
 #kd { font-size: 11px; color: var(--dim); }
 #feed { display: grid; gap: 3px; justify-items: end; margin-top: 4px; }
@@ -337,6 +339,26 @@ button { font-family: inherit; }
 .acct .btn { padding: 10px 16px; font-size: 13px; }
 .acct textarea { width: 100%; min-height: 60px; resize: vertical; background: var(--bg, #15120c); color: var(--ink); border: 1px solid rgba(239,232,214,.2); padding: 8px; font: 500 12px monospace; letter-spacing: .02em; word-break: break-all; }
 .acct .amsg { font-size: 13px; opacity: .82; }
+.crates { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 12px; }
+.crate { display: grid; gap: 8px; padding: 14px 16px; background: var(--panel2); border: 1px solid rgba(239,232,214,.16); }
+.crate.elite { border-color: rgba(176,106,255,.6); background: linear-gradient(160deg, rgba(176,106,255,.14), var(--panel2) 60%); }
+.crate .cname { font: 700 18px var(--display); letter-spacing: .12em; text-transform: uppercase; }
+.crate .cbox { height: 90px; display: grid; place-items: center; font-size: 54px; }
+.crate .odds { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: 12px; }
+.crate .btn { width: 100%; }
+.crate .btn[disabled] { opacity: .45; cursor: not-allowed; }
+.rar-common { color: #c8c8c0; } .rar-rare { color: #4aa8ff; } .rar-epic { color: #c08aff; } .rar-legendary { color: #ffb02e; }
+.skin.rb-common { border-color: rgba(200,200,192,.35); } .skin.rb-rare { border-color: rgba(74,168,255,.55); } .skin.rb-epic { border-color: rgba(192,138,255,.6); } .skin.rb-legendary { border-color: rgba(255,176,46,.7); }
+.skin.notown { opacity: .45; }
+#reveal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(8,9,7,.88); padding: 16px; }
+#reveal[hidden] { display: none; }
+#reveal .rv { width: min(380px, 100%); display: grid; gap: 10px; justify-items: center; text-align: center; padding: 22px 18px; background: var(--panel); border: 2px solid var(--line); }
+#reveal .rvimg { width: 160px; height: 200px; display: grid; place-items: center; }
+#reveal .rvimg img { width: 100%; height: 100%; object-fit: contain; }
+#reveal .rvimg .sw { display: flex; width: 150px; height: 90px; } #reveal .rvimg .sw i { flex: 1; }
+#reveal .rvname { font: 700 26px var(--display); letter-spacing: .12em; text-transform: uppercase; }
+#reveal .rvrar { font: 700 13px var(--display); letter-spacing: .24em; text-transform: uppercase; }
+#reveal .btnrow { display: flex; gap: 8px; }
 .career { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .tile { background: var(--panel2); border: 1px solid rgba(239,232,214,.12); padding: 12px 14px; display: grid; gap: 4px; }
 .tile .num { font-size: 26px; }
@@ -363,6 +385,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
 @media (prefers-reduced-motion: reduce) { #banner, #hurt, #hpfill, #cross, .switch span, .switch span::after { transition: none; } }
 </style>
 
+<div id="reveal" hidden><div class="rv" id="rvBox"><div class="rvimg" id="rvImg"></div><div class="rvrar" id="rvRar"></div><div class="rvname" id="rvName"></div><div class="pmsg" id="rvMsg"></div><div class="btnrow"><button class="btn go" id="rvEquip" type="button">Equip</button><button class="btn ghost" id="rvClose" type="button">Close</button></div></div></div>
 <canvas id="view"></canvas>
 
 <div id="hud" hidden>
@@ -377,7 +400,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
   <div class="corner tr">
     <button id="pauseBtn" class="touch-only" type="button" aria-label="Pause">II</button>
     <div class="wpn"><span id="wName" class="label">Rifle</span><span id="ammo" class="num">30<small> / 30</small></span><span id="reloadTag"></span></div>
-    <div class="sideStat"><span class="label" id="statLabel">Score</span><span id="score" class="num">0</span><span id="kd" class="num" hidden></span></div>
+    <div class="sideStat"><span class="label" id="statLabel">Score</span><span id="score" class="num">0</span><span id="kd" class="num" hidden></span><span id="coinTag" class="coinTag"></span></div>
     <div id="feed"></div>
   </div>
   <div id="scorebar" hidden><span class="tn t-b">DELTA</span><span class="sc t-b" id="scB">0</span><span class="goal" id="scGoal">TO 30</span><span class="sc t-r" id="scR">0</span><span class="tn t-r">VIPER</span></div>
@@ -416,6 +439,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
       <button class="tab" role="tab" data-tab="loadout" aria-selected="false" type="button">Loadout</button>
       <button class="tab" role="tab" data-tab="settings" aria-selected="false" type="button">Settings</button>
       <button class="tab" role="tab" data-tab="pass" aria-selected="false" type="button">Pass</button>
+      <button class="tab" role="tab" data-tab="shop" aria-selected="false" type="button">Shop</button>
       <button class="tab" role="tab" data-tab="career" aria-selected="false" type="button">Career</button>
     </nav>
 
@@ -505,6 +529,17 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
       <div class="btnrow"><button class="btn ghost" id="resetSettings" type="button">Reset to defaults</button></div>
     </section>
 
+    <section class="pane" id="pane-shop" hidden>
+      <div class="bp-head">
+        <span class="label">Shop · crates</span>
+        <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><span class="num" style="color:#f2c84b">◎ <span id="shopCoins">0</span></span><span>coins</span></div>
+        <span class="pmsg">You earn 10 coins for every elimination, in Team Battle, Duels and Holdout. Duplicates refund coins.</span>
+      </div>
+      <div class="crates" id="crateList"></div>
+      <h3 class="subh">Crate collection</h3>
+      <div class="skins" id="crateItems"></div>
+    </section>
+
     <section class="pane" id="pane-pass" hidden>
       <div class="bp-head">
         <span class="label">Season 1 · Dust Storm · free battle pass</span>
@@ -579,6 +614,12 @@ const SKINS = {
   gold:   { name: 'Gold Rush', vest: 0x5e4718, helm: 0xd4a640, tint: 0xe8c878, metal: true },
   obsidian: { name: 'Obsidian', vest: 0x0d0e12, helm: 0x20222b, solid: 0x15161d },
   prism:  { name: 'Prism', vest: 0x1a2b4a, helm: 0x3fd0e0, tint: 0x9fe8ff, glow: 0x1f6fa0, metal: true },
+  // shop crate skins
+  sandviper: { name: 'Sand Viper', vest: 0x6a5a2a, helm: 0x8a7a40, tint: 0xe8d090, crate: 'common' },
+  midnight:  { name: 'Midnight', vest: 0x0c0f1c, helm: 0x1c2440, tint: 0x6a78a8, crate: 'rare' },
+  royal:     { name: 'Royal Guard', vest: 0x1c2a5a, helm: 0xd8aa48, tint: 0x9fb0ff, metal: true, crate: 'rare' },
+  neon:      { name: 'Neon Runner', vest: 0x101820, helm: 0x22ff88, tint: 0x9cffc8, glow: 0x0a8f4a, crate: 'epic' },
+  magma:     { name: 'Magma', vest: 0x2a0c06, helm: 0xff5a1a, tint: 0xff9a6a, glow: 0x8a2000, crate: 'legendary' },
 };
 const CAMOS = {
   none:   { name: 'Factory', c: [0xffffff, 0xffffff, 0xffffff] },
@@ -594,6 +635,14 @@ const CAMOS = {
   carbon:  { name: 'Carbon', c: [0x5a5f68, 0x24262b, 0x7a808a], lvl: 7 },
   dragon:  { name: 'Dragon', c: [0xc8341c, 0x3a0a06, 0xe86a2a], lvl: 9 },
   diamond: { name: 'Diamond', c: [0xc8ecff, 0x6aa8d0, 0xf0faff], lvl: 10, metal: true },
+  // shop crate camos (work on every gun)
+  olive:   { name: 'Olive Drab', c: [0x6a7040, 0x3a4020, 0x8a9058], crate: 'common' },
+  rust:    { name: 'Rust', c: [0x9a4a20, 0x3a1a08, 0xc8743a], crate: 'common' },
+  zebra:   { name: 'Zebra', c: [0xe8e8e8, 0x141414, 0xf4f4f4], crate: 'rare' },
+  bubble:  { name: 'Bubblegum', c: [0xff8ac8, 0x8a2a6a, 0xffc0e0], crate: 'rare' },
+  neonc:   { name: 'Neon', c: [0x22ff88, 0x062a14, 0x9cffc8], crate: 'epic' },
+  galaxy:  { name: 'Galaxy', c: [0x5a2aa0, 0x0a0618, 0x9a6aff], crate: 'epic' },
+  lava:    { name: 'Lava', c: [0xff6a1a, 0x2a0802, 0xffb040], crate: 'legendary', metal: true },
 };
 const SW = v => '#' + ((v == null ? 0x4d5a68 : v) >>> 0).toString(16).padStart(6, '0');
 const BP_XP = 1000, BP_TIERS = 50;
@@ -605,8 +654,12 @@ const BP_REWARDS = { 2: ['title', 'Recruit'], 3: ['camo', 'sand'], 5: ['title', 
 const PREMIUM_CODE = 'DUSTVIP';
 const PREMIUM_SKINS = new Set(['gold', 'obsidian', 'prism']);
 const BP = Object.assign({ xp: 0, premium: false }, store.get('pass', {}));
+// coins (10 per elimination) and items won from shop crates
+const WALLET = Object.assign({ coins: 0, skins: [], camos: [] }, store.get('wallet', {}));
+if (!Array.isArray(WALLET.skins)) WALLET.skins = []; if (!Array.isArray(WALLET.camos)) WALLET.camos = [];
+const saveWallet = () => store.set('wallet', WALLET);
 const bpTier = () => Math.min(BP_TIERS, 1 + Math.floor(BP.xp / BP_XP));
-function bpOwned(kind, id) { if (kind === 'skin') return PREMIUM_SKINS.has(id) ? !!BP.premium : true; if (kind === 'camo' && id === 'none') return true; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === kind && r[1] === id) return bpTier() >= +t; return false; }
+function bpOwned(kind, id) { if (kind === 'skin') return SKINS[id] && SKINS[id].crate ? WALLET.skins.includes(id) : PREMIUM_SKINS.has(id) ? !!BP.premium : true; if (kind === 'camo' && CAMOS[id] && CAMOS[id].crate) return WALLET.camos.includes(id); if (kind === 'camo' && id === 'none') return true; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === kind && r[1] === id) return bpTier() >= +t; return false; }
 function rewardName(r) { return r[0] === 'skin' ? SKINS[r[1]].name + ' skin' : r[0] === 'camo' ? CAMOS[r[1]].name + ' camo' : '“' + r[1] + '” title'; }
 let mySkin = SKINS[store.get('skin', 'std')] ? store.get('skin', 'std') : 'std';
 let myCamo = CAMOS[store.get('camo', 'none')] ? store.get('camo', 'none') : 'none';
@@ -1318,6 +1371,11 @@ function updateBullets(dt) {
 /* ---------- HUD (game) ---------- */
 const hud = { root: $('hud'), hp: $('hpfill'), hpNum: $('hpNum'), st: $('stfill'), score: $('score'), wave: $('wave'), ammo: $('ammo'), reload: $('reloadTag'), hurt: $('hurt'), hit: $('hit'), banner: $('banner'), cross: $('cross'), kd: $('kd'), death: $('deathMsg'), feed: $('feed'), wName: $('wName'), fps: $('fpsTag') };
 let hitT = 0, hurtT = 0, bannerT = 0;
+function addCoins(n) {
+  WALLET.coins += n; saveWallet(); updCoins();
+  const t = $('coinTag'); t.classList.add('pop'); clearTimeout(addCoins.tm); addCoins.tm = setTimeout(() => t.classList.remove('pop'), 220);
+}
+function updCoins() { const t = $('coinTag'); if (t) t.textContent = '◎ ' + WALLET.coins.toLocaleString() + ' coins'; const sc = $('shopCoins'); if (sc) sc.textContent = WALLET.coins.toLocaleString(); }
 function updHud() {
   const hp = Math.max(0, Math.round(P.hp));
   hud.hp.style.width = hp + '%'; hud.hpNum.textContent = hp;
@@ -1446,7 +1504,7 @@ function dropPickup(pos) {
 }
 function killDrone(e) {
   spark(e.g.position, e.color, 18); sfx.kill(); hitMarker('kill');
-  score += e.points * (1 + Math.floor(wave / 5)); addXP(12); addWeaponKill();
+  score += e.points * (1 + Math.floor(wave / 5)); addXP(12); addWeaponKill(); addCoins(10);
   if (Math.random() < 0.25) dropPickup(e.g.position);
   scene.remove(e.g); enemies.splice(enemies.indexOf(e), 1); updHud();
 }
@@ -1630,7 +1688,7 @@ function showFeed(list) {
     k.className = 't-' + (e.kt === 'r' ? 'r' : 'b'); v.className = 't-' + (e.vt === 'r' ? 'r' : 'b');
     k.textContent = String(e.k || '?'); v.textContent = String(e.v || '?');
     row.append(k, '  ✕  ', v);
-    if (e.ki === myPeer) { row.classList.add('me'); P.kills++; C.kills++; saveC(); updHud(); addXP(50 + (P.lastHead && performance.now() - P.lastHead < 1500 ? 15 : 0)); addWeaponKill(); }
+    if (e.ki === myPeer) { row.classList.add('me'); P.kills++; C.kills++; saveC(); updHud(); addXP(50 + (P.lastHead && performance.now() - P.lastHead < 1500 ? 15 : 0)); addWeaponKill(); addCoins(10); }
     hud.feed.prepend(row);
     while (hud.feed.children.length > 4) hud.feed.lastChild.remove();
     setTimeout(() => row.remove(), 6000);
@@ -1902,9 +1960,10 @@ setTimeout(() => { if (!room) renderOnline(); }, 2500);
 let menuMode = 'main';
 function showTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === name)));
-  ['play', 'loadout', 'pass', 'settings', 'career'].forEach(n => { $('pane-' + n).hidden = n !== name; });
+  ['play', 'loadout', 'pass', 'shop', 'settings', 'career'].forEach(n => { $('pane-' + n).hidden = n !== name; });
   if (name === 'career') renderCareer();
   if (name === 'pass') renderPass();
+  if (name === 'shop') renderShop();
   if (name === 'loadout') renderLoadout();
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
@@ -1992,13 +2051,13 @@ function renderSkins() {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'skin'; b.setAttribute('aria-pressed', String(pressed));
     const sw = '<span class="sw">' + [d.helm == null ? 0x4d5a68 : d.helm, d.vest, d.solid != null ? d.solid : (d.tint || 0x5f6b78)].map(c => '<i style="background:' + SW(c) + '"></i>').join('') + '</span>';
     b.innerHTML = (SKINPREV[k] ? '<img class="skinimg" alt="" src="' + SKINPREV[k] + '">' : sw) + '<span></span><small></small>';
-    b.children[1].textContent = d.name; b.children[2].textContent = locked ? (PREMIUM_SKINS.has(k) ? 'Premium pass' : 'Locked') : (pressed ? 'Equipped' : 'Tap to equip');
+    b.children[1].textContent = d.name; b.children[2].textContent = locked ? (d.crate ? 'Shop crate' : PREMIUM_SKINS.has(k) ? 'Premium pass' : 'Locked') : (pressed ? 'Equipped' : 'Tap to equip');
     if (locked) b.disabled = true; else b.addEventListener('click', () => { mySkin = k; store.set('skin', k); renderSkins(); });
     sb.appendChild(b);
   }
   const w = loadout, cur = camoOf(w);
   $('camoHead').textContent = 'Weapon camo · ' + WEAPONS[w].name + ' · Level ' + wLevel(w);
-  for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), cur === k, !camoOwned(k, w), d.lvl ? 'Gun level ' + d.lvl : 'Pass tier ' + unlockTier('camo', k),
+  for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), cur === k, !camoOwned(k, w), d.crate ? 'Shop crate' : d.lvl ? 'Gun level ' + d.lvl : 'Pass tier ' + unlockTier('camo', k),
     () => { WCAMO[w] = k; store.set('wcamo', WCAMO); if (P.w === w) applyCamo(); renderSkins(); }));
 }
 function ownedTitles() { const l = ['']; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === 'title' && bpTier() >= +t) l.push(r[1]); if (BP.premium) l.push('VIP'); return l; }
@@ -2009,6 +2068,84 @@ function renderTitles() {
     b.innerHTML = '<span></span><small></small>'; b.children[0].textContent = tt || 'No title'; b.children[1].textContent = myTitle === tt ? 'Equipped' : 'Tap to equip';
     b.addEventListener('click', () => { myTitle = tt; store.set('title', tt); renderTitles(); if (!$('pane-pass').hidden) renderPass(); }); box.appendChild(b); });
   if (list.length <= 1) { const sm = document.createElement('small'); sm.style.cssText = 'opacity:.7;grid-column:1/-1'; sm.textContent = 'Rank up the battle pass to earn titles, then equip them here.'; box.appendChild(sm); }
+}
+const RAR = { common: { n: 'Common', refund: 50 }, rare: { n: 'Rare', refund: 100 }, epic: { n: 'Epic', refund: 200 }, legendary: { n: 'Legendary', refund: 400 } };
+const RAR_COL = { common: '#c8c8c0', rare: '#4aa8ff', epic: '#c08aff', legendary: '#ffb02e' };
+const CRATES = {
+  field: { name: 'Field Crate', icon: '📦', price: 250, odds: { common: 55, rare: 28, epic: 13, legendary: 4 } },
+  elite: { name: 'Elite Crate', icon: '🎁', price: 600, odds: { common: 20, rare: 40, epic: 28, legendary: 12 } },
+};
+function crateItems() {
+  return [...Object.entries(SKINS).filter(([k, d]) => d.crate).map(([k, d]) => ({ kind: 'skin', id: k, name: d.name, r: d.crate })),
+          ...Object.entries(CAMOS).filter(([k, d]) => d.crate).map(([k, d]) => ({ kind: 'camo', id: k, name: d.name, r: d.crate }))];
+}
+const itemOwned = it => (it.kind === 'skin' ? WALLET.skins : WALLET.camos).includes(it.id);
+function itemVisual(it) {
+  if (it.kind === 'skin' && SKINPREV[it.id]) return '<img alt="" src="' + SKINPREV[it.id] + '">';
+  const d = it.kind === 'skin' ? SKINS[it.id] : CAMOS[it.id];
+  const cols = it.kind === 'skin' ? [d.helm, d.vest, d.tint] : d.c;
+  return '<span class="sw">' + cols.map(c => '<i style="background:' + SW(c) + '"></i>').join('') + '</span>';
+}
+function rollCrate(key) {
+  const o = CRATES[key].odds; let x = Math.random() * 100, r = 'common';
+  for (const [k, v] of Object.entries(o)) { if ((x -= v) < 0) { r = k; break; } }
+  const pool = crateItems().filter(i => i.r === r);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+let revealItem = null;
+function openCrate(key) {
+  const c = CRATES[key]; if (WALLET.coins < c.price) return;
+  WALLET.coins -= c.price;
+  const it = rollCrate(key), list = it.kind === 'skin' ? WALLET.skins : WALLET.camos, dupe = list.includes(it.id);
+  if (dupe) WALLET.coins += RAR[it.r].refund; else list.push(it.id);
+  saveWallet(); updCoins(); renderShop();
+  // little roll animation, then the reveal
+  const all = crateItems(), rv = $('reveal'); rv.hidden = false; revealItem = null;
+  $('rvEquip').hidden = true; $('rvClose').hidden = true; $('rvMsg').textContent = 'Opening ' + c.name + '…';
+  let n = 0; const spin = setInterval(() => {
+    const f = all[Math.floor(Math.random() * all.length)];
+    $('rvImg').innerHTML = itemVisual(f); $('rvName').textContent = f.name; $('rvRar').textContent = RAR[f.r].n; $('rvRar').style.color = RAR_COL[f.r]; $('rvBox').style.borderColor = RAR_COL[f.r];
+    try { sfx.hit(); } catch (e) {}
+    if (++n >= 16) { clearInterval(spin); showReveal(it, dupe); }
+  }, 85);
+}
+function showReveal(it, dupe) {
+  revealItem = it;
+  $('rvImg').innerHTML = itemVisual(it); $('rvName').textContent = it.name + (it.kind === 'skin' ? ' skin' : ' camo');
+  $('rvRar').textContent = RAR[it.r].n; $('rvRar').style.color = RAR_COL[it.r]; $('rvBox').style.borderColor = RAR_COL[it.r];
+  $('rvMsg').textContent = dupe ? 'Duplicate — you already own it. Refunded ' + RAR[it.r].refund + ' coins.' : 'NEW! Added to your collection.' + (it.kind === 'camo' ? ' Equip puts it on your ' + WEAPONS[loadout].name + '.' : '');
+  $('rvEquip').hidden = false; $('rvClose').hidden = false;
+  try { sfx.head(); } catch (e) {}
+}
+$('rvClose').addEventListener('click', () => { $('reveal').hidden = true; });
+$('rvEquip').addEventListener('click', () => {
+  const it = revealItem; if (!it) return;
+  if (it.kind === 'skin') { mySkin = it.id; store.set('skin', it.id); }
+  else { WCAMO[loadout] = it.id; store.set('wcamo', WCAMO); if (P.w === loadout) applyCamo(); }
+  $('rvEquip').hidden = true; $('rvMsg').textContent = 'Equipped.'; renderSkins();
+});
+function renderShop() {
+  updCoins();
+  const cl = $('crateList'); cl.textContent = '';
+  for (const [key, c] of Object.entries(CRATES)) {
+    const d = document.createElement('div'); d.className = 'crate' + (key === 'elite' ? ' elite' : '');
+    d.innerHTML = '<span class="cname"></span><div class="cbox"></div><div class="odds"></div><button class="btn go" type="button"></button>';
+    d.querySelector('.cname').textContent = c.name; d.querySelector('.cbox').textContent = c.icon;
+    const od = d.querySelector('.odds');
+    for (const [r, v] of Object.entries(c.odds)) { const a = document.createElement('span'), b = document.createElement('span'); a.className = 'rar-' + r; a.textContent = RAR[r].n; b.textContent = v + '%'; od.append(a, b); }
+    const btn = d.querySelector('button'); btn.textContent = 'Open · ◎ ' + c.price;
+    if (WALLET.coins < c.price) { btn.disabled = true; btn.textContent = 'Need ◎ ' + c.price + ' (' + (c.price - WALLET.coins) + ' more)'; }
+    btn.addEventListener('click', () => openCrate(key));
+    cl.appendChild(d);
+  }
+  const box = $('crateItems'); box.textContent = '';
+  const order = { legendary: 0, epic: 1, rare: 2, common: 3 };
+  crateItems().sort((a, b) => order[a.r] - order[b.r]).forEach(it => {
+    const own = itemOwned(it), b = document.createElement('div'); b.className = 'skin rb-' + it.r + (own ? '' : ' notown');
+    b.innerHTML = (it.kind === 'skin' && SKINPREV[it.id] ? '<img class="skinimg" alt="" src="' + SKINPREV[it.id] + '">' : itemVisual(it)) + '<span></span><small></small>';
+    b.children[1].textContent = it.name; b.children[2].innerHTML = '<span class="rar-' + it.r + '">' + RAR[it.r].n + '</span> ' + (it.kind === 'skin' ? 'skin' : 'camo') + ' · ' + (own ? 'Owned' : 'Not owned');
+    box.appendChild(b);
+  });
 }
 function renderPass() {
   const pw = $('premWho'); if (pw) { pw.textContent = BP.premium ? 'Premium active ✓ — all premium skins and the VIP title are unlocked, with +25% XP.' : 'Not active. Enter a premium code to unlock the exclusive skins, VIP title and +25% XP.'; }
@@ -2153,7 +2290,7 @@ function renderSettings() {
   }
 }
 $('resetSettings').addEventListener('click', () => { Object.assign(S, DEF); saveS(); renderSettings(); applyQuality(); applySettings(); });
-const ACCT_KEYS = ['name', 'settings', 'career', 'pass', 'skin', 'camo', 'title', 'loadout', 'wlv', 'wcamo', 'lb'];
+const ACCT_KEYS = ['name', 'settings', 'career', 'pass', 'skin', 'camo', 'title', 'loadout', 'wlv', 'wcamo', 'lb', 'wallet'];
 function makeBackup() {
   const data = {}; for (const k of ACCT_KEYS) { const v = store.get(k, null); if (v !== null) data[k] = v; }
   try { return 'DL1.' + btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/=+$/, ''); } catch (e) { return ''; }
@@ -2205,7 +2342,7 @@ codeIn.addEventListener('input', () => { matchCode = codeIn.value.replace(/[^a-z
     const err = loadBackup(ta.value);
     if (err) { acctWho(); $('acctWho').textContent = err; return; }
     playerName = String(store.get('name', '') || '').slice(0, 16) || playerName;
-    Object.assign(S, store.get('settings', S)); Object.assign(C, store.get('career', C)); Object.assign(BP, store.get('pass', BP)); Object.assign(WL, store.get('wlv', {})); Object.assign(LB, store.get('lb', {})); Object.assign(WCAMO, store.get('wcamo', {}));
+    Object.assign(S, store.get('settings', S)); Object.assign(C, store.get('career', C)); Object.assign(BP, store.get('pass', BP)); Object.assign(WL, store.get('wlv', {})); Object.assign(LB, store.get('lb', {})); Object.assign(WALLET, store.get('wallet', {})); updCoins(); Object.assign(WCAMO, store.get('wcamo', {}));
     mySkin = SKINS[store.get('skin', mySkin)] ? store.get('skin', mySkin) : mySkin; myCamo = CAMOS[store.get('camo', myCamo)] ? store.get('camo', myCamo) : myCamo;
     myTitle = String(store.get('title', myTitle) || ''); loadout = WEAPONS[store.get('loadout', loadout)] ? store.get('loadout', loadout) : loadout;
     nameIn.value = playerName; setLobby(); applyCamo(); applyQuality(); applySettings(); equip(loadout);
@@ -2672,7 +2809,7 @@ function loop() {
 buildMap(selMap);
 equip(loadout);
 applyCamo('none'); PREV = renderPreviews(); applyCamo();
-renderMaps(); renderLoadout(); renderSettings(); renderCareer();
+renderMaps(); renderLoadout(); renderSettings(); renderCareer(); updCoins();
 applyQuality(); applySettings();
 $('bestScore').textContent = C.bestScore.toLocaleString();
 showMenu('main');
