@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113210308';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113212542';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -365,6 +365,23 @@ button { font-family: inherit; }
 #oddsBox .oitem .ov .sw { display: flex; width: 40px; height: 22px; } #oddsBox .oitem .ov .sw i { flex: 1; }
 #oddsBox .oitem .op { font-family: var(--mono); }
 #oddsBox .oitem.own .on { opacity: .6; }
+.daily { display: grid; gap: 8px; padding: 12px 14px; background: var(--panel2); border: 1px solid var(--line); border-left: 3px solid var(--accent); }
+.daily .dhead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.daily .dreward { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.daily .dreward b { font: 700 18px var(--display); letter-spacing: .08em; color: #f2c84b; margin-right: 8px; }
+.daily .btn[disabled] { opacity: .45; }
+.dch { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; padding: 6px 0 2px; border-top: 1px solid rgba(239,232,214,.1); font-size: 13px; }
+.dch .rw { font: 700 12px var(--mono); color: var(--accent); }
+.dch .rw.cn { color: #f2c84b; }
+.dch .bar { grid-column: 1 / -1; height: 5px; background: rgba(239,232,214,.12); }
+.dch .bar i { display: block; height: 100%; background: var(--accent); }
+.dch.done { opacity: .6; } .dch.done .bar i { background: var(--heal); }
+.ditem { display: grid; grid-template-columns: 90px 1fr auto; gap: 12px; align-items: center; margin-top: 12px; padding: 12px 14px; background: var(--panel2); border: 1px solid rgba(242,200,75,.5); }
+.ditem .dv { width: 90px; height: 90px; display: grid; place-items: center; overflow: hidden; }
+.ditem .dv img { height: 90px; width: auto; } .ditem .dv .sw { display: flex; width: 80px; height: 48px; } .ditem .dv .sw i { flex: 1; }
+.ditem .dn { font: 700 18px var(--display); letter-spacing: .1em; text-transform: uppercase; }
+.ditem .btn[disabled] { opacity: .45; cursor: not-allowed; }
+.crate .pity { font-size: 12px; color: #ffb02e; }
 #reveal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(8,9,7,.88); padding: 16px; }
 #reveal[hidden] { display: none; }
 #reveal .rv { width: min(380px, 100%); display: grid; gap: 10px; justify-items: center; text-align: center; padding: 22px 18px; background: var(--panel); border: 2px solid var(--line); }
@@ -416,7 +433,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
   <div class="corner tr">
     <button id="pauseBtn" class="touch-only" type="button" aria-label="Pause">II</button>
     <div class="wpn"><span id="wName" class="label">Rifle</span><span id="ammo" class="num">30<small> / 30</small></span><span id="reloadTag"></span></div>
-    <div class="sideStat"><span class="label" id="statLabel">Score</span><span id="score" class="num">0</span><span id="kd" class="num" hidden></span><span id="coinTag" class="coinTag"></span></div>
+    <div class="sideStat"><span class="label" id="statLabel">Score</span><span id="score" class="num">0</span><span id="kd" class="num" hidden></span><span id="coinTag" class="coinTag"></span><span id="streakTag" class="coinTag" style="color:#ff9a5a"></span></div>
     <div id="feed"></div>
   </div>
   <div id="scorebar" hidden><span class="tn t-b">DELTA</span><span class="sc t-b" id="scB">0</span><span class="goal" id="scGoal">TO 30</span><span class="sc t-r" id="scR">0</span><span class="tn t-r">VIPER</span></div>
@@ -446,7 +463,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
     <header class="mhead">
       <div class="logo">
         <svg viewBox="0 0 42 42" aria-hidden="true"><path d="M21 3 L39 21 L21 39 L3 21 Z" fill="#221e14"/><path d="M12.3 26.5 Q16.6 25.4 21 26.5 T29.7 26.5 L26.5 30 L21 35.5 L15.5 30 Z" fill="#96703a"/><path d="M21 3 L39 21 L21 39 L3 21 Z" fill="none" stroke="#f2a93b" stroke-width="2.5"/><path d="M14 21 L21 14 L28 21" fill="none" stroke="#efe8d6" stroke-width="3" stroke-linejoin="round"/><circle cx="21" cy="27.5" r="2" fill="#f2a93b"/></svg>
-        <div><h1>DUSTLINE</h1><p>Tactical arena</p></div>
+        <div><h1>DUSTLINE</h1><p id="brandSub">Tactical arena</p></div>
       </div>
       <p class="online" id="online">Looking for players…</p>
     </header>
@@ -478,11 +495,16 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
           </div>
           <span class="pmsg" id="partyMsg">Make a party and send the code to a friend. Party members duel each other and play on the same team in Team Battle.</span>
         </div>
+        <div class="daily" id="dailyBox">
+          <div class="dhead"><span class="label">Daily</span><span class="pmsg" id="dailyReset"></span></div>
+          <div class="dreward"><div><b id="dailyStreak">Day 1</b><span class="pmsg" id="dailyRwTxt"></span></div><button class="btn go" id="dailyClaim" type="button">Claim</button></div>
+          <div id="dailyCh"></div>
+        </div>
         <div class="field"><span class="label">Map (used for Holdout and for new Team Battles)</span><div class="maps" id="mapList"></div></div>
         <div class="modes">
           <button class="mode" id="tdmBtn" type="button">
             <span class="mode-name">Team Battle</span>
-            <span class="mode-desc" id="tdmDesc">Delta vs Viper. First team to 30 eliminations wins. Players online join the same match, and AI soldiers fill every empty slot.</span>
+            <span class="mode-desc" id="tdmDesc">Delta vs Viper. First team to 100 eliminations wins. Kill streaks: Map Scan at 10, Missile Strike at 30. Players online join the same match, and AI soldiers fill every empty slot.</span>
             <span class="chips"><span class="chip hot">Online</span><span class="chip">5 v 5</span><span class="chip">Bots fill</span></span>
           </button>
           <button class="mode" id="duelBtn" type="button">
@@ -509,6 +531,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
           <div><span class="label">Score</span><span id="finalScore" class="num">0</span></div>
           <div><span class="label">Wave</span><span id="finalWave" class="num">1</span></div>
           <div><span class="label">Best</span><span id="bestScore" class="num">0</span></div>
+          <div><span class="label">Coins</span><span id="finalCoins" class="num">0</span></div>
         </div>
         <div class="btnrow"><button class="btn go" id="againBtn" type="button">Redeploy</button><button class="btn ghost" id="menuBtn" type="button">Main menu</button></div>
       </div>
@@ -551,6 +574,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
         <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><span class="num" style="color:#f2c84b">◎ <span id="shopCoins">0</span></span><span>coins</span></div>
         <span class="pmsg">You earn 10 coins for every elimination, in Team Battle, Duels and Holdout. Duplicates refund coins. Tap <b>?</b> on a crate to see its odds and every item inside.</span>
       </div>
+      <div class="ditem" id="dailyItem"></div>
       <div class="crates" id="crateList"></div>
       <h3 class="subh">Crate collection</h3>
       <div class="skins" id="crateItems"></div>
@@ -558,7 +582,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
 
     <section class="pane" id="pane-pass" hidden>
       <div class="bp-head">
-        <span class="label">Season 1 · Dust Storm · free battle pass</span>
+        <span class="label" id="bpSeason">Season · free battle pass</span>
         <div class="prow" style="display:flex;gap:18px;align-items:baseline;flex-wrap:wrap"><span class="num" id="bpTier">Tier 1</span><span id="bpXp"></span></div>
         <div class="bp-bar"><i id="bpFill" style="width:0%"></i></div>
         <span class="pmsg" id="bpNext"></span>
@@ -571,7 +595,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
         <div class="prow" id="premRedeem"><input type="text" id="premCode" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Premium code" aria-label="Premium code"><button class="btn go" id="premBtn" type="button">Redeem</button></div>
       </div>
       <div class="bp-tiers" id="bpTiers"></div>
-      <p class="tip">Earn XP: 50 per elimination, 15 bonus for a headshot finish, 80 for finishing a match, 150 more for a win, 30 per Holdout wave. 50 tiers. Premium pass adds +25% XP. Progress saves on this device and travels with your backup code.</p>
+      <p class="tip">A new season starts every week with a new color scheme and map decorations. Everything you unlock stays yours. Earn XP: 50 per elimination, 15 bonus for a headshot finish, 80 for finishing a match, 150 more for a win, 30 per Holdout wave, plus daily challenges on the Play tab. 75 tiers, with coins every 5 tiers. Premium pass adds +25% XP. Progress saves on this device and travels with your backup code.</p>
     </section>
 
     <section class="pane" id="pane-career" hidden>
@@ -663,22 +687,86 @@ const CAMOS = {
   aurora:  { name: 'Aurora', c: [0x2affc0, 0x1a0a3a, 0xa06aff], crate: 'legendary', metal: true, only: 'vault' },
 };
 const SW = v => '#' + ((v == null ? 0x4d5a68 : v) >>> 0).toString(16).padStart(6, '0');
-const BP_XP = 1000, BP_TIERS = 50;
-const BP_REWARDS = { 2: ['title', 'Recruit'], 3: ['camo', 'sand'], 5: ['title', 'Marksman'], 8: ['camo', 'jungle'], 10: ['title', 'Veteran'],
+const BP_XP = 1000;
+const BP_S1 = { 2: ['title', 'Recruit'], 3: ['camo', 'sand'], 5: ['title', 'Marksman'], 8: ['camo', 'jungle'], 10: ['title', 'Veteran'],
   12: ['title', 'Hardened'], 14: ['camo', 'arctic'], 17: ['title', 'Breacher'], 20: ['title', 'Ghost Walker'], 21: ['camo', 'blood'], 25: ['title', 'Warlord'],
   28: ['title', 'Vanguard'], 30: ['camo', 'cobalt'], 33: ['title', 'Reaper'], 36: ['title', 'Juggernaut'], 40: ['title', 'Apex Operator'],
   42: ['camo', 'gold'], 45: ['title', 'Iron Phantom'], 48: ['title', 'Dust Legend'], 50: ['title', 'Season 1 Champion'] };
 // Premium pass: unlocked with a code you hand out. Change this string to whatever code you sell.
 const PREMIUM_CODE = 'DUSTVIP';
 const PREMIUM_SKINS = new Set(['gold', 'obsidian', 'prism']);
-const BP = Object.assign({ xp: 0, premium: false }, store.get('pass', {}));
+// ---- weekly seasons: Season 2 started 13 Nov 2026, a new one every 7 days (UTC midnight) ----
+// To add a season: add an entry below. Seasons without an entry reuse an older theme.
+const SEASON_START = Date.UTC(2026, 10, 13), WEEK_MS = 7 * 864e5;
+const SEASONS = {
+  2: { name: 'Ember Ops', accent: '#ff7a3a', camoName: 'Ember', camo: [0xff6a2a, 0x2a0f06, 0xffb070], deco: 'lanterns', light: 0xff8a3a },
+  3: { name: 'Harvest', accent: '#e0a03a', camoName: 'Harvest', camo: [0xc8782a, 0x3a2410, 0xe8c060], deco: 'harvest', light: 0xffa040 },
+  4: { name: 'Neon Grid', accent: '#2ee6c8', camoName: 'Neon Grid', camo: [0x2ee6c8, 0x081a20, 0xff3ad0], deco: 'neon', light: 0x2ee6c8 },
+  5: { name: 'Frostbite', accent: '#7cc8ff', camoName: 'Frostbite', camo: [0x9ad8ff, 0x1a3550, 0xeaf6ff], deco: 'crystals', light: 0x8ad0ff, snowfall: true },
+  6: { name: 'Midnight', accent: '#a07aff', camoName: 'Midnight Violet', camo: [0x7a4aff, 0x0c0820, 0xc8b0ff], deco: 'orbs', light: 0xa07aff },
+  7: { name: 'Christmas', accent: '#e8443a', camoName: 'Candy Cane', camo: [0xd02a2a, 0xf2f2f2, 0x0e5a2a], deco: 'christmas', light: 0xffd060, snowfall: true, snowGround: true },
+  8: { name: 'Christmas & New Year', accent: '#ffd24a', camoName: 'Golden Tinsel', camo: [0xffd24a, 0x14141c, 0xc0c8d8], deco: 'christmas', light: 0xffd24a, snowfall: true, snowGround: true, metal: true },
+};
+const seasonNum = () => Math.max(2, 2 + Math.floor((Date.now() - SEASON_START) / WEEK_MS));
+const seasonEnd = n => SEASON_START + (n - 1) * WEEK_MS;
+function seasonTheme(n) {
+  if (SEASONS[n]) return SEASONS[n];
+  const base = [2, 3, 4, 5, 6][(n - 2) % 5];
+  return Object.assign({}, SEASONS[base], { name: 'Season ' + n + ': ' + SEASONS[base].name, camoName: SEASONS[base].camoName + ' ' + n });
+}
+const SEASON = seasonNum(), THEME = seasonTheme(SEASON);
+for (const n of new Set([...Object.keys(SEASONS).map(Number), SEASON])) { const t = seasonTheme(n); CAMOS['s' + n] = { name: t.camoName, c: t.camo, metal: !!t.metal, season: n }; }
+function seasonRewards(n) {
+  if (n <= 1) return BP_S1;
+  const th = seasonTheme(n);
+  const r = { 2: ['title', 'Recruit'], 3: ['camo', 'sand'], 5: ['title', 'Marksman'], 8: ['camo', 'jungle'], 10: ['title', 'Veteran'], 12: ['title', 'Hardened'],
+    15: ['camo', 'arctic'], 17: ['title', 'Breacher'], 20: ['title', 'Ghost Walker'], 21: ['camo', 'blood'], 25: ['title', 'Warlord'], 28: ['title', 'Vanguard'],
+    30: ['camo', 'cobalt'], 33: ['title', 'Reaper'], 36: ['title', 'Juggernaut'], 40: ['title', 'Apex Operator'], 42: ['camo', 'gold'], 45: ['title', 'Iron Phantom'],
+    48: ['title', 'Dust Legend'], 52: ['title', 'Elite Operator'], 57: ['title', 'Warmaster'], 60: ['camo', 's' + n], 66: ['title', 'Unbreakable'],
+    70: ['title', th.name + ' Ace'], 75: ['title', 'Season ' + n + ' Champion'] };
+  for (let t = 4; t < 75; t += 5) if (!r[t]) r[t] = ['coins', t >= 50 ? 200 : 100];
+  return r;
+}
+const seasonTiers = n => n <= 1 ? 50 : 75;
+const BP_TIERS = seasonTiers(SEASON), BP_REWARDS = seasonRewards(SEASON);
+const BP = Object.assign({ xp: 0, premium: false, season: 1, owned: [] }, store.get('pass', {}));
+if (!Array.isArray(BP.owned)) BP.owned = [];
+if (BP.season !== SEASON) {
+  // new season: keep everything earned last season, then reset the pass
+  const oS = +BP.season || 1, oT = Math.min(seasonTiers(oS), 1 + Math.floor((+BP.xp || 0) / BP_XP));
+  for (const [t, r] of Object.entries(seasonRewards(oS))) if (+t <= oT && r[0] !== 'coins') { const k = r[0] + ':' + r[1]; if (!BP.owned.includes(k)) BP.owned.push(k); }
+  if (BP.premium && oT >= seasonTiers(oS) && !BP.owned.includes('weapon:vx')) BP.owned.push('weapon:vx');
+  if (BP.xp > 0) BP.last = { s: oS, tier: oT };
+  BP.xp = 0; BP.season = SEASON; store.set('pass', BP);
+}
 // coins (10 per elimination) and items won from shop crates
 const WALLET = Object.assign({ coins: 0, skins: [], camos: [] }, store.get('wallet', {}));
 if (!Array.isArray(WALLET.skins)) WALLET.skins = []; if (!Array.isArray(WALLET.camos)) WALLET.camos = [];
+if (!WALLET.pity || typeof WALLET.pity !== 'object') WALLET.pity = {};
 const saveWallet = () => store.set('wallet', WALLET);
+// ---- daily login reward + daily challenges ----
+const dayKey = (t = Date.now()) => { const d = new Date(t); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+const DAILY = Object.assign({ day: '', streak: 0, claimed: '', ch: [] }, store.get('daily', {}));
+if (!Array.isArray(DAILY.ch)) DAILY.ch = [];
+const DAILY_COINS = [50, 75, 100, 150, 200, 250, 300];
+const CH_XP = [
+  { k: 'kills', n: 15, t: 'Get 15 eliminations', xp: 1500 }, { k: 'kills', n: 30, t: 'Get 30 eliminations', xp: 2500 },
+  { k: 'heads', n: 5, t: 'Get 5 headshot eliminations', xp: 1500 }, { k: 'wins', n: 1, t: 'Win a Team Battle or Duel', xp: 2000 },
+  { k: 'matches', n: 2, t: 'Finish 2 Team Battles or Duels', xp: 1500 }, { k: 'waves', n: 6, t: 'Clear 6 Holdout waves', xp: 1500 },
+  { k: 'streak', n: 5, t: 'Get a 5-elimination streak', xp: 1800 }, { k: 'scan', n: 1, t: 'Earn a Map Scan (10 streak)', xp: 3000 } ];
+const CH_COIN = [ { k: 'kills', n: 20, t: 'Get 20 eliminations', coins: 250 }, { k: 'wins', n: 2, t: 'Win 2 Team Battles or Duels', coins: 300 }, { k: 'heads', n: 8, t: 'Get 8 headshot eliminations', coins: 300 } ];
+function dailyRoll() {
+  const today = dayKey();
+  if (DAILY.day === today && DAILY.ch.length === 3) return;
+  let h = 7; for (const c of today) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const pick = (arr, n) => { const a = arr.slice(), out = []; while (out.length < n && a.length) { h = (Math.imul(h, 1103515245) + 12345) >>> 0; out.push(a.splice((h >>> 8) % a.length, 1)[0]); } return out; };
+  DAILY.day = today; DAILY.ch = [...pick(CH_XP, 2), ...pick(CH_COIN, 1)].map(c => Object.assign({ p: 0, done: false }, c));
+  store.set('daily', DAILY);
+}
+dailyRoll();
 const bpTier = () => Math.min(BP_TIERS, 1 + Math.floor(BP.xp / BP_XP));
-function bpOwned(kind, id) { if (kind === 'skin') return SKINS[id] && SKINS[id].crate ? WALLET.skins.includes(id) : PREMIUM_SKINS.has(id) ? !!BP.premium : true; if (kind === 'camo' && CAMOS[id] && CAMOS[id].crate) return WALLET.camos.includes(id); if (kind === 'camo' && id === 'none') return true; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === kind && r[1] === id) return bpTier() >= +t; return false; }
-function rewardName(r) { return r[0] === 'skin' ? SKINS[r[1]].name + ' skin' : r[0] === 'camo' ? CAMOS[r[1]].name + ' camo' : '“' + r[1] + '” title'; }
+function bpOwned(kind, id) { if (kind === 'skin') return SKINS[id] && SKINS[id].crate ? WALLET.skins.includes(id) : PREMIUM_SKINS.has(id) ? !!BP.premium : true; if (kind === 'camo' && CAMOS[id] && CAMOS[id].crate) return WALLET.camos.includes(id); if (kind === 'camo' && id === 'none') return true; if (BP.owned.includes(kind + ':' + id)) return true; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === kind && r[1] === id) return bpTier() >= +t; return false; }
+function rewardName(r) { return r[0] === 'coins' ? '◎ ' + r[1] + ' coins' : r[0] === 'skin' ? SKINS[r[1]].name + ' skin' : r[0] === 'camo' ? CAMOS[r[1]].name + ' camo' : '“' + r[1] + '” title'; }
 let mySkin = SKINS[store.get('skin', 'std')] ? store.get('skin', 'std') : 'std';
 let myCamo = CAMOS[store.get('camo', 'none')] ? store.get('camo', 'none') : 'none';
 // weapon levels: kills per gun -> level 1..10; each gun remembers its own camo
@@ -714,7 +802,7 @@ Object.assign(WEAPONS.ar,{optic:'holo',zoom:1.6}); Object.assign(WEAPONS.vx,{opt
 let loadout = store.get('loadout', 'ar');
 if (!WEAPONS[loadout]) loadout = 'ar';
 // the VX-9 Tempest is the reward for reaching the last tier with the Premium pass
-function weaponOwned(k) { return !(WEAPONS[k] && WEAPONS[k].premium) || (!!BP.premium && bpTier() >= BP_TIERS); }
+function weaponOwned(k) { return !(WEAPONS[k] && WEAPONS[k].premium) || (!!BP.premium && (bpTier() >= BP_TIERS || BP.owned.includes('weapon:' + k))); }
 if (!weaponOwned(loadout)) loadout = 'ar';
 let selMap = store.get('map', 'outpost');
 
@@ -750,7 +838,7 @@ scene.add(hemi);
 scene.add(new THREE.AmbientLight(0xffffff, 0.12));
 const sun = new THREE.DirectionalLight(0xfff0d6, 2.1);
 sun.position.set(30, 55, 22); sun.castShadow = true;
-Object.assign(sun.shadow.camera, { left: -44, right: 44, top: 44, bottom: -44, near: 1, far: 150 });
+Object.assign(sun.shadow.camera, { left: -60, right: 60, top: 60, bottom: -60, near: 1, far: 200 });
 sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
 scene.add(sun); scene.add(sun.target);
 
@@ -925,7 +1013,7 @@ scene.add(sky);
 try { scene.environment = new THREE.PMREMGenerator(renderer).fromEquirectangular(skyTex).texture; } catch (e) {}
 
 /* ---------- the outpost ---------- */
-const HALF = 34;
+const HALF = 48, MS = 1.4; // MS spreads every map's outer cover out to fill the bigger arena
 const solids = [], boxes = [];
 const mapGroup = new THREE.Group(); scene.add(mapGroup);
 function boxGeo(w, h, d, su, sv) {
@@ -958,7 +1046,7 @@ const ground = new THREE.Mesh(new THREE.PlaneGeometry(260, 260), M.sand);
 ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 sandTex.repeat.set(260 / 6, 260 / 6);
 const wall = (x, z, w, d, h = 4) => addBox(x, z, w, d, h, M.conc, 4, 4);
-const sym = list => list.flatMap(a => [a, [-a[0], -a[1], ...a.slice(2)]]); // point-symmetric so both teams get the same map
+const sym = list => list.flatMap(a0 => { const a = [a0[0] * MS, a0[1] * MS, ...a0.slice(2)]; return [a, [-a[0], -a[1], ...a.slice(2)]]; }); // point-symmetric so both teams get the same map
 const crate = ([x, z]) => addBox(x, z, 1.4, 1.4, 1.4, M.crate, 1.4, 1.4);
 const bags = ([x, z, w, d]) => addBox(x, z, w, d, 1.1, M.bag, 1.6, 1.1);
 const cont = ([x, z, w, d, c], h = 2.6) => addBox(x, z, w, d, h, M.cont[c], w > d ? 6.1 : 2.5, 2.6);
@@ -1022,6 +1110,65 @@ const MAPS = {
       sym([[6, -9], [-14, 3], [22, 20]]).forEach(crate);
     } },
 };
+/* ---------- season decorations ---------- */
+const DMAT = {};
+const dmat = (col, glow) => DMAT[col + '|' + glow] || (DMAT[col + '|' + glow] = new THREE.MeshStandardMaterial({ color: col, emissive: glow ? col : 0x000000, emissiveIntensity: glow ? 0.55 : 0, roughness: 0.55 }));
+const DG = { sph: new THREE.SphereGeometry(1, 12, 9), box: new THREE.BoxGeometry(1, 1, 1), cyl: new THREE.CylinderGeometry(1, 1, 1, 8), cone: new THREE.ConeGeometry(1, 1, 8), oct: new THREE.OctahedronGeometry(1) };
+function dpart(g, geo, mat, x, y, z, sx, sy, sz) { const m = new THREE.Mesh(DG[geo], mat); m.position.set(x, y, z); m.scale.set(sx, sy == null ? sx : sy, sz == null ? sx : sz); m.castShadow = true; m.userData.sharedGeo = true; g.add(m); return m; }
+const DECO = {
+  lanterns(g, th, i) { dpart(g, 'cyl', dmat(0x2a2620), 0, 1.3, 0, 0.06, 2.6); dpart(g, 'box', dmat(0x2a2620), 0, 2.62, 0, 0.42, 0.06); dpart(g, 'sph', dmat(th.light, 1), 0, 2.3, 0, 0.3); },
+  harvest(g, th, i) { if (i % 3 === 0) { dpart(g, 'box', dmat(0xc8a850), 0, 0.4, 0, 1.3, 0.8, 0.8); dpart(g, 'box', dmat(0xc8a850), 0.2, 1.1, 0, 0.9, 0.6, 0.7); }
+    dpart(g, 'sph', dmat(0xe0701a), 0.9, 0.32, 0.6, 0.42, 0.34); dpart(g, 'cyl', dmat(0x3a6a20), 0.9, 0.72, 0.6, 0.05, 0.16); dpart(g, 'sph', dmat(0xd8601a), -0.7, 0.26, 0.5, 0.32, 0.27); },
+  neon(g, th, i) { const c = i % 2 ? 0xff3ad0 : th.light; dpart(g, 'box', dmat(c, 1), 0, 1.3, 0, 0.12, 2.6, 0.12); dpart(g, 'box', dmat(c, 1), 0, 2.6, 0, 1.2, 0.1, 0.1); dpart(g, 'box', dmat(0x101418), 0, 0.1, 0, 0.5, 0.2, 0.5); },
+  crystals(g, th, i) { const m = dmat(th.light, 1); m.transparent = true; m.opacity = 0.8; [[0, 1.2, 0, 0.35, 2.4], [0.5, 0.7, 0.2, 0.25, 1.4], [-0.4, 0.6, -0.3, 0.22, 1.2]].forEach(([x, y, z, r, h], k) => { const c = dpart(g, 'cone', m, x, y, z, r, h, r); c.rotation.z = (k - 1) * 0.3; }); },
+  orbs(g, th, i) { dpart(g, 'sph', dmat(th.light, 1), 0, 2.6 + (i % 3) * 0.4, 0, 0.3); dpart(g, 'cyl', dmat(0x1a1626), 0, 0.15, 0, 0.35, 0.3); },
+  christmas(g, th, i) {
+    if (i % 3 === 0) { // decorated tree with lights, star and presents
+      const pine = dmat(0x0a2a12); pine.envMapIntensity = 0.1; pine.roughness = 0.95; dpart(g, 'cyl', dmat(0x4a3220), 0, 0.4, 0, 0.16, 0.8); dpart(g, 'cone', pine, 0, 1.4, 0, 1.3, 1.8); dpart(g, 'cone', pine, 0, 2.4, 0, 1.0, 1.6); dpart(g, 'cone', pine, 0, 3.3, 0, 0.7, 1.3);
+      const LC = [0xff3030, 0xffd040, 0x3a8aff, 0x40ff70, 0xff60e0];
+      for (let k = 0; k < 14; k++) { const a = k * 2.4, h = 1 + (k / 14) * 2.6, r = 1.15 * (1 - (h - 0.6) / 3.6); dpart(g, 'sph', dmat(LC[k % 5], 1), Math.cos(a) * r, h, Math.sin(a) * r, 0.09); }
+      dpart(g, 'oct', dmat(0xffd84a, 1), 0, 4.1, 0, 0.26);
+      [[1.1, 0.6, 0xd02a2a], [-1, -0.8, 0x2a6ad0], [0.3, -1.2, 0x2a9a4a]].forEach(([x, z, c]) => { dpart(g, 'box', dmat(c), x, 0.25, z, 0.5); dpart(g, 'box', dmat(0xf2e6c0), x, 0.25, z, 0.52, 0.52, 0.1); dpart(g, 'box', dmat(0xf2e6c0), x, 0.25, z, 0.1, 0.52, 0.52); });
+    } else if (i % 3 === 1) { // snowman
+      const sn = dmat(0xf4f6fa); dpart(g, 'sph', sn, 0, 0.45, 0, 0.5); dpart(g, 'sph', sn, 0, 1.15, 0, 0.36); dpart(g, 'sph', sn, 0, 1.68, 0, 0.25);
+      const n = dpart(g, 'cone', dmat(0xff7a1a), 0, 1.68, 0.3, 0.05, 0.25, 0.05); n.rotation.x = Math.PI / 2;
+      dpart(g, 'cyl', dmat(0x14141a), 0, 1.98, 0, 0.2, 0.25); dpart(g, 'cyl', dmat(0x14141a), 0, 1.86, 0, 0.3, 0.03); dpart(g, 'box', dmat(0xd02a2a), 0, 1.45, 0, 0.5, 0.08, 0.42);
+    } else { // candy cane lamp post
+      for (let k = 0; k < 6; k++) dpart(g, 'cyl', dmat(k % 2 ? 0xf2f2f2 : 0xd02a2a), 0, 0.22 + k * 0.42, 0, 0.08, 0.42);
+      dpart(g, 'sph', dmat(th.light, 1), 0, 2.75, 0, 0.22);
+    }
+  },
+};
+function decorate(th) {
+  const fn = DECO[th.deco]; if (!fn) return;
+  let sd = 0; for (const ch of String(curMap)) sd = (sd * 31 + ch.charCodeAt(0)) >>> 0;
+  const r = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
+  let placed = 0;
+  for (let k = 0; k < 120 && placed < 22; k++) {
+    const x = (r() * 2 - 1) * (HALF - 4), z = (r() * 2 - 1) * (HALF - 4);
+    if (insideSolid({ x, z }, 2.2) || Math.hypot(x, z) < 9 || (Math.abs(x) < 18 && Math.abs(z) > 36)) continue;
+    for (const [px, pz] of [[x, z], [-x, -z]]) { const g = new THREE.Group(); g.position.set(px, 0, pz); g.rotation.y = r() * 6.28; fn(g, th, placed); mapGroup.add(g); }
+    placed++;
+  }
+  // a ring of decorations around the edge walls too
+  for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2, x = Math.cos(a) * (HALF - 1.5), z = Math.sin(a) * (HALF - 1.5); if (insideSolid({ x, z }, 1.2) || (Math.abs(x) < 18 && Math.abs(z) > 36)) continue; const g = new THREE.Group(); g.position.set(x, 0, z); fn(g, th, k + 1); mapGroup.add(g); }
+}
+// falling snow for winter seasons
+let snow = null;
+if (THEME.snowfall) {
+  const N = 1400, pos = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) { pos[i * 3] = (Math.random() - 0.5) * 70; pos[i * 3 + 1] = Math.random() * 30; pos[i * 3 + 2] = (Math.random() - 0.5) * 70; }
+  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  snow = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.13, transparent: true, opacity: 0.85, depthWrite: false }));
+  snow.frustumCulled = false; scene.add(snow);
+}
+function stepSnow(dt) {
+  if (!snow) return;
+  const a = snow.geometry.attributes.position, v = a.array, t = performance.now() / 1000;
+  snow.position.set(Math.round(camera.position.x / 10) * 10, 0, Math.round(camera.position.z / 10) * 10);
+  for (let i = 0; i < v.length; i += 3) { v[i + 1] -= dt * (1.4 + (i % 7) * 0.12); v[i] += Math.sin(t + i) * dt * 0.3; if (v[i + 1] < 0) v[i + 1] += 30; }
+  a.needsUpdate = true;
+}
 let curMap = null;
 function clearMap() {
   for (const o of [...mapGroup.children]) { mapGroup.remove(o); o.traverse(c => { if (c.geometry && !c.userData.sharedGeo) c.geometry.dispose(); }); }
@@ -1032,7 +1179,7 @@ function buildMap(id) {
   if (curMap === id) return;
   clearMap(); curMap = id;
   const m = MAPS[id];
-  ground.material = M[m.ground];
+  ground.material = M[THEME.snowGround ? 'snow' : m.ground];
   scene.fog.color.setHex(m.fog); scene.fog.near = m.fogN; scene.fog.far = m.fogF; scene.background.setHex(m.fog);
   sky.material.color.setHex(m.sky);
   sun.color.setHex(m.sun[0]); sun.intensity = m.sun[1]; sun.position.set(m.sunPos[0], m.sunPos[1], m.sunPos[2]);
@@ -1040,8 +1187,18 @@ function buildMap(id) {
   renderer.toneMappingExposure = m.exp;
   wall(0, -HALF - 0.4, HALF * 2 + 1.6, 0.8); wall(0, HALF + 0.4, HALF * 2 + 1.6, 0.8);
   wall(-HALF - 0.4, 0, 0.8, HALF * 2); wall(HALF + 0.4, 0, 0.8, HALF * 2);
-  [[-8, 26], [8, 26], [-8, -26], [8, -26]].forEach(([x, z]) => wall(x, z, 5, 0.6, 2.2));
+  [[-11, 36], [11, 36], [-11, -36], [11, -36]].forEach(([x, z]) => wall(x, z, 5, 0.6, 2.2));
   m.build();
+  // extra cover for the outer ring of the bigger maps
+  [[-41, 8, 0], [-36, 28, 1], [-20, 41, 2], [24, 30, 0], [41, -8, 1], [30, -24, 2], [-42, -26, 0], [16, 12, 1], [-28, -10, 2]].forEach(([x, z, k]) => {
+    for (const [px, pz] of [[x, z], [-x, -z]]) {
+      if (insideSolid({ x: px, z: pz }, 2.5) || (Math.abs(px) < 18 && Math.abs(pz) > 36)) continue;
+      if (k === 0) { crate([px, pz]); crate([px + 1.5, pz]); addBox(px + 0.7, pz, 1.4, 1.4, 1.4, M.crate, 1.4, 1.4, { y: 1.4, collide: false }); }
+      else if (k === 1) bags([px, pz, 4, 0.9]);
+      else addBox(px, pz, 0.6, 4, 1.3, M.conc, 4, 4);
+    }
+  });
+  decorate(THEME);
 }
 
 function collide(p, r) {
@@ -1069,11 +1226,11 @@ function losBlocked(x1, z1, x2, z2) {
   }
   return false;
 }
-function randomOpenPoint() { for (let i = 0; i < 40; i++) { const p = { x: (Math.random() * 2 - 1) * 30, z: (Math.random() * 2 - 1) * 30 }; if (!insideSolid(p, 0.8)) return p; } return { x: 0, z: 9 }; }
+function randomOpenPoint() { for (let i = 0; i < 40; i++) { const p = { x: (Math.random() * 2 - 1) * (HALF - 4), z: (Math.random() * 2 - 1) * (HALF - 4) }; if (!insideSolid(p, 0.8)) return p; } return { x: 0, z: 9 }; }
 function spawnPoint(team) {
   const sz = team === 'b' ? 1 : -1;
-  for (let i = 0; i < 40; i++) { const p = { x: (Math.random() * 2 - 1) * 13, z: sz * (28.5 + Math.random() * 3.5) }; if (!insideSolid(p, 0.7)) return p; }
-  return { x: 0, z: sz * 30 };
+  for (let i = 0; i < 40; i++) { const p = { x: (Math.random() * 2 - 1) * 16, z: sz * (39.5 + Math.random() * 5) }; if (!insideSolid(p, 0.7)) return p; }
+  return { x: 0, z: sz * 42 };
 }
 
 /* ---------- weapon models (shared by the first-person view and the Loadout tab) ---------- */
@@ -1389,8 +1546,64 @@ function updateBullets(dt) {
 /* ---------- HUD (game) ---------- */
 const hud = { root: $('hud'), hp: $('hpfill'), hpNum: $('hpNum'), st: $('stfill'), score: $('score'), wave: $('wave'), ammo: $('ammo'), reload: $('reloadTag'), hurt: $('hurt'), hit: $('hit'), banner: $('banner'), cross: $('cross'), kd: $('kd'), death: $('deathMsg'), feed: $('feed'), wName: $('wName'), fps: $('fpsTag') };
 let hitT = 0, hurtT = 0, bannerT = 0;
+function dailyProgress(k, amt, isMax) {
+  dailyRoll(); let changed = false;
+  for (const c of DAILY.ch) {
+    if (c.k !== k || c.done) continue;
+    const np = isMax ? Math.max(c.p, amt) : c.p + amt; if (np === c.p) continue;
+    c.p = Math.min(c.n, np); changed = true;
+    if (c.p >= c.n) { c.done = true; if (c.xp) addXP(c.xp); if (c.coins) addCoins(c.coins); banner('CHALLENGE COMPLETE', c.t + ' · +' + (c.xp ? c.xp + ' XP' : c.coins + ' coins'), 3); }
+  }
+  if (changed) store.set('daily', DAILY);
+}
+let scanT = 0, missile = null;
+function onMyKill(head) {
+  P.streak = (P.streak || 0) + 1;
+  dailyProgress('kills', 1); if (head) dailyProgress('heads', 1); dailyProgress('streak', P.streak, true);
+  if (P.streak === 10) { scanT = 15; dailyProgress('scan', 1); banner('MAP SCAN', '10 streak · every enemy shows on your minimap for 15s', 2.5); try { tone(600, 0.3, 'sine', 0.12, 1400); tone(600, 0.3, 'sine', 0.1, 1400, 0.35); } catch (e) {} }
+  if (P.streak === 30) launchMissile();
+}
+function launchMissile() {
+  const pts = [];
+  if (mode === 'siege') enemies.forEach(e => pts.push({ x: e.g.position.x, z: e.g.position.z }));
+  else for (const e of T.ents.values()) if (e.alive && e.team !== P.team) pts.push({ x: e.rx, z: e.rz });
+  let best = null, bc = -1;
+  for (const p of pts) { let c = 0; for (const q of pts) if (Math.hypot(p.x - q.x, p.z - q.z) < 11) c++; if (c > bc) { bc = c; best = p; } }
+  if (!best) { const d = new THREE.Vector3(); camera.getWorldDirection(d); best = { x: P.pos.x + d.x * 25, z: P.pos.z + d.z * 25 }; }
+  if (missile) scene.remove(missile.m);
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.32, 2.8, 8), new THREE.MeshStandardMaterial({ color: 0x3a3f44, emissive: 0xff5a1a, emissiveIntensity: 0.5 }));
+  m.position.set(best.x, 70, best.z); scene.add(m);
+  missile = { m, x: best.x, z: best.z, t: 1.8 };
+  banner('MISSILE INBOUND', '30 streak · striking the biggest enemy group', 2.5);
+  try { tone(1200, 1.6, 'sawtooth', 0.05, 300); } catch (e) {}
+}
+function stepMissile(dt) {
+  if (!missile) return;
+  missile.t -= dt; missile.m.position.y = Math.max(0.4, 70 * missile.t / 1.8);
+  if (Math.random() < 0.6) spark(missile.m.position.clone().add(new THREE.Vector3(0, 1.6, 0)), 0xffa040, 2);
+  if (missile.t > 0) return;
+  const { x, z } = missile; scene.remove(missile.m); missile.m.geometry.dispose(); missile.m.material.dispose(); missile = null;
+  for (let i = 0; i < 8; i++) spark(new THREE.Vector3(x + (Math.random() - 0.5) * 8, 0.5 + Math.random() * 3, z + (Math.random() - 0.5) * 8), i % 2 ? 0xff7a1a : 0xffe0a0, 22);
+  try { noise(1.4, 0.9, 260); tone(70, 0.9, 'sine', 0.5, 30); } catch (e) {}
+  P.shake = Math.max(P.shake, Math.max(0.15, 1 - Math.hypot(P.pos.x - x, P.pos.z - z) / 45));
+  if (mode === 'siege') { for (const e of [...enemies]) if (Math.hypot(e.g.position.x - x, e.g.position.z - z) < 12) killDrone(e); return; }
+  if (T.win) return;
+  let hitAny = false;
+  for (const e of T.ents.values()) {
+    if (!e.alive || e.team === P.team || Math.hypot(e.rx - x, e.rz - z) >= 12) continue;
+    hitAny = true;
+    if (e.kind === 'bot' && T.isHost) botDamage(e.id, 250, myPeer); else T.myDm[e.id] = (T.myDm[e.id] || 0) + 250;
+  }
+  if (hitAny) hitMarker('kill');
+}
+function updStreak() {
+  const el = $('streakTag'); if (!el) return;
+  const k = P.streak || 0;
+  const txt = (k > 0 ? '🔥 ' + k + (k < 10 ? ' · scan at 10' : k < 30 ? ' · missile at 30' : '') : '') + (scanT > 0 ? ' · SCAN ' + Math.ceil(scanT) + 's' : '');
+  if (el.textContent !== txt) el.textContent = txt;
+}
 function addCoins(n) {
-  WALLET.coins += n; saveWallet(); updCoins();
+  WALLET.coins += n; P.mCoins = (P.mCoins || 0) + n; saveWallet(); updCoins();
   const t = $('coinTag'); t.classList.add('pop'); clearTimeout(addCoins.tm); addCoins.tm = setTimeout(() => t.classList.remove('pop'), 220);
 }
 function updCoins() { const t = $('coinTag'); if (t) t.textContent = '◎ ' + WALLET.coins.toLocaleString() + ' coins'; const sc = $('shopCoins'); if (sc) sc.textContent = WALLET.coins.toLocaleString(); }
@@ -1420,7 +1633,7 @@ function addXP(n, why) {
   const after = bpTier();
   if (after > before) {
     let got = [];
-    for (let t = before + 1; t <= after; t++) if (BP_REWARDS[t]) got.push(rewardName(BP_REWARDS[t]));
+    for (let t = before + 1; t <= after; t++) if (BP_REWARDS[t]) { got.push(rewardName(BP_REWARDS[t])); if (BP_REWARDS[t][0] === 'coins') addCoins(BP_REWARDS[t][1]); }
     banner('TIER ' + after, got.length ? 'Unlocked ' + got.join(', ') : 'Battle pass rank up', 3);
     if (BP_REWARDS[after] && BP_REWARDS[after][0] === 'title' && !myTitle) { myTitle = BP_REWARDS[after][1]; store.set('title', myTitle); }
     if (after >= BP_TIERS && before < BP_TIERS && BP.premium) banner('VX-9 TEMPEST UNLOCKED', 'Your Premium pass reward is in the Loadout tab', 4);
@@ -1511,7 +1724,7 @@ function makeDrone(kind) {
   g.traverse(o => { o.userData.ent = e; o.userData.part = 'body'; });
   for (let i = 0; i < 20; i++) {
     const a = Math.random() * Math.PI * 2;
-    g.position.set(clamp(Math.cos(a) * 29, -HALF + 2, HALF - 2), e.hover, clamp(Math.sin(a) * 29, -HALF + 2, HALF - 2));
+    g.position.set(clamp(Math.cos(a) * 42, -HALF + 2, HALF - 2), e.hover, clamp(Math.sin(a) * 42, -HALF + 2, HALF - 2));
     if (!insideSolid(g.position) && g.position.distanceTo(P.pos) > 16) break;
   }
   enemies.push(e);
@@ -1522,13 +1735,13 @@ function dropPickup(pos) {
 }
 function killDrone(e) {
   spark(e.g.position, e.color, 18); sfx.kill(); hitMarker('kill');
-  score += e.points * (1 + Math.floor(wave / 5)); addXP(12); addWeaponKill(); addCoins(10);
+  score += e.points * (1 + Math.floor(wave / 5)); addXP(12); addWeaponKill(); addCoins(10); onMyKill(false);
   if (Math.random() < 0.25) dropPickup(e.g.position);
   scene.remove(e.g); enemies.splice(enemies.indexOf(e), 1); updHud();
 }
 function pickKind() { const r = Math.random(); if (wave >= 3 && r < 0.15 + wave * 0.01) return 'heavy'; if (wave >= 2 && r < 0.45) return 'fast'; return 'basic'; }
 function stepSiege(dt) {
-  if (toSpawn === 0 && enemies.length === 0) { betweenWaves -= dt; if (betweenWaves <= 0) { if (wave > 0) addXP(30); wave++; toSpawn = 3 + wave * 2; spawnTimer = 0; banner('WAVE ' + wave, 'Drones inbound'); updHud(); betweenWaves = 3; } }
+  if (toSpawn === 0 && enemies.length === 0) { betweenWaves -= dt; if (betweenWaves <= 0) { if (wave > 0) { addXP(30); dailyProgress('waves', 1); } wave++; toSpawn = 3 + wave * 2; spawnTimer = 0; banner('WAVE ' + wave, 'Drones inbound'); updHud(); betweenWaves = 3; } }
   if (toSpawn > 0) { spawnTimer -= dt; if (spawnTimer <= 0 && enemies.length < 6 + wave) { makeDrone(pickKind()); toSpawn--; spawnTimer = Math.max(0.35, 1.4 - wave * 0.08); } }
   for (const e of enemies) {
     e.t += dt; const g = e.g;
@@ -1579,10 +1792,11 @@ function siegeOver() {
   state = 'over';
   C.bestWave = Math.max(C.bestWave, wave); C.bestScore = Math.max(C.bestScore, score); C.deaths++; saveC();
   lbAdd('holdout', { s: score, wv: wave, m: curMap, t: Date.now() }, (a, b) => b.s - a.s || b.wv - a.wv || b.t - a.t);
-  $('finalScore').textContent = score.toLocaleString(); $('finalWave').textContent = wave; $('bestScore').textContent = C.bestScore.toLocaleString();
+  $('finalScore').textContent = score.toLocaleString(); $('finalWave').textContent = wave; $('bestScore').textContent = C.bestScore.toLocaleString(); $('finalCoins').textContent = '◎ ' + (P.mCoins || 0);
   showMenu('over');
 }
 function clearSiege() {
+  if (missile) { scene.remove(missile.m); missile = null; } scanT = 0;
   [...enemies.map(e => e.g), ...shots.map(s => s.m), ...pickups.map(p => p.m)].forEach(o => scene.remove(o));
   enemies.length = shots.length = pickups.length = 0;
 }
@@ -1590,7 +1804,7 @@ function clearSiege() {
 /* =========================================================
    TEAM BATTLE 5v5 (online, bots fill empty slots)
    ========================================================= */
-let SCORE_LIMIT = 30; const TEAM_SIZE = 5; let duel = false;
+let SCORE_LIMIT = 100; const TEAM_SIZE = 5; let duel = false;
 const BOT_NAMES = { b0: 'Hayes', b1: 'Okafor', b2: 'Lindqvist', b3: 'Moreau', b4: 'Tanaka', r0: 'Vance', r1: 'Petrov', r2: 'Silva', r3: 'Kade', r4: 'Ibarra' };
 const TEAM_COL = { b: 0x6aa8e0, r: 0xe0603f }, TEAM_NAME = { b: 'DELTA', r: 'VIPER' };
 const other = t => t === 'b' ? 'r' : 'b';
@@ -1706,7 +1920,7 @@ function showFeed(list) {
     k.className = 't-' + (e.kt === 'r' ? 'r' : 'b'); v.className = 't-' + (e.vt === 'r' ? 'r' : 'b');
     k.textContent = String(e.k || '?'); v.textContent = String(e.v || '?');
     row.append(k, '  ✕  ', v);
-    if (e.ki === myPeer) { row.classList.add('me'); P.kills++; C.kills++; saveC(); updHud(); addXP(50 + (P.lastHead && performance.now() - P.lastHead < 1500 ? 15 : 0)); addWeaponKill(); addCoins(10); }
+    if (e.ki === myPeer) { const hd = !!(P.lastHead && performance.now() - P.lastHead < 1500); row.classList.add('me'); P.kills++; C.kills++; saveC(); updHud(); addXP(50 + (hd ? 15 : 0)); addWeaponKill(); addCoins(10 + (hd ? 5 : 0)); onMyKill(hd); }
     hud.feed.prepend(row);
     while (hud.feed.children.length > 4) hud.feed.lastChild.remove();
     setTimeout(() => row.remove(), 6000);
@@ -1723,7 +1937,7 @@ function takeDamage(dmg, src) {
   P.hp -= dmg; P.lastHurt = 0; hurtT = 0.35; sfx.hurt(); P.shake = Math.max(P.shake, 0.25);
   const se = T.ents.get(src); if (se) showDmgDir(se.rx, se.rz);
   if (P.hp <= 0) {
-    P.hp = 0; P.alive = false; P.deaths++; P.matchDeaths++; P.killer = src || ''; P.respawn = 3; P.ads = false;
+    P.hp = 0; P.alive = false; P.deaths++; P.matchDeaths++; P.killer = src || ''; P.respawn = 3; P.ads = false; P.streak = 0; scanT = 0;
     C.deaths++; saveC();
     if (T.isHost) onDeath(myPeer, src, P.team);
     hud.death.hidden = false;
@@ -1738,7 +1952,7 @@ function respawnPlayer() {
   hud.death.hidden = true; updHud();
 }
 function newMatchLocal() {
-  P.kills = 0; P.matchDeaths = 0; respawnPlayer();
+  P.kills = 0; P.matchDeaths = 0; P.streak = 0; P.mCoins = 0; scanT = 0; respawnPlayer();
   hud.feed.textContent = '';
   banner('MATCH START', TEAM_NAME[P.team] + ' · first to ' + SCORE_LIMIT);
 }
@@ -1913,7 +2127,7 @@ function netTick(dt) {
     if (!T.win) for (const b of T.bots) botStep(b, dt, targets);
     else { T.winT -= dt; if (T.winT <= 0) { buildMap(pickNextMap(hs)); T.ep++; T.sc = { b: 0, r: 0 }; T.win = ''; T.kf = []; T.st = {}; T.bots.forEach(b => { b.alive = false; b.respawn = 0.01; }); newMatchLocal(); } }
   }
-  if (T.win && !T.prevWin) { C.matches++; if (T.win === P.team) C.wins++; saveC(); addXP(80 + (T.win === P.team ? 150 : 0));
+  if (T.win && !T.prevWin) { C.matches++; if (T.win === P.team) { C.wins++; addCoins(50); dailyProgress('wins', 1); } dailyProgress('matches', 1); saveC(); addXP(80 + (T.win === P.team ? 150 : 0));
     lbAdd('battles', { k: P.kills, d: P.matchDeaths, r: T.win === P.team ? 'Win' : 'Loss', m: curMap, du: duel ? 1 : 0, t: Date.now() }, (a, b) => b.k - a.k || a.d - b.d || b.t - a.t); }
   if (!T.win && T.prevWin) myVote = null;
   T.prevWin = T.win;
@@ -1932,7 +2146,7 @@ function netTick(dt) {
   }
   $('scB').textContent = T.sc.b; $('scR').textContent = T.sc.r;
   updBoard(dt);
-  if (T.win) banner(TEAM_NAME[T.win] + ' WINS', (T.win === P.team ? 'Victory' : 'Defeat') + ' · next match in ' + Math.max(0, Math.ceil(T.winT)), 1);
+  if (T.win) banner(TEAM_NAME[T.win] + ' WINS', (T.win === P.team ? 'Victory · +50 coin win bonus' : 'Defeat') + ' · ◎ ' + (P.mCoins || 0) + ' coins this match · next match in ' + Math.max(0, Math.ceil(T.winT)), 1);
   T.sendT -= dt;
   if (troom && T.sendT <= 0) {
     T.sendT = 0.05; T.beat = (T.beat + 1) % 1000;
@@ -1945,6 +2159,7 @@ function netTick(dt) {
   }
 }
 function resetTDM() {
+  if (missile) { scene.remove(missile.m); missile = null; } scanT = 0;
   for (const e of [...T.ents.values()]) removeEnt(e);
   Object.assign(T, { bots: [], botMap: {}, isHost: false, hostPeer: null, sc: { b: 0, r: 0 }, ep: 0, win: '', winT: 0, prevWin: '', myDm: {}, seenDm: {}, seenHd: {}, hd: {}, hk: {},
     lastDeaths: {}, beats: {}, kf: [], kfSeq: 0, shownSeq: 0, lastHb: null, sendT: 0, humans: [], st: {}, bdT: 0 });
@@ -1982,12 +2197,14 @@ function showTab(name) {
   if (name === 'career') renderCareer();
   if (name === 'pass') renderPass();
   if (name === 'shop') renderShop();
+  if (name === 'play') renderDaily();
   if (name === 'loadout') renderLoadout();
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
 function showMenu(which) {
   menuMode = which;
   $('menu').hidden = false; $('hud').hidden = true;
+  if (which === 'main') renderDaily();
   $('playMain').hidden = which !== 'main'; $('playPause').hidden = which !== 'pause'; $('playOver').hidden = which !== 'over';
   $('tabPlay').textContent = which === 'pause' ? 'Match' : 'Play';
   showTab('play');
@@ -2075,10 +2292,10 @@ function renderSkins() {
   }
   const w = loadout, cur = camoOf(w);
   $('camoHead').textContent = 'Weapon camo · ' + WEAPONS[w].name + ' · Level ' + wLevel(w);
-  for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), cur === k, !camoOwned(k, w), d.crate ? (d.only ? 'Vault crate' : 'Shop crate') : d.lvl ? 'Gun level ' + d.lvl : 'Pass tier ' + unlockTier('camo', k),
+  for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), cur === k, !camoOwned(k, w), d.crate ? (d.only ? 'Vault crate' : 'Shop crate') : d.season && d.season !== SEASON ? 'Season ' + d.season + ' pass' : d.lvl ? 'Gun level ' + d.lvl : 'Pass tier ' + unlockTier('camo', k),
     () => { WCAMO[w] = k; store.set('wcamo', WCAMO); if (P.w === w) applyCamo(); renderSkins(); }));
 }
-function ownedTitles() { const l = ['']; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === 'title' && bpTier() >= +t) l.push(r[1]); if (BP.premium) l.push('VIP'); return l; }
+function ownedTitles() { const l = [''].concat(BP.owned.filter(k => k.startsWith('title:')).map(k => k.slice(6))); for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === 'title' && bpTier() >= +t && !l.includes(r[1])) l.push(r[1]); if (BP.premium) l.push('VIP'); return l; }
 function renderTitles() {
   const box = $('titleList'); if (!box) return; box.textContent = '';
   const list = ownedTitles();
@@ -2105,9 +2322,13 @@ function itemVisual(it) {
   const cols = it.kind === 'skin' ? [d.helm, d.vest, d.tint] : d.c;
   return '<span class="sw">' + cols.map(c => '<i style="background:' + SW(c) + '"></i>').join('') + '</span>';
 }
+const PITY = 10; // a Legendary is guaranteed on the 10th crate (per crate type) without one
+const DAILY_PRICE = { common: 400, rare: 800, epic: 1300, legendary: 2000 };
+function dailyShopItem() { const d = Math.floor(Date.now() / 864e5), all = crateItems(); return all[(d * 7 + 3) % all.length]; }
 function rollCrate(key) {
   const o = CRATES[key].odds; let x = Math.random() * 100, r = 'common';
   for (const [k, v] of Object.entries(o)) { if ((x -= v) < 0) { r = k; break; } }
+  if ((WALLET.pity[key] || 0) >= PITY - 1) r = 'legendary';
   const pool = cratePool(key, r);
   return pool[Math.floor(Math.random() * pool.length)];
 }
@@ -2130,11 +2351,13 @@ function showOdds(key) {
   }
   $('oddsBox').hidden = false;
 }
-let revealItem = null;
+let revealItem = null, revealForced = false;
 function openCrate(key) {
   const c = CRATES[key]; if (WALLET.coins < c.price) return;
   WALLET.coins -= c.price;
+  const forced = (WALLET.pity[key] || 0) >= PITY - 1;
   const it = rollCrate(key), list = it.kind === 'skin' ? WALLET.skins : WALLET.camos, dupe = list.includes(it.id);
+  WALLET.pity[key] = it.r === 'legendary' ? 0 : (WALLET.pity[key] || 0) + 1; revealForced = forced;
   if (dupe) WALLET.coins += RAR[it.r].refund; else list.push(it.id);
   saveWallet(); updCoins(); renderShop();
   // little roll animation, then the reveal
@@ -2151,7 +2374,7 @@ function showReveal(it, dupe) {
   revealItem = it;
   $('rvImg').innerHTML = itemVisual(it); $('rvName').textContent = it.name + (it.kind === 'skin' ? ' skin' : ' camo');
   $('rvRar').textContent = RAR[it.r].n; $('rvRar').style.color = RAR_COL[it.r]; $('rvBox').style.borderColor = RAR_COL[it.r];
-  $('rvMsg').textContent = dupe ? 'Duplicate — you already own it. Refunded ' + RAR[it.r].refund + ' coins.' : 'NEW! Added to your collection.' + (it.kind === 'camo' ? ' Equip puts it on your ' + WEAPONS[loadout].name + '.' : '');
+  $('rvMsg').textContent = (revealForced ? 'Bad-luck protection: guaranteed Legendary! ' : '') + (dupe ? 'Duplicate — you already own it. Refunded ' + RAR[it.r].refund + ' coins.' : 'NEW! Added to your collection.' + (it.kind === 'camo' ? ' Equip puts it on your ' + WEAPONS[loadout].name + '.' : ''));
   $('rvEquip').hidden = false; $('rvClose').hidden = false;
   try { sfx.head(); } catch (e) {}
 }
@@ -2166,6 +2389,18 @@ $('rvEquip').addEventListener('click', () => {
 });
 function renderShop() {
   updCoins();
+  { const it = dailyShopItem(), own = itemOwned(it), price = DAILY_PRICE[it.r], box = $('dailyItem');
+    const ms = 864e5 - Date.now() % 864e5;
+    box.innerHTML = '<span class="dv">' + itemVisual(it) + '</span><div style="display:grid;gap:3px"><span class="label">Daily item · new in ' + Math.floor(ms / 36e5) + 'h ' + Math.floor(ms / 6e4) % 60 + 'm</span><span class="dn"></span><span class="pmsg"></span></div><button class="btn go" type="button"></button>';
+    box.querySelector('.dn').textContent = it.name; box.querySelector('.pmsg').innerHTML = '<span class="rar-' + it.r + '">' + RAR[it.r].n + '</span> ' + (it.kind === 'skin' ? 'skin' : 'camo') + ' · buy it directly, no crate';
+    const b = box.querySelector('.btn');
+    if (own) { b.textContent = 'Owned ✓'; b.disabled = true; }
+    else if (WALLET.coins < price) { b.textContent = 'Need ◎ ' + price; b.disabled = true; }
+    else { b.textContent = 'Buy · ◎ ' + price; b.addEventListener('click', () => {
+      if (itemOwned(it) || WALLET.coins < price) return;
+      WALLET.coins -= price; (it.kind === 'skin' ? WALLET.skins : WALLET.camos).push(it.id); saveWallet(); updCoins(); renderShop();
+      revealForced = false; $('reveal').hidden = false; showReveal(it, false); $('rvMsg').textContent = 'Bought! ' + $('rvMsg').textContent;
+    }); } }
   const cl = $('crateList'); cl.textContent = '';
   for (const [key, c] of Object.entries(CRATES)) {
     const d = document.createElement('div'); d.className = 'crate' + (key === 'field' ? '' : ' ' + key);
@@ -2174,6 +2409,8 @@ function renderShop() {
     d.querySelector('.cname').textContent = c.name; d.querySelector('.cbox').textContent = c.icon;
     const od = d.querySelector('.odds');
     for (const [r, v] of Object.entries(c.odds)) { const a = document.createElement('span'), b = document.createElement('span'); a.className = 'rar-' + r; a.textContent = RAR[r].n; b.textContent = v + '%'; od.append(a, b); }
+    const left = PITY - (WALLET.pity[key] || 0), pe = document.createElement('span'); pe.className = 'pity';
+    pe.textContent = left <= 1 ? '★ Next crate is a guaranteed Legendary!' : 'Legendary guaranteed within ' + left + ' crates'; od.after(pe);
     const btn = d.querySelector('.btn'); btn.textContent = 'Open · ◎ ' + c.price;
     if (WALLET.coins < c.price) { btn.disabled = true; btn.textContent = 'Need ◎ ' + c.price + ' (' + (c.price - WALLET.coins) + ' more)'; }
     btn.addEventListener('click', () => openCrate(key));
@@ -2188,10 +2425,36 @@ function renderShop() {
     box.appendChild(b);
   });
 }
+function renderDaily() {
+  dailyRoll();
+  const can = DAILY.claimed !== dayKey(), y = dayKey(Date.now() - 864e5);
+  const next = can ? (DAILY.claimed === y ? DAILY.streak + 1 : 1) : DAILY.streak, amt = DAILY_COINS[Math.min(Math.max(next, 1), 7) - 1];
+  $('dailyStreak').textContent = 'Day ' + Math.max(next, 1) + (next >= 7 ? ' 🔥' : '');
+  $('dailyRwTxt').textContent = can ? 'Login reward: ◎ ' + amt + ' coins. Come back every day for more (up to 300).' : 'Claimed ◎ ' + amt + ' today. Come back tomorrow for ◎ ' + DAILY_COINS[Math.min(next + 1, 7) - 1] + '.';
+  const b = $('dailyClaim'); b.disabled = !can; b.textContent = can ? 'Claim ◎ ' + amt : 'Claimed ✓';
+  const now = new Date(), mid = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1), ms = mid - now;
+  $('dailyReset').textContent = 'New challenges in ' + Math.floor(ms / 36e5) + 'h ' + Math.floor(ms / 6e4) % 60 + 'm';
+  const box = $('dailyCh'); box.textContent = '';
+  for (const c of DAILY.ch) {
+    const d = document.createElement('div'); d.className = 'dch' + (c.done ? ' done' : '');
+    d.innerHTML = '<span class="t"></span><span class="rw"></span><span class="bar"><i></i></span>';
+    d.children[0].textContent = (c.done ? '✓ ' : '') + c.t + ' (' + c.p + '/' + c.n + ')';
+    d.children[1].textContent = c.xp ? '+' + c.xp.toLocaleString() + ' XP' : '◎ ' + c.coins; if (c.coins) d.children[1].classList.add('cn');
+    d.querySelector('i').style.width = Math.round(c.p / c.n * 100) + '%';
+    box.appendChild(d);
+  }
+}
+$('dailyClaim').addEventListener('click', () => {
+  if (DAILY.claimed === dayKey()) return;
+  DAILY.streak = DAILY.claimed === dayKey(Date.now() - 864e5) ? DAILY.streak + 1 : 1; DAILY.claimed = dayKey();
+  store.set('daily', DAILY); const amt = DAILY_COINS[Math.min(DAILY.streak, 7) - 1]; addCoins(amt); try { sfx.head(); } catch (e) {}
+  renderDaily();
+});
 function renderPass() {
   const pw = $('premWho'); if (pw) { pw.textContent = BP.premium ? 'Premium active ✓ — all premium skins and the VIP title are unlocked, with +25% XP.' : 'Not active. Enter a premium code to unlock the exclusive skins, VIP title and +25% XP.'; }
   if ($('premRedeem')) $('premRedeem').hidden = !!BP.premium;
   const t = bpTier(), into = t >= BP_TIERS ? BP_XP : BP.xp % BP_XP;
+  { const ms = Math.max(0, seasonEnd(SEASON) - Date.now()), dd = Math.floor(ms / 864e5), hh = Math.floor(ms / 36e5) % 24; $('bpSeason').textContent = 'Season ' + SEASON + ' · ' + THEME.name + ' · free battle pass · ends in ' + dd + 'd ' + hh + 'h'; }
   $('bpTier').textContent = 'Tier ' + t + ' / ' + BP_TIERS;
   $('bpXp').textContent = BP.xp.toLocaleString() + ' XP' + (myTitle ? ' · “' + myTitle + '”' : '');
   $('bpFill').style.width = (t >= BP_TIERS ? 100 : Math.round(into / BP_XP * 100)) + '%';
@@ -2203,6 +2466,7 @@ function renderPass() {
     const r = BP_REWARDS[i], d = document.createElement('div'); d.className = 'bp-tier' + (i <= t ? ' got' : '') + (i === t + 1 ? ' next' : '');
     let cols = [];
     if (r && r[0] === 'skin') { const s = SKINS[r[1]]; cols = [s.helm, s.vest, s.solid != null ? s.solid : s.tint]; }
+    else if (r && r[0] === 'coins') cols = [0xf2c84b, 0x8a6a1a, 0xf2c84b];
     else if (r && r[0] === 'camo') cols = CAMOS[r[1]].c.map(c => c === 0xffffff ? 0x555a5e : c);
     d.innerHTML = '<span class="tn"></span>' + (cols.length ? '<span class="sw">' + cols.map(c => '<i style="background:' + SW(c) + '"></i>').join('') + '</span>' : '') + '<span class="rw"></span><span class="st"></span>';
     d.querySelector('.tn').textContent = 'TIER ' + i;
@@ -2331,7 +2595,7 @@ function renderSettings() {
   }
 }
 $('resetSettings').addEventListener('click', () => { Object.assign(S, DEF); saveS(); renderSettings(); applyQuality(); applySettings(); });
-const ACCT_KEYS = ['name', 'settings', 'career', 'pass', 'skin', 'camo', 'title', 'loadout', 'wlv', 'wcamo', 'lb', 'wallet'];
+const ACCT_KEYS = ['name', 'settings', 'career', 'pass', 'skin', 'camo', 'title', 'loadout', 'wlv', 'wcamo', 'lb', 'wallet', 'daily'];
 function makeBackup() {
   const data = {}; for (const k of ACCT_KEYS) { const v = store.get(k, null); if (v !== null) data[k] = v; }
   try { return 'DL1.' + btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/=+$/, ''); } catch (e) { return ''; }
@@ -2399,13 +2663,13 @@ function startSiege() {
   Object.assign(P, { yaw: 0, pitch: 0, hp: 100, alive: true, vx: 0, vz: 0, jy: 0, jvy: 0, crouch: false, ads: false, stamina: 100, kick: 0, bloom: 0, prot: 0 });
   P.pos.set(0, 1.6, 9); if (insideSolid(P.pos, 0.6)) { const o = randomOpenPoint(); P.pos.set(o.x, 1.6, o.z); }
   hud.death.hidden = true;
-  score = 0; wave = 0; betweenWaves = 1; toSpawn = 0;
+  score = 0; wave = 0; betweenWaves = 1; toSpawn = 0; P.streak = 0; P.mCoins = 0; scanT = 0;
   state = 'play'; hideMenu(); updHud(); lockPointer();
 }
 async function startTDM(isDuel) {
   if (isDuel && !party) { const pm = $('partyMsg'); pm.textContent = 'Duel 1v1 needs a party. Tap Create party and send the code to your friend, or type their code and tap Join.'; pm.style.color = 'var(--accent)'; $('partyBox').scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
   ensureAudio(); clearSiege(); lockPointer();
-  duel = !!isDuel; SCORE_LIMIT = duel ? 7 : 30;
+  duel = !!isDuel; SCORE_LIMIT = duel ? 7 : 100;
   const btn = duel ? $('duelBtn') : $('tdmBtn'), desc = duel ? $('duelDesc') : $('tdmDesc'), oldDesc = desc.textContent;
   btn.disabled = true; mode = 'tdm'; equip(loadout);
   resetTDM();
@@ -2799,9 +3063,10 @@ function drawRadar() {
   else for (const e of T.ents.values()) {
     if (!e.alive) continue;
     if (e.team === P.team) dot(e.rx, e.rz, e.team === 'b' ? '#6aa8e0' : '#e0603f', 5);
-    else if (!losBlocked(P.pos.x, P.pos.z, e.rx, e.rz)) dot(e.rx, e.rz, '#e5533d', 5);
+    else if (scanT > 0 || !losBlocked(P.pos.x, P.pos.z, e.rx, e.rz)) dot(e.rx, e.rz, '#e5533d', 5);
   }
   rg.restore();
+  if (scanT > 0) { const ph = (performance.now() / 1200) % 1; rg.strokeStyle = 'rgba(229,83,61,' + (0.6 * (1 - ph)).toFixed(2) + ')'; rg.lineWidth = 2; rg.beginPath(); rg.arc(c, c, (c - 2) * ph, 0, 7); rg.stroke(); }
   rg.strokeStyle = 'rgba(242,169,59,0.45)'; rg.lineWidth = 2; rg.beginPath(); rg.arc(c, c, c - 2, 0, 7); rg.stroke();
   rg.fillStyle = '#efe8d6'; rg.beginPath(); rg.moveTo(c, c - 9); rg.lineTo(c - 6, c + 6); rg.lineTo(c + 6, c + 6); rg.fill();
 }
@@ -2837,16 +3102,21 @@ function loop() {
     netTick(dt);
   } else if (state === 'menu') {
     menuT += dt * 0.06;
-    camera.position.set(Math.cos(menuT) * 30, 9, Math.sin(menuT) * 30); camera.lookAt(0, 2, 0);
+    camera.position.set(Math.cos(menuT) * 40, 11, Math.sin(menuT) * 40); camera.lookAt(0, 2, 0);
     if (Math.abs(camera.fov - baseFov) > 0.01) { camera.fov = baseFov; camera.updateProjectionMatrix(); }
   }
   if (mode === 'tdm') renderEnts(dt);
+  stepSnow(dt);
+  if (state === 'play') { stepMissile(dt); if (scanT > 0) scanT = Math.max(0, scanT - dt); updStreak(); }
   if (state === 'play' || (state === 'paused' && mode === 'tdm')) fx(dt);
   radarT -= dt; if (state === 'play' && S.radar && radarT <= 0) { radarT = 0.1; drawRadar(); }
   renderer.render(scene, camera);
 }
 
 /* ---------- boot ---------- */
+{ const a = THEME.accent, n = parseInt(a.slice(1), 16), rgb = [(n >> 16) & 255, (n >> 8) & 255, n & 255].join(',');
+  document.documentElement.style.setProperty('--accent', a); document.documentElement.style.setProperty('--line', 'rgba(' + rgb + ',0.3)');
+  $('brandSub').textContent = 'Season ' + SEASON + ' · ' + THEME.name; }
 buildMap(selMap);
 equip(loadout);
 applyCamo('none'); PREV = renderPreviews(); applyCamo();

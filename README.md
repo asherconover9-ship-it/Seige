@@ -4,16 +4,17 @@
 
 **A free tactical arena shooter you play in your browser. No download, no account, no app store.**
 
-## ▶️ [PLAY NOW — latest version (v29)](https://gaayyynesss.github.io/Seige/?v=29)
+## ▶️ [PLAY NOW — latest version (v30)](https://gaayyynesss.github.io/Seige/?v=30)
 
-**Latest:** https://gaayyynesss.github.io/Seige/?v=29
+**Latest:** https://gaayyynesss.github.io/Seige/?v=30
 
 If the game looks like an older version, open the latest link above (the `?v=` number makes your browser load the newest copy).
 
 ### Version history
 | Version | Link | What's new |
 |---|---|---|
-| **v29** | https://gaayyynesss.github.io/Seige/?v=29 | Crate prices 320 / 750, new 1,000-coin **Vault Crate** (Phantom skin + Aurora camo), and a **?** on each crate showing its odds and items |
+| **v30** | https://gaayyynesss.github.io/Seige/?v=30 | **Weekly seasons** (75 tiers, new colors + map decorations each week, Christmas season), **daily rewards & challenges**, **kill streaks** (Map Scan at 10, Missile at 30), match coin bonuses, Team Battle to 100, bigger maps, shop daily item and bad-luck protection |
+| v29 | https://gaayyynesss.github.io/Seige/?v=29 | Crate prices 320 / 750, new 1,000-coin **Vault Crate** (Phantom skin + Aurora camo), and a **?** on each crate showing its odds and items |
 | v28 | https://gaayyynesss.github.io/Seige/?v=28 | Sliding no longer leaves you crouched — you stand back up when the slide ends |
 | v27 | https://gaayyynesss.github.io/Seige/?v=27 | Map vote between matches is now 5 seconds (was 12) |
 | v26 | https://gaayyynesss.github.io/Seige/?v=26 | Shop tab always visible (tab row wraps instead of scrolling off-screen) |
@@ -44,12 +45,26 @@ Everyone who opens the link plays in the same Team Battle. AI soldiers fill ever
 ## Game modes
 | Mode | Description |
 |---|---|
-| **Team Battle** | Delta vs Viper, 5 v 5, across five maps. The first team to 30 eliminations wins. Party members play on the same team. |
+| **Team Battle** | Delta vs Viper, 5 v 5, across five maps. The first team to 100 eliminations wins. Party members play on the same team. |
 | **Duel 1v1** | Face your party member one on one, no bots, first to 7 eliminations. Make a party and share the code first. |
 | **Drone Holdout** | Solo survival against endless waves of armed drones. Grab green supply cases to heal. |
 
+## Daily rewards & challenges
+The **Daily** box on the Play tab has:
+- **Login reward:** tap **Claim** once a day. Coming back on days in a row pays more: 50, 75, 100, 150, 200, 250, then 300 coins every day after that. Miss a day and it starts over.
+- **3 daily challenges:** two give battle-pass XP (1,500–3,000 XP) and one gives coins (250–300). They change every day at midnight.
+
+## Kill streaks
+Eliminations in a row without dying:
+| Streak | Reward |
+|---|---|
+| **10** | **Map Scan:** every enemy shows on your minimap for 15 seconds |
+| **30** | **Missile Strike:** a missile hits the biggest group of enemies |
+
+Your current streak shows in the top-right corner during a match.
+
 ## Coins & shop
-You earn **10 coins** for every elimination in Team Battle, Duels and Drone Holdout. Spend them on the **Shop** tab:
+You earn **10 coins** for every elimination in Team Battle, Duels and Drone Holdout, **+5** for a headshot elimination, and a **+50** bonus for winning a match. The coins you earned show at the end of each match. Spend them on the **Shop** tab:
 
 | Crate | Price | Common | Rare | Epic | Legendary |
 |---|---|---|---|---|---|
@@ -57,13 +72,30 @@ You earn **10 coins** for every elimination in Team Battle, Duels and Drone Hold
 | Elite Crate | 750 coins | 20% | 40% | 28% | 12% |
 | Vault Crate | 1,000 coins | — | 25% | 45% | 30% |
 
-Crates hold shop-only operator skins (Sand Viper, Midnight, Royal Guard, Neon Runner, Magma) and camos that work on every gun (Olive Drab, Rust, Zebra, Bubblegum, Neon, Galaxy, Lava). The **Vault Crate** has no commons and is the only crate with the legendary **Phantom** skin and **Aurora** camo. Tap the **?** on any crate to see its odds and every item inside with its exact drop chance. A duplicate refunds coins (Common 50, Rare 100, Epic 200, Legendary 400). Your coins and crate items are saved on your device and in your backup code.
+Crates hold shop-only operator skins (Sand Viper, Midnight, Royal Guard, Neon Runner, Magma) and camos that work on every gun (Olive Drab, Rust, Zebra, Bubblegum, Neon, Galaxy, Lava). The **Vault Crate** has no commons and is the only crate with the legendary **Phantom** skin and **Aurora** camo. Tap the **?** on any crate to see its odds and every item inside with its exact drop chance. A duplicate refunds coins (Common 50, Rare 100, Epic 200, Legendary 400).
+
+- **Bad-luck protection:** if you open 9 crates of the same type without a Legendary, the 10th is a guaranteed Legendary. Each crate shows how many are left.
+- **Daily item:** one crate item is for sale directly each day (Common 400, Rare 800, Epic 1,300, Legendary 2,000 coins). Everyone sees the same item. Your coins and crate items are saved on your device and in your backup code.
+
+## Seasons
+A **new season starts every week** (Fridays). Each season has its own **color scheme**, **map decorations**, and a new season camo at tier 60. Everything you unlocked in earlier seasons stays yours.
+
+| Season | Dates (2026) | Theme |
+|---|---|---|
+| 1 | until Nov 12 | Dust Storm (50 tiers) |
+| 2 | Nov 13–19 | Ember Ops: orange lanterns |
+| 3 | Nov 20–26 | Harvest: pumpkins and hay bales |
+| 4 | Nov 27–Dec 3 | Neon Grid: glowing neon posts |
+| 5 | Dec 4–10 | Frostbite: ice crystals and snowfall |
+| 6 | Dec 11–17 | Midnight: floating violet orbs |
+| 7 | Dec 18–24 | **Christmas:** snow on every map, decorated trees with presents, snowmen, candy canes |
+| 8 | Dec 25–31 | **Christmas & New Year:** Christmas decorations with gold |
 
 ## Battle pass & skins
-A free **Season 1** battle pass with **50 tiers**. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.
+Each season has a free battle pass with **75 tiers** (Season 1 had 50), with coins every 5 tiers. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.
 
 ### Premium pass
-An optional **Premium Pass** unlocks 3 exclusive operator skins (Gold Rush, Obsidian, Prism), the **VIP** title, and **+25% XP**. Reach the final tier (50) with Premium to earn the custom **VX-9 Tempest** rifle. It's unlocked by entering a premium code on the **Pass** tab. (The code is set by the game's creator — see the note in the project files for how to change it.)
+An optional **Premium Pass** unlocks 3 exclusive operator skins (Gold Rush, Obsidian, Prism), the **VIP** title, and **+25% XP**. Reach the final tier (75) of any season with Premium to earn the custom **VX-9 Tempest** rifle. It's unlocked by entering a premium code on the **Pass** tab. (The code is set by the game's creator — see the note in the project files for how to change it.)
 
 ## Loadouts
 | Weapon | Type | Best for |
