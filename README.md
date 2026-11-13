@@ -4,9 +4,9 @@
 
 **A free tactical arena shooter you play in your browser. No download, no account, no app store.**
 
-## ▶️ [PLAY NOW](https://gaayyynesss.github.io/Seige/?v=17)
+## ▶️ [PLAY NOW](https://gaayyynesss.github.io/Seige/)
 
-https://gaayyynesss.github.io/Seige/?v=17
+https://gaayyynesss.github.io/Seige/
 
 ---
 
@@ -48,7 +48,9 @@ An optional **Premium Pass** unlocks 3 exclusive operator skins (Gold Rush, Obsi
 | **R4 Marksman** | Marksman rifle | Long-range picks with a scope |
 | **Kestrel .338** | Sniper rifle | One-shot kills at distance |
 
-Plus a sidearm, a battle rifle, a compact PDW and a hand cannon. Each weapon has its own scope or red-dot sight when you aim down the sights.
+Plus a sidearm, a battle rifle, a compact PDW and a hand cannon.
+
+**Weapon levels:** every gun levels up (1–10) from its own eliminations. Leveling a gun unlocks **Tiger, Digital, Carbon, Dragon and Diamond** camos for that gun, and each gun remembers its own camo. Each weapon has its own scope or red-dot sight when you aim down the sights.
 
 Headshots deal about double damage and leg hits deal less. Damage drops off at long range.
 
@@ -58,11 +60,16 @@ Headshots deal about double damage and leg hits deal less. Damage drops off at l
 | Move | Left thumb (push to the edge to sprint) | W A S D (Shift to sprint) |
 | Aim | Right thumb | Mouse |
 | Shoot | Hold **FIRE** (slide to aim while shooting) | Left click |
-| Aim down sights | **AIM** | Right click |
+| Aim down sights | Tap **AIM** (tap again to stop; drag from it to look) | Right click |
 | Crouch | **CROUCH** | C |
 | Jump | **JUMP** | Space |
 | Reload | **RELOAD** | R |
+| Leaderboard | Tap the score bar | Hold Tab |
 | Pause | **II** | Esc |
+
+## Leaderboards
+- **Match leaderboard:** tap the score bar at the top (or hold **Tab** on a keyboard) to see every player and bot ranked by eliminations and deaths. It also shows at the end of every match and on the pause screen.
+- **Your leaderboards:** the **Career** tab lists your 10 best battles and your 10 best Drone Holdout runs. They save on your device and travel with your backup code.
 
 ## Settings
 Open the **Settings** tab to change look and aiming sensitivity, aim assist, auto-fire, the left-handed touch layout, graphics quality, field of view, camera motion, the frame-rate counter, volume, crosshair color and size, and the minimap. Pick **Low** quality if the game feels slow on an older device.

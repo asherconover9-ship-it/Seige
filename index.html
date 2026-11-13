@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113153443';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113184554';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -157,6 +157,22 @@ button { font-family: inherit; }
 #scorebar span { display: grid; place-items: center; padding: 4px 10px; }
 #scorebar .tn { font: 700 12px var(--display); letter-spacing: .18em; }
 #scorebar .sc { font: 700 22px var(--mono); min-width: 34px; }
+#scorebar { pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#board { position: absolute; top: calc(54px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); width: min(560px, calc(100% - 32px)); display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(15,17,13,.86); border: 1px solid var(--line); padding: 8px 10px; pointer-events: none; }
+#board[hidden] { display: none; }
+#board .bh { display: flex; justify-content: space-between; font: 700 12px var(--display); letter-spacing: .16em; padding-bottom: 3px; border-bottom: 1px solid rgba(239,232,214,.18); }
+#board .br { display: grid; grid-template-columns: 1fr 26px 26px; gap: 4px; font: 600 12px var(--mono); padding: 2px 0; }
+#board .br span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--body, inherit); }
+#board .br span:not(:first-child) { text-align: right; }
+#board .br.me { color: var(--accent); }
+#board .br.hd { opacity: .6; font-size: 10px; letter-spacing: .1em; }
+#board .bot { opacity: .55; font-size: 10px; }
+.lb { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 6px; }
+.lb th, .lb td { text-align: left; padding: 6px 8px; border-bottom: 1px solid rgba(239,232,214,.1); }
+.lb th { font: 600 11px var(--display); letter-spacing: .14em; color: var(--dim); }
+.lb td.n { font-family: var(--mono); }
+.lb tr.top td { color: var(--accent); }
+.lb .empty { opacity: .65; font-size: 13px; padding: 10px 8px; }
 #scorebar .goal { font: 600 10px var(--display); letter-spacing: .14em; color: var(--dim); border-inline: 1px solid rgba(239,232,214,.12); }
 #waveTag { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); font: 700 16px var(--display); letter-spacing: .2em; background: var(--panel); padding: 5px 14px; border-bottom: 1px solid var(--line); }
 #waveTag b { color: var(--accent); font-family: var(--mono); }
@@ -179,6 +195,8 @@ button { font-family: inherit; }
 #netstat { position: absolute; left: 50%; top: 44%; transform: translateX(-50%); text-align: center; font: 600 15px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--ink); background: var(--panel); border: 1px solid var(--line); padding: 10px 18px; max-width: 80vw; }
 #netstat small { display: block; font: 400 12px var(--mono); letter-spacing: 0; text-transform: none; color: var(--dim); margin-top: 5px; }
 #banner { position: absolute; left: 0; right: 0; top: 24%; text-align: center; font: 700 clamp(28px, 6.5vw, 54px) var(--display); letter-spacing: .14em; color: var(--ink); opacity: 0; transition: opacity .4s; text-shadow: 0 2px 18px rgba(0,0,0,.7); padding-inline: 16px; }
+#hud.board-on #banner { top: calc(212px + env(safe-area-inset-top, 0px)); font-size: clamp(22px, 4.2vw, 38px); }
+#hud.board-on #vote { top: max(44%, calc(292px + env(safe-area-inset-top, 0px))); }
 #banner small { display: block; font: 600 15px var(--display); letter-spacing: .2em; color: var(--accent); margin-top: 4px; }
 #deathMsg { position: absolute; left: 0; right: 0; top: 58%; text-align: center; font: 600 17px var(--display); letter-spacing: .14em; text-shadow: 0 1px 6px #000; padding-inline: 16px; }
 #stick { position: absolute; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: 50%; border: 2px solid rgba(239,232,214,.25); background: rgba(239,232,214,.05); opacity: 0; }
@@ -256,6 +274,8 @@ button { font-family: inherit; }
 .wcard img, .wcard .ph { width: 100%; aspect-ratio: 12 / 5; object-fit: contain; display: block; }
 .bars { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; }
 .bar { height: 5px; background: rgba(239,232,214,.1); } .bar i { display: block; height: 100%; background: var(--ink); }
+.bar.lv i { background: var(--accent); }
+.wlvtxt { font-size: 12px; opacity: .75; }
 .equipped { font: 700 11px var(--display); letter-spacing: .16em; color: var(--accent); visibility: hidden; }
 .wcard[aria-pressed="true"] .equipped { visibility: visible; }
 .sets { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
@@ -354,6 +374,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
     <div id="feed"></div>
   </div>
   <div id="scorebar" hidden><span class="tn t-b">DELTA</span><span class="sc t-b" id="scB">0</span><span class="goal" id="scGoal">TO 30</span><span class="sc t-r" id="scR">0</span><span class="tn t-r">VIPER</span></div>
+  <div id="board" hidden><div id="boardB"></div><div id="boardR"></div></div>
   <div id="waveTag" hidden>WAVE <b id="wave">1</b></div>
   <canvas id="scopeCv"></canvas>
   <div id="cross"><i></i><i></i><i></i><i></i><b></b></div>
@@ -368,7 +389,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
     <div id="slideBtn" class="tbtn touch-only"><span>SLIDE</span></div>
     <div id="crouchBtn" class="tbtn touch-only"><span>CROUCH</span></div>
     <div id="jumpBtn" class="tbtn touch-only"><span>JUMP</span></div>
-    <div id="adsBtn" class="tbtn touch-only"><span>HOLD<br>AIM</span></div>
+    <div id="adsBtn" class="tbtn touch-only"><span>AIM</span></div>
     <div id="reloadBtn" class="tbtn touch-only"><span>RELOAD</span></div>
     <div id="fireBtn" class="tbtn touch-only"><span>FIRE<small>drag to aim</small></span></div>
   </div>
@@ -451,11 +472,11 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
       <p class="tip">Your weapon changes the next time you spawn.</p>
       <h3 class="subh">Operator skin</h3>
       <div class="skins" id="skinList"></div>
-      <h3 class="subh">Weapon camo</h3>
+      <h3 class="subh" id="camoHead">Weapon camo</h3>
       <div class="skins" id="camoList"></div>
       <h3 class="subh">Operator title</h3>
       <div class="skins" id="titleList"></div>
-      <p class="tip">Skins show on your soldier to other players. Titles show on your Career card. Unlock more by ranking up the battle pass.</p>
+      <p class="tip">Pick a weapon above to set its camo. Each gun levels up from its own eliminations and unlocks Tiger, Digital, Carbon, Dragon and Diamond camos for that gun. Skins show on your soldier to other players; titles show on your Career card.</p>
     </section>
 
     <section class="pane" id="pane-settings" hidden>
@@ -504,6 +525,10 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
         <div class="prow" id="acctActions" hidden><button class="btn go" id="acctCopy" type="button">Copy</button><button class="btn ghost" id="acctLoad" type="button">Load code</button><button class="btn ghost" id="acctCancel" type="button">Close</button></div>
       </div>
       <div class="career" id="careerGrid"></div>
+      <h3 class="subh">Leaderboard · your best battles</h3>
+      <table class="lb" id="lbBattles"></table>
+      <h3 class="subh">Leaderboard · your best Holdout runs</h3>
+      <table class="lb" id="lbHold"></table>
       <p class="tip">Career stats are saved on this device.</p>
     </section>
   </div>
@@ -532,6 +557,8 @@ const S = Object.assign({}, DEF, store.get('settings', {}));
 const saveS = () => store.set('settings', S);
 const C = Object.assign({ matches: 0, wins: 0, kills: 0, deaths: 0, heads: 0, bestWave: 0, bestScore: 0 }, store.get('career', {}));
 const saveC = () => store.set('career', C);
+const LB = Object.assign({ battles: [], holdout: [] }, store.get('lb', {}));
+function lbAdd(list, row, cmp) { LB[list] = (Array.isArray(LB[list]) ? LB[list] : []).concat([row]).sort(cmp).slice(0, 10); store.set('lb', LB); }
 const SKINS = {
   std:    { name: 'Standard', vest: 0x2d2f28, helm: null, tint: null },
   desert: { name: 'Sandstorm', vest: 0x8a7650, helm: 0xb59a6a, tint: 0xf0dcb4 },
@@ -553,6 +580,12 @@ const CAMOS = {
   blood:  { name: 'Blood', c: [0xc85a50, 0xd06a60, 0xffffff] },
   cobalt: { name: 'Cobalt', c: [0x6f8ce0, 0x7a96e8, 0xc8d4ff] },
   gold:   { name: 'Gold', c: [0xe0b850, 0xe8c060, 0xf0c860], metal: true },
+  // weapon mastery camos: unlocked separately on each gun by levelling that gun
+  tiger:   { name: 'Tiger', c: [0xe0902a, 0x2a1a0c, 0xe0902a], lvl: 3 },
+  digital: { name: 'Digital', c: [0x6c7c8c, 0x2e3a46, 0x9aa8b6], lvl: 5 },
+  carbon:  { name: 'Carbon', c: [0x5a5f68, 0x24262b, 0x7a808a], lvl: 7 },
+  dragon:  { name: 'Dragon', c: [0xc8341c, 0x3a0a06, 0xe86a2a], lvl: 9 },
+  diamond: { name: 'Diamond', c: [0xc8ecff, 0x6aa8d0, 0xf0faff], lvl: 10, metal: true },
 };
 const SW = v => '#' + ((v == null ? 0x4d5a68 : v) >>> 0).toString(16).padStart(6, '0');
 const BP_XP = 1000, BP_TIERS = 50;
@@ -569,6 +602,14 @@ function bpOwned(kind, id) { if (kind === 'skin') return PREMIUM_SKINS.has(id) ?
 function rewardName(r) { return r[0] === 'skin' ? SKINS[r[1]].name + ' skin' : r[0] === 'camo' ? CAMOS[r[1]].name + ' camo' : '“' + r[1] + '” title'; }
 let mySkin = SKINS[store.get('skin', 'std')] ? store.get('skin', 'std') : 'std';
 let myCamo = CAMOS[store.get('camo', 'none')] ? store.get('camo', 'none') : 'none';
+// weapon levels: kills per gun -> level 1..10; each gun remembers its own camo
+const WL = Object.assign({}, store.get('wlv', {}));
+const WCAMO = Object.assign({}, store.get('wcamo', {}));
+const WLV_KILLS = [0, 5, 12, 20, 30, 42, 56, 72, 90, 110];
+const WLV_MAX = WLV_KILLS.length;
+function wLevel(w) { const n = WL[w] || 0; let l = 1; for (let i = 1; i < WLV_MAX; i++) if (n >= WLV_KILLS[i]) l = i + 1; return l; }
+function camoOwned(k, w) { const d = CAMOS[k]; if (!d) return false; return d.lvl ? wLevel(w) >= d.lvl : bpOwned('camo', k); }
+function camoOf(w) { const k = WCAMO[w] !== undefined ? WCAMO[w] : myCamo; return CAMOS[k] && camoOwned(k, w) ? k : 'none'; }
 let myTitle = String(store.get('title', '') || '');
 let party = String(store.get('party', '') || '').replace(/[^A-Z0-9]/gi, '').slice(0, 6).toUpperCase();
 let proom = null, partyPeers = [];
@@ -580,7 +621,7 @@ const WEAPONS = {
   ar:  { name: 'M7 Rifle', cls: 'Assault rifle', mag: 30, rate: 0.1, dmg: 24, head: 2, r0: 25, r1: 60, fall: 0.6, spread: 0.007, move: 0.02, recoil: 0.011, reload: 2.0, zoom: 1.5, mob: 1, snd: 'ar', stats: [0.55, 0.65, 0.65, 0.6] },
   smg: { name: 'K9 SMG', cls: 'Submachine gun', mag: 32, rate: 0.068, dmg: 17, head: 1.8, r0: 12, r1: 35, fall: 0.5, spread: 0.011, move: 0.012, recoil: 0.008, reload: 1.6, zoom: 1.3, mob: 1.06, snd: 'smg', stats: [0.38, 0.95, 0.35, 0.9] },
   sg:  { name: 'H12 Breacher', cls: 'Shotgun', mag: 7, rate: 0.75, dmg: 15, pellets: 8, head: 1.5, r0: 7, r1: 24, fall: 0.15, spread: 0.055, move: 0.01, recoil: 0.04, reload: 2.8, zoom: 1.2, mob: 1, snd: 'sg', stats: [0.9, 0.2, 0.15, 0.6] },
-  lmg: { name: 'B60 LMG', cls: 'Light machine gun', mag: 100, rate: 0.075, dmg: 22, head: 1.8, r0: 28, r1: 65, fall: 0.6, spread: 0.011, move: 0.035, recoil: 0.01, reload: 4.2, zoom: 1.4, mob: 0.85, snd: 'ar', stats: [0.5, 0.8, 0.7, 0.25] },
+  lmg: { name: 'B60 LMG', cls: 'Light machine gun', mag: 100, rate: 0.07, dmg: 26, head: 1.9, r0: 34, r1: 72, fall: 0.68, spread: 0.008, move: 0.025, recoil: 0.0075, reload: 3.4, zoom: 1.4, mob: 0.92, snd: 'ar', stats: [0.6, 0.85, 0.78, 0.42] },
   dmr: { name: 'R4 Marksman', cls: 'Marksman rifle', mag: 10, rate: 0.3, dmg: 58, head: 2, r0: 45, r1: 90, fall: 0.8, spread: 0.002, move: 0.03, recoil: 0.03, reload: 2.4, zoom: 3, mob: 0.95, snd: 'dmr', stats: [0.8, 0.3, 0.9, 0.4] },
   snp: { name: 'Kestrel .338', cls: 'Sniper rifle', mag: 5, rate: 1.25, dmg: 92, head: 2.5, r0: 80, r1: 140, fall: 0.85, spread: 0.0012, hip: 0.05, move: 0.06, recoil: 0.05, reload: 3.0, zoom: 4, mob: 0.9, snd: 'snp', stats: [1, 0.1, 1, 0.2] },
   pst: { name: 'P9 Sidearm', cls: 'Pistol', mag: 15, rate: 0.15, dmg: 28, head: 2, r0: 15, r1: 40, fall: 0.55, spread: 0.008, move: 0.01, recoil: 0.016, reload: 1.3, zoom: 1.25, mob: 1.1, snd: 'pst', stats: [0.45, 0.5, 0.4, 1] },
@@ -964,11 +1005,31 @@ const GM = {
   dot: new THREE.MeshBasicMaterial({ color: 0xff3b2f, toneMapped: false }),
 };
 const GM_BASE = { metal: GM.metal.metalness, poly: GM.poly.metalness, fde: GM.fde.metalness };
-function applyCamo() {
-  const c = (CAMOS[myCamo] || CAMOS.none);
-  [GM.poly, GM.fde, GM.metal].forEach((m, i) => { m.color.setHex(c.c[i]); });
-  GM.poly.metalness = c.metal ? 0.8 : GM_BASE.poly; GM.fde.metalness = c.metal ? 0.8 : GM_BASE.fde;
-  GM.poly.roughness = c.metal ? 0.3 : 0.88; GM.fde.roughness = c.metal ? 0.3 : 0.85;
+// Camos swap in a real camo-pattern texture. (Tinting alone didn't show: the factory
+// textures are near-black, and any colour multiplied by black stays black.)
+const GM_ORIG = { metal: GM.metal.map, poly: GM.poly.map, fde: GM.fde.map };
+const camoGunCache = {};
+function camoGunTex(k) {
+  if (camoGunCache[k]) return camoGunCache[k];
+  const c = CAMOS[k].c, hx = v => '#' + (v >>> 0).toString(16).padStart(6, '0');
+  const shade = (v, f) => hx((Math.round(((v >> 16) & 255) * f) << 16) | (Math.round(((v >> 8) & 255) * f) << 8) | Math.round((v & 255) * f));
+  return (camoGunCache[k] = camo(hx(c[0]), [shade(c[0], 0.62), hx(c[1]), shade(c[1], 0.42)]));
+}
+function applyCamo(force) {
+  const k = force || camoOf(P.w), c = CAMOS[k];
+  const mats = [GM.poly, GM.fde, GM.metal];
+  if (k === 'none') {
+    GM.poly.map = GM_ORIG.poly; GM.fde.map = GM_ORIG.fde; GM.metal.map = GM_ORIG.metal;
+    mats.forEach(m => m.color.setHex(0xffffff));
+    GM.metal.metalness = GM_BASE.metal; GM.poly.metalness = GM_BASE.poly; GM.fde.metalness = GM_BASE.fde;
+    GM.metal.roughness = 0.36; GM.poly.roughness = 0.88; GM.fde.roughness = 0.85;
+  } else {
+    const t = camoGunTex(k);
+    mats.forEach(m => { m.map = t; m.color.setHex(0xffffff); });
+    GM.metal.metalness = c.metal ? 0.85 : 0.3; GM.poly.metalness = c.metal ? 0.85 : 0; GM.fde.metalness = c.metal ? 0.85 : 0;
+    GM.metal.roughness = c.metal ? 0.28 : 0.55; GM.poly.roughness = c.metal ? 0.28 : 0.8; GM.fde.roughness = c.metal ? 0.28 : 0.8;
+  }
+  mats.forEach(m => { m.needsUpdate = true; });
 }
 const TILE = new Map([[GM.metal, 0.25], [GM.poly, 0.12], [GM.fde, 0.12], [GM.barrel, 0.1]]);
 function buildGunParts(key, grp) {
@@ -1081,16 +1142,17 @@ function renderPreviews() {
       r.render(sc, cam); out[key] = r.domElement.toDataURL('image/png');
       sc.remove(g); g.traverse(o => { if (o.geometry) o.geometry.dispose(); });
     }
+    addSkinPreviews(r);
   } catch (e) {}
   r.dispose(); try { r.forceContextLoss(); } catch (e) {}
   return out;
 }
 let SKINPREV = {};
-function renderSkinPreviews() {
-  const out = {}; let r;
-  try { r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true }); } catch (e) { return out; }
+// Rendered with the SAME renderer as the weapon previews (one WebGL context) —
+// iOS Safari/Chrome cap simultaneous contexts, and a second one blanked these to black.
+function addSkinPreviews(r) {
   try {
-    r.setPixelRatio(1); r.setSize(300, 400, false); r.outputEncoding = THREE.sRGBEncoding; r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.5;
+    r.setSize(300, 400, false);
     const sc = new THREE.Scene();
     try { sc.environment = new THREE.PMREMGenerator(r).fromEquirectangular(skyTex).texture; } catch (e) {}
     sc.add(new THREE.HemisphereLight(0xffffff, 0x33373c, 1.0));
@@ -1102,12 +1164,10 @@ function renderSkinPreviews() {
       const sol = makeSoldier('b', { sk: key }); const g = sol.g;
       sol.mark.visible = false;
       sc.add(g); g.position.set(0, 0, 0); g.rotation.set(0, 0.55, 0); g.updateMatrixWorld(true);
-      r.render(sc, cam); out[key] = r.domElement.toDataURL('image/png');
+      r.render(sc, cam); const u = r.domElement.toDataURL('image/png'); if (u && u.length > 2000) SKINPREV[key] = u;
       sc.remove(g);
     }
   } catch (e) {}
-  r.dispose(); try { r.forceContextLoss(); } catch (e) {}
-  return out;
 }
 
 /* ---------- audio ---------- */
@@ -1173,7 +1233,7 @@ let state = 'menu', mode = 'siege';
 const input = { mx: 0, mz: 0, fire: false, keys: {}, looked: 0, ldx: 0, ldy: 0, jump: false };
 const ray = new THREE.Raycaster();
 const tmpV = new THREE.Vector3(), tmpV2 = new THREE.Vector3();
-function equip(key) { P.w = key; P.ammo = WEAPONS[key].mag; P.reloading = 0; buildGun(key); }
+function equip(key) { P.w = key; P.ammo = WEAPONS[key].mag; P.reloading = 0; buildGun(key); applyCamo(); }
 
 /* pooled effects */
 const sparkGeo = new THREE.BoxGeometry(0.06, 0.06, 0.06);
@@ -1231,7 +1291,7 @@ function updateBullets(dt) {
 }
 
 /* ---------- HUD (game) ---------- */
-const hud = { hp: $('hpfill'), hpNum: $('hpNum'), st: $('stfill'), score: $('score'), wave: $('wave'), ammo: $('ammo'), reload: $('reloadTag'), hurt: $('hurt'), hit: $('hit'), banner: $('banner'), cross: $('cross'), kd: $('kd'), death: $('deathMsg'), feed: $('feed'), wName: $('wName'), fps: $('fpsTag') };
+const hud = { root: $('hud'), hp: $('hpfill'), hpNum: $('hpNum'), st: $('stfill'), score: $('score'), wave: $('wave'), ammo: $('ammo'), reload: $('reloadTag'), hurt: $('hurt'), hit: $('hit'), banner: $('banner'), cross: $('cross'), kd: $('kd'), death: $('deathMsg'), feed: $('feed'), wName: $('wName'), fps: $('fpsTag') };
 let hitT = 0, hurtT = 0, bannerT = 0;
 function updHud() {
   const hp = Math.max(0, Math.round(P.hp));
@@ -1242,6 +1302,15 @@ function updHud() {
   hud.reload.textContent = P.reloading > 0 ? 'RELOADING' : P.ammo === 0 ? 'RELOAD' : P.ammo <= W().mag * 0.25 ? 'LOW AMMO' : '';
   if (mode === 'siege') { hud.score.textContent = score.toLocaleString(); hud.wave.textContent = wave; }
   else { hud.score.textContent = P.kills; hud.kd.textContent = 'Deaths ' + P.matchDeaths; }
+}
+function addWeaponKill() {
+  const w = P.w; if (!WEAPONS[w]) return;
+  const before = wLevel(w); WL[w] = (WL[w] || 0) + 1; store.set('wlv', WL);
+  const after = wLevel(w);
+  if (after > before) {
+    const un = Object.entries(CAMOS).filter(([k, d]) => d.lvl === after).map(([k, d]) => d.name + ' camo');
+    banner(WEAPONS[w].name.toUpperCase() + ' · LEVEL ' + after, un.length ? 'Unlocked ' + un.join(', ') : (after >= WLV_MAX ? 'Max level' : 'Weapon level up'), 3);
+  }
 }
 function addXP(n, why) {
   if (!(n > 0)) return;
@@ -1351,7 +1420,7 @@ function dropPickup(pos) {
 }
 function killDrone(e) {
   spark(e.g.position, e.color, 18); sfx.kill(); hitMarker('kill');
-  score += e.points * (1 + Math.floor(wave / 5)); addXP(12);
+  score += e.points * (1 + Math.floor(wave / 5)); addXP(12); addWeaponKill();
   if (Math.random() < 0.25) dropPickup(e.g.position);
   scene.remove(e.g); enemies.splice(enemies.indexOf(e), 1); updHud();
 }
@@ -1407,6 +1476,7 @@ function siegeHurt(dmg, sx, sz) {
 function siegeOver() {
   state = 'over';
   C.bestWave = Math.max(C.bestWave, wave); C.bestScore = Math.max(C.bestScore, score); C.deaths++; saveC();
+  lbAdd('holdout', { s: score, wv: wave, m: curMap, t: Date.now() }, (a, b) => b.s - a.s || b.wv - a.wv || b.t - a.t);
   $('finalScore').textContent = score.toLocaleString(); $('finalWave').textContent = wave; $('bestScore').textContent = C.bestScore.toLocaleString();
   showMenu('over');
 }
@@ -1520,6 +1590,7 @@ function onDeath(victim, killer, vteam) {
   if (T.win) return;
   const winner = other(vteam);
   T.sc[winner]++;
+  (T.st[victim] = T.st[victim] || [0, 0])[1]++; if (killer && killer !== victim) (T.st[killer] = T.st[killer] || [0, 0])[0]++;
   T.kf.push({ s: ++T.kfSeq, k: nameOf(killer).slice(0, 16), kt: teamOf(killer) || winner, v: nameOf(victim).slice(0, 16), vt: vteam, ki: killer || '' });
   if (T.kf.length > 5) T.kf.shift();
   showFeed(T.kf);
@@ -1533,7 +1604,7 @@ function showFeed(list) {
     k.className = 't-' + (e.kt === 'r' ? 'r' : 'b'); v.className = 't-' + (e.vt === 'r' ? 'r' : 'b');
     k.textContent = String(e.k || '?'); v.textContent = String(e.v || '?');
     row.append(k, '  ✕  ', v);
-    if (e.ki === myPeer) { row.classList.add('me'); P.kills++; C.kills++; saveC(); updHud(); addXP(50 + (P.lastHead && performance.now() - P.lastHead < 1500 ? 15 : 0)); }
+    if (e.ki === myPeer) { row.classList.add('me'); P.kills++; C.kills++; saveC(); updHud(); addXP(50 + (P.lastHead && performance.now() - P.lastHead < 1500 ? 15 : 0)); addWeaponKill(); }
     hud.feed.prepend(row);
     while (hud.feed.children.length > 4) hud.feed.lastChild.remove();
     setTimeout(() => row.remove(), 6000);
@@ -1714,6 +1785,7 @@ function netTick(dt) {
     if (typeof hp.ep === 'number' && hp.ep !== T.ep) { T.ep = hp.ep; newMatchLocal(); }
     T.win = hp.w === 'b' || hp.w === 'r' ? hp.w : ''; T.winT = +hp.wt || 0;
     if (Array.isArray(hp.kf)) showFeed(hp.kf);
+    if (hp.st && typeof hp.st === 'object' && !Array.isArray(hp.st)) T.st = hp.st;
     if (Array.isArray(hp.hb)) T.lastHb = hp.hb;
     const hd = +((hp.hd || {})[myPeer]) || 0, key = host.peer;
     if (T.seenHd[key] == null) T.seenHd[key] = hd;
@@ -1737,9 +1809,10 @@ function netTick(dt) {
     const targets = hs.map(h => ({ id: h.peer, team: h.pr.tm, x: +h.pr.x || 0, z: +h.pr.z || 0, alive: h.me ? P.alive : !!h.pr.a, bot: false }))
       .concat(T.bots.map(b => ({ id: b.id, team: b.team, x: b.x, z: b.z, alive: b.alive, bot: true })));
     if (!T.win) for (const b of T.bots) botStep(b, dt, targets);
-    else { T.winT -= dt; if (T.winT <= 0) { buildMap(pickNextMap(hs)); T.ep++; T.sc = { b: 0, r: 0 }; T.win = ''; T.kf = []; T.bots.forEach(b => { b.alive = false; b.respawn = 0.01; }); newMatchLocal(); } }
+    else { T.winT -= dt; if (T.winT <= 0) { buildMap(pickNextMap(hs)); T.ep++; T.sc = { b: 0, r: 0 }; T.win = ''; T.kf = []; T.st = {}; T.bots.forEach(b => { b.alive = false; b.respawn = 0.01; }); newMatchLocal(); } }
   }
-  if (T.win && !T.prevWin) { C.matches++; if (T.win === P.team) C.wins++; saveC(); addXP(80 + (T.win === P.team ? 150 : 0)); }
+  if (T.win && !T.prevWin) { C.matches++; if (T.win === P.team) C.wins++; saveC(); addXP(80 + (T.win === P.team ? 150 : 0));
+    lbAdd('battles', { k: P.kills, d: P.matchDeaths, r: T.win === P.team ? 'Win' : 'Loss', m: curMap, du: duel ? 1 : 0, t: Date.now() }, (a, b) => b.k - a.k || a.d - b.d || b.t - a.t); }
   if (!T.win && T.prevWin) myVote = null;
   T.prevWin = T.win;
   updVote(hs);
@@ -1756,6 +1829,7 @@ function netTick(dt) {
     if (P.lastHurt > 5 && P.hp < 100) { P.hp = Math.min(100, P.hp + 12 * dt); if (T.frame % 10 === 0) updHud(); }
   }
   $('scB').textContent = T.sc.b; $('scR').textContent = T.sc.r;
+  updBoard(dt);
   if (T.win) banner(TEAM_NAME[T.win] + ' WINS', (T.win === P.team ? 'Victory' : 'Defeat') + ' · next match in ' + Math.max(0, Math.ceil(T.winT)), 1);
   T.sendT -= dt;
   if (troom && T.sendT <= 0) {
@@ -1763,15 +1837,16 @@ function netTick(dt) {
     const keys = Object.keys(T.myDm);
     if (keys.length > 24) keys.forEach(k => { if (!BOT_NAMES[k] && !hs.some(h => h.peer === k)) delete T.myDm[k]; });
     const pr = { n: playerName, tm: P.team, x: r2(P.pos.x), z: r2(P.pos.z), y: r2(P.yaw), p: r2(P.pitch), j: r2(P.jy), c: P.crouch ? 1 : 0, h: Math.round(P.hp), a: P.alive ? 1 : 0, d: P.deaths, kb: P.killer || null, sh: P.shots, dm: T.myDm, mv: T.win ? (myVote || null) : null, sk: mySkin, pt: party || null, t: T.beat };
-    if (T.isHost) Object.assign(pr, { hb: T.bots.map(b => [b.id, r2(b.x), r2(b.z), r2(b.yaw), Math.round(b.hp), b.alive ? 1 : 0, b.shots]), hd: T.hd, hk: T.hk, sc: [T.sc.b, T.sc.r], ep: T.ep, w: T.win || null, wt: r2(T.winT), kf: T.kf, mp: curMap });
-    else Object.assign(pr, { hb: null, hd: null, hk: null, sc: null, ep: null, w: null, wt: null, kf: null, mp: null });
+    if (T.isHost) Object.assign(pr, { hb: T.bots.map(b => [b.id, r2(b.x), r2(b.z), r2(b.yaw), Math.round(b.hp), b.alive ? 1 : 0, b.shots]), hd: T.hd, hk: T.hk, sc: [T.sc.b, T.sc.r], ep: T.ep, w: T.win || null, wt: r2(T.winT), kf: T.kf, mp: curMap, st: T.st });
+    else Object.assign(pr, { hb: null, hd: null, hk: null, sc: null, ep: null, w: null, wt: null, kf: null, mp: null, st: null });
     troom.presence(pr).catch(() => {});
   }
 }
 function resetTDM() {
   for (const e of [...T.ents.values()]) removeEnt(e);
   Object.assign(T, { bots: [], botMap: {}, isHost: false, hostPeer: null, sc: { b: 0, r: 0 }, ep: 0, win: '', winT: 0, prevWin: '', myDm: {}, seenDm: {}, seenHd: {}, hd: {}, hk: {},
-    lastDeaths: {}, beats: {}, kf: [], kfSeq: 0, shownSeq: 0, lastHb: null, sendT: 0, humans: [] });
+    lastDeaths: {}, beats: {}, kf: [], kfSeq: 0, shownSeq: 0, lastHb: null, sendT: 0, humans: [], st: {}, bdT: 0 });
+  boardTap = false; $('board').hidden = true; $('hud').classList.remove('board-on');
   P.kills = 0; P.matchDeaths = 0; P.killer = ''; myVote = null; voteEl.hidden = true; clearBullets();
   hud.feed.textContent = '';
 }
@@ -1839,7 +1914,7 @@ function renderMaps() {
   }
 }
 const voteEl = $('vote'), voteRow = $('voteRow'); let myVote = null;
-$('voteTitle').textContent = isTouch ? 'Tap to vote for the next map' : 'Vote for the next map: press 1, 2 or 3';
+$('voteTitle').textContent = isTouch ? 'Tap to vote for the next map' : 'Vote for the next map: press 1 to ' + Object.keys(MAPS).length;
 Object.keys(MAPS).forEach((k, i) => {
   const b = document.createElement('button'); b.type = 'button'; b.className = 'vbtn'; b.dataset.map = k;
   b.innerHTML = '<b></b><span></span><em>0</em>'; b.children[0].textContent = (i + 1) + '. ' + MAPS[k].name; b.children[1].textContent = MAPS[k].desc;
@@ -1866,7 +1941,8 @@ function renderLoadout() {
     const statNames = ['Damage', 'Fire rate', 'Range', 'Handling'];
     b.innerHTML = `<div class="wtop"><span class="wname"></span><span class="equipped">EQUIPPED</span></div><span class="wcls"></span>
       ${PREV[key] ? `<img alt="" src="${PREV[key]}">` : '<span class="ph"></span>'}
-      <div class="bars">${statNames.map((n, i) => `<span class="label">${n}</span><span class="bar"><i style="width:${Math.round(w.stats[i] * 100)}%"></i></span>`).join('')}<span class="label">Magazine</span><span class="num">${w.mag}</span></div>`;
+      <div class="bars">${statNames.map((n, i) => `<span class="label">${n}</span><span class="bar"><i style="width:${Math.round(w.stats[i] * 100)}%"></i></span>`).join('')}<span class="label">Level ${wLevel(key)}</span><span class="bar lv"><i style="width:${wLevel(key) >= WLV_MAX ? 100 : Math.round(((WL[key] || 0) - WLV_KILLS[wLevel(key) - 1]) / (WLV_KILLS[wLevel(key)] - WLV_KILLS[wLevel(key) - 1]) * 100)}%"></i></span><span class="label">Magazine</span><span class="num">${w.mag}</span></div>
+      <small class="wlvtxt">${wLevel(key) >= WLV_MAX ? 'Max level · ' + (WL[key] || 0) + ' kills' : (WL[key] || 0) + ' / ' + WLV_KILLS[wLevel(key)] + ' kills to level ' + (wLevel(key) + 1)}</small>`;
     b.querySelector('.wname').textContent = w.name; b.querySelector('.wcls').textContent = w.cls;
     b.addEventListener('click', () => { loadout = key; store.set('loadout', key); renderLoadout(); if (state === 'menu' || state === 'over') equip(key); });
     box.appendChild(b);
@@ -1892,8 +1968,10 @@ function renderSkins() {
     if (locked) b.disabled = true; else b.addEventListener('click', () => { mySkin = k; store.set('skin', k); renderSkins(); });
     sb.appendChild(b);
   }
-  for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), myCamo === k, !bpOwned('camo', k), 'Pass tier ' + unlockTier('camo', k),
-    () => { myCamo = k; store.set('camo', k); applyCamo(); renderSkins(); }));
+  const w = loadout, cur = camoOf(w);
+  $('camoHead').textContent = 'Weapon camo · ' + WEAPONS[w].name + ' · Level ' + wLevel(w);
+  for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), cur === k, !camoOwned(k, w), d.lvl ? 'Gun level ' + d.lvl : 'Pass tier ' + unlockTier('camo', k),
+    () => { WCAMO[w] = k; store.set('wcamo', WCAMO); if (P.w === w) applyCamo(); renderSkins(); }));
 }
 function ownedTitles() { const l = ['']; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === 'title' && bpTier() >= +t) l.push(r[1]); if (BP.premium) l.push('VIP'); return l; }
 function renderTitles() {
@@ -1980,7 +2058,7 @@ const SETTINGS_UI = [
     { k: 'invertY', type: 'toggle', label: 'Invert vertical look' },
     { k: 'assist', type: 'toggle', label: 'Aim assist', hint: 'Slows your aim over a target and gently pulls toward it' },
     { k: 'auto', type: 'toggle', label: 'Auto-fire', hint: 'Fires on its own when the crosshair is on an enemy' },
-    { k: 'holdAds', type: 'toggle', label: 'Hold right click to aim', hint: 'Off: click once to aim and again to stop. Touch AIM always toggles.' },
+    { k: 'holdAds', type: 'toggle', label: 'Hold right click to aim', hint: 'Off: click once to aim and again to stop. On touch, tap AIM to aim and tap again to stop.' },
     { k: 'lefty', type: 'toggle', label: 'Left-handed touch layout', hint: 'Buttons on the left, joystick on the right' },
   ] },
   { sec: 'Graphics', items: [
@@ -2045,7 +2123,7 @@ function renderSettings() {
   }
 }
 $('resetSettings').addEventListener('click', () => { Object.assign(S, DEF); saveS(); renderSettings(); applyQuality(); applySettings(); });
-const ACCT_KEYS = ['name', 'settings', 'career', 'pass', 'skin', 'camo', 'title', 'loadout'];
+const ACCT_KEYS = ['name', 'settings', 'career', 'pass', 'skin', 'camo', 'title', 'loadout', 'wlv', 'wcamo', 'lb'];
 function makeBackup() {
   const data = {}; for (const k of ACCT_KEYS) { const v = store.get(k, null); if (v !== null) data[k] = v; }
   try { return 'DL1.' + btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/=+$/, ''); } catch (e) { return ''; }
@@ -2062,8 +2140,20 @@ function acctWho() {
   const el = $('acctWho'); if (!el) return;
   el.textContent = 'Signed in as ' + playerName + (myTitle ? ' · “' + myTitle + '”' : '') + ' · Tier ' + bpTier() + ' · ' + C.kills + ' eliminations';
 }
+function renderLB() {
+  const day = t => { try { return new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); } catch (e) { return ''; } };
+  const mapN = m => (MAPS[m] ? MAPS[m].name : '—');
+  const fill = (id, head, rows, cells, emptyTxt) => {
+    const tb = $(id); tb.textContent = '';
+    const hr = document.createElement('tr'); head.forEach(h => { const th = document.createElement('th'); th.textContent = h; hr.appendChild(th); }); tb.appendChild(hr);
+    if (!rows.length) { const tr = document.createElement('tr'), td = document.createElement('td'); td.colSpan = head.length; td.className = 'empty'; td.textContent = emptyTxt; tr.appendChild(td); tb.appendChild(tr); return; }
+    rows.forEach((r, i) => { const tr = document.createElement('tr'); if (i === 0) tr.className = 'top'; cells(r, i).forEach((v, j) => { const td = document.createElement('td'); td.textContent = v; if (j === 0 || j > 0 && typeof v === 'number') td.className = 'n'; tr.appendChild(td); }); tb.appendChild(tr); });
+  };
+  fill('lbBattles', ['#', 'Kills', 'Deaths', 'Result', 'Mode', 'Map', 'Date'], LB.battles || [], (r, i) => [i + 1, r.k, r.d, r.r, r.du ? 'Duel' : 'Team', mapN(r.m), day(r.t)], 'Finish a Team Battle or Duel to get on your leaderboard.');
+  fill('lbHold', ['#', 'Score', 'Wave', 'Map', 'Date'], LB.holdout || [], (r, i) => [i + 1, (r.s || 0).toLocaleString(), r.wv, mapN(r.m), day(r.t)], 'Play a Drone Holdout run to get on your leaderboard.');
+}
 function renderCareer() {
-  acctWho();
+  acctWho(); renderLB();
   const g = $('careerGrid'); g.textContent = '';
   const kd = C.deaths ? (C.kills / C.deaths).toFixed(2) : C.kills.toFixed(2);
   const rows = [['Matches', C.matches], ['Wins', C.wins], ['Win rate', C.matches ? Math.round(C.wins / C.matches * 100) + '%' : '—'], ['Eliminations', C.kills], ['Deaths', C.deaths], ['K/D', kd], ['Headshot hits', C.heads], ['Best wave', C.bestWave], ['Best holdout score', C.bestScore.toLocaleString()]];
@@ -2085,7 +2175,7 @@ codeIn.addEventListener('input', () => { matchCode = codeIn.value.replace(/[^a-z
     const err = loadBackup(ta.value);
     if (err) { acctWho(); $('acctWho').textContent = err; return; }
     playerName = String(store.get('name', '') || '').slice(0, 16) || playerName;
-    Object.assign(S, store.get('settings', S)); Object.assign(C, store.get('career', C)); Object.assign(BP, store.get('pass', BP));
+    Object.assign(S, store.get('settings', S)); Object.assign(C, store.get('career', C)); Object.assign(BP, store.get('pass', BP)); Object.assign(WL, store.get('wlv', {})); Object.assign(LB, store.get('lb', {})); Object.assign(WCAMO, store.get('wcamo', {}));
     mySkin = SKINS[store.get('skin', mySkin)] ? store.get('skin', mySkin) : mySkin; myCamo = CAMOS[store.get('camo', myCamo)] ? store.get('camo', myCamo) : myCamo;
     myTitle = String(store.get('title', myTitle) || ''); loadout = WEAPONS[store.get('loadout', loadout)] ? store.get('loadout', loadout) : loadout;
     nameIn.value = playerName; setLobby(); applyCamo(); applyQuality(); applySettings(); equip(loadout);
@@ -2141,14 +2231,43 @@ function pause() {  // online match keeps running while the pause panel is open
   } else { $('pauseText').textContent = 'Paused. Wave ' + wave + ', score ' + score.toLocaleString() + '.'; $('roster').textContent = ''; }
   showMenu('pause');
 }
+let boardTap = false, boardHold = false;
+function boardRows() {
+  const rows = [], st = T.st || {}, kd = id => (Array.isArray(st[id]) ? st[id] : [0, 0]);
+  for (const h of T.humans) { const id = h.me ? myPeer : h.peer, s = kd(id); rows.push({ id, team: h.me ? P.team : h.pr.tm, name: h.me ? playerName : nameOf(h.peer), me: !!h.me, bot: false, k: +s[0] || 0, d: +s[1] || 0 }); }
+  for (const e of T.ents.values()) if (e.kind === 'bot') { const s = kd(e.id); rows.push({ id: e.id, team: e.team, name: BOT_NAMES[e.id] || 'Bot', me: false, bot: true, k: +s[0] || 0, d: +s[1] || 0 }); }
+  rows.sort((a, b) => b.k - a.k || a.d - b.d || (a.bot - b.bot));
+  return rows;
+}
+function renderBoard() {
+  const rows = boardRows();
+  for (const team of ['b', 'r']) {
+    const col = $(team === 'b' ? 'boardB' : 'boardR'); col.textContent = '';
+    const h = document.createElement('div'); h.className = 'bh t-' + team;
+    h.innerHTML = '<span></span><span></span>'; h.children[0].textContent = TEAM_NAME[team]; h.children[1].textContent = T.sc[team]; col.appendChild(h);
+    const hd = document.createElement('div'); hd.className = 'br hd'; hd.innerHTML = '<span>NAME</span><span>K</span><span>D</span>'; col.appendChild(hd);
+    rows.filter(r => r.team === team).forEach(r => {
+      const d = document.createElement('div'); d.className = 'br' + (r.me ? ' me' : '');
+      d.innerHTML = '<span></span><span></span><span></span>';
+      d.children[0].textContent = r.name + (r.me ? ' (you)' : ''); if (r.bot) { const b = document.createElement('span'); b.className = 'bot'; b.textContent = ' BOT'; d.children[0].appendChild(b); }
+      d.children[1].textContent = r.k; d.children[2].textContent = r.d; col.appendChild(d);
+    });
+  }
+}
+function updBoard(dt) {
+  const show = mode === 'tdm' && state === 'play' && (boardTap || boardHold || !!T.win);
+  const el = $('board'); if (el.hidden === show) el.hidden = !show;
+  hud.root.classList.toggle('board-on', show);
+  if (!show) return;
+  T.bdT -= dt; if (T.bdT <= 0) { T.bdT = 0.25; renderBoard(); }
+}
+$('scorebar').addEventListener('click', () => { if (isTouch) return; boardTap = !boardTap; T.bdT = 0; });
 function renderRoster() {
   const ul = $('roster'); ul.textContent = '';
-  const rows = [];
-  for (const h of T.humans) rows.push({ team: h.pr.tm, name: h.me ? playerName + ' (you)' : nameOf(h.peer), tag: 'PLAYER' });
-  for (const e of T.ents.values()) if (e.kind === 'bot') rows.push({ team: e.team, name: BOT_NAMES[e.id], tag: 'BOT' });
+  const rows = boardRows();
   for (const team of ['b', 'r']) rows.filter(r => r.team === team).forEach(r => {
     const li = document.createElement('li'), a = document.createElement('span'), b = document.createElement('small');
-    a.className = 't-' + team; a.textContent = r.name; b.textContent = r.tag; li.append(a, b); ul.appendChild(li);
+    a.className = 't-' + team; a.textContent = r.name + (r.me ? ' (you)' : ''); b.textContent = r.k + ' / ' + r.d + (r.bot ? ' · BOT' : ''); li.append(a, b); ul.appendChild(li);
   });
 }
 function resume() { state = 'play'; hideMenu(); lockPointer(); clock.getDelta(); }
@@ -2251,6 +2370,7 @@ const isTyping = ev => ev.target && (ev.target.tagName === 'INPUT');
 window.addEventListener('keydown', ev => {
   if (isTyping(ev)) return;
   input.keys[ev.code] = true;
+  if (ev.code === 'Tab') { ev.preventDefault(); boardHold = true; if (T.bdT !== undefined) T.bdT = 0; }
   if (state === 'play') {
     if (ev.code === 'KeyR') startReload();
     if (/^Digit[1-5]$/.test(ev.code) && mode === 'tdm' && T.win) castVote(Object.keys(MAPS)[+ev.code.slice(5) - 1]);
@@ -2259,7 +2379,7 @@ window.addEventListener('keydown', ev => {
     if (ev.code === 'Escape' || ev.code === 'KeyP') pause();
   } else if (state === 'paused' && ev.code === 'KeyP') resume();
 });
-window.addEventListener('keyup', ev => { input.keys[ev.code] = false; });
+window.addEventListener('keyup', ev => { input.keys[ev.code] = false; if (ev.code === 'Tab') boardHold = false; });
 let dragLook = false, lastMX = 0, lastMY = 0;
 canvas.addEventListener('contextmenu', ev => ev.preventDefault());
 canvas.addEventListener('mousedown', ev => {
@@ -2278,7 +2398,7 @@ window.addEventListener('mousemove', ev => {
 });
 document.addEventListener('pointerlockchange', () => { if (!document.pointerLockElement && state === 'play' && !isTouch && !dragLook) pause(); });
 function look(dx, dy, smooth) {
-  const s = S.sens * (S.assist && assist ? 0.55 : 1) * (1 + P.adsT * (S.adsSens / Math.sqrt(W().zoom) - 1));
+  const s = S.sens * (S.assist && assist ? 0.55 : 1) * (1 + P.adsT * (S.adsSens / Math.pow(W().zoom, 0.3) - 1));
   dy *= S.invertY ? -1 : 1;
   if (smooth) { input.ldx += dx * s; input.ldy += dy * s; }
   else { P.yaw -= dx * s; P.pitch = clamp(P.pitch - dy * s, -1.4, 1.4); }
@@ -2287,7 +2407,7 @@ function look(dx, dy, smooth) {
 
 /* ---------- input: touch ---------- */
 const stickEl = $('stick'), knobEl = $('knob'), fireBtn = $('fireBtn'), adsBtn = $('adsBtn'), crouchBtn = $('crouchBtn'), slideBtn = $('slideBtn');
-let stickId = null, stickX = 0, stickY = 0, lookId = null, lookX = 0, lookY = 0, fireId = null, fireX = 0, fireY = 0, adsId = null;
+let stickId = null, stickX = 0, stickY = 0, lookId = null, lookX = 0, lookY = 0, fireId = null, fireX = 0, fireY = 0, adsId = null, adsX = 0, adsY = 0;
 const STICK_R = 58, TOUCH_LOOK = 0.0048;
 function onTouchStart(ev) {
   if (state !== 'play') return;
@@ -2296,9 +2416,10 @@ function onTouchStart(ev) {
     if (el.closest('#fireBtn')) { fireId = t.identifier; fireX = t.clientX; fireY = t.clientY; input.fire = true; fireBtn.classList.add('on'); continue; }
     if (el.closest('#reloadBtn')) { startReload(); continue; }
     if (el.closest('#jumpBtn')) { input.jump = true; continue; }
-    if (el.closest('#adsBtn')) { adsId = t.identifier; P.ads = true; adsBtn.classList.add('on'); continue; }
+    if (el.closest('#adsBtn')) { adsId = t.identifier; adsX = t.clientX; adsY = t.clientY; P.ads = !P.ads; adsBtn.classList.toggle('on', P.ads); continue; }
     if (el.closest('#slideBtn')) { startSlide(); continue; }
     if (el.closest('#crouchBtn')) { P.crouch = !P.crouch; continue; }
+    if (el.closest('#scorebar')) { boardTap = !boardTap; T.bdT = 0; continue; }
     if (el.closest('#pauseBtn') || el.closest('#vote')) continue;
     const moveSide = S.lefty ? t.clientX > window.innerWidth * 0.55 : t.clientX < window.innerWidth * 0.45;
     if (moveSide && stickId === null) {
@@ -2319,6 +2440,7 @@ function onTouchMove(ev) {
       input.mx = dx / STICK_R; input.mz = dy / STICK_R;
     } else if (t.identifier === lookId) { look((t.clientX - lookX) * TOUCH_LOOK, (t.clientY - lookY) * TOUCH_LOOK, true); lookX = t.clientX; lookY = t.clientY; }
     else if (t.identifier === fireId) { look((t.clientX - fireX) * TOUCH_LOOK, (t.clientY - fireY) * TOUCH_LOOK, true); fireX = t.clientX; fireY = t.clientY; }
+    else if (t.identifier === adsId) { look((t.clientX - adsX) * TOUCH_LOOK, (t.clientY - adsY) * TOUCH_LOOK, true); adsX = t.clientX; adsY = t.clientY; }
   }
   ev.preventDefault();
 }
@@ -2327,7 +2449,7 @@ function onTouchEnd(ev) {
     if (t.identifier === stickId) { stickId = null; input.mx = input.mz = 0; stickEl.style.opacity = 0; }
     if (t.identifier === lookId) lookId = null;
     if (t.identifier === fireId) { fireId = null; input.fire = false; fireBtn.classList.remove('on'); }
-    if (t.identifier === adsId) { adsId = null; P.ads = false; adsBtn.classList.remove('on'); }
+    if (t.identifier === adsId) adsId = null;
   }
 }
 [canvas, $('hud')].forEach(el => {
@@ -2519,8 +2641,7 @@ function loop() {
 /* ---------- boot ---------- */
 buildMap(selMap);
 equip(loadout);
-PREV = renderPreviews();
-SKINPREV = renderSkinPreviews();
+applyCamo('none'); PREV = renderPreviews(); applyCamo();
 renderMaps(); renderLoadout(); renderSettings(); renderCareer();
 applyQuality(); applySettings();
 $('bestScore').textContent = C.bestScore.toLocaleString();
