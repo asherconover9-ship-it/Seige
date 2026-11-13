@@ -19,20 +19,33 @@ Everyone who opens the link plays in the same Team Battle. AI soldiers fill ever
 
 **iPhone and iPad:** open the link in Safari, tap **Share**, then **Add to Home Screen**. It opens full-screen like an app. Turn the device sideways to play.
 
-**Private match:** type the same **match code** on the Play tab as your friends, for example `squad1`. Only players using that code join your match.
+**Private match:** type the same **private battle code** on the Play tab as your friends, for example `squad1`. Only players using that code join your match.
+
+**Party:** on the Play tab tap **Create party** to get a short code, and send it to a friend. They type it in and tap **Join**. Party members fight each other in **Duel 1v1** and play on the **same team** in Team Battle.
+
+**Keep your progress:** your callsign, career, battle pass and skins save on your device automatically. To move them to another phone or computer, open the **Career** tab, tap **Show backup code**, copy it, and paste it into **Restore from code** on the other device.
 
 ## Game modes
 | Mode | Description |
 |---|---|
-| **Team Battle** | Delta vs Viper, 5 v 5, across a desert outpost. The first team to 30 eliminations wins. |
+| **Team Battle** | Delta vs Viper, 5 v 5, across five maps. The first team to 30 eliminations wins. Party members play on the same team. |
+| **Duel 1v1** | Face your party member one on one, no bots, first to 7 eliminations. Make a party and share the code first. |
 | **Drone Holdout** | Solo survival against endless waves of armed drones. Grab green supply cases to heal. |
+
+## Battle pass & skins
+A free **Season 1** battle pass with 25 tiers. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **operator skins**, **weapon camos** and **titles**, which you equip on the **Loadout** tab. Progress is saved on your device and travels with your backup code.
 
 ## Loadouts
 | Weapon | Type | Best for |
 |---|---|---|
 | **M7 Rifle** | Assault rifle | All-round fighting at any range |
 | **K9 SMG** | Submachine gun | Fast, close-quarters fights |
-| **R4 Marksman** | Marksman rifle | Long-range picks with a 3× scope |
+| **H12 Breacher** | Shotgun | Point-blank power indoors |
+| **B60 LMG** | Light machine gun | Suppressing fire, big magazine |
+| **R4 Marksman** | Marksman rifle | Long-range picks with a scope |
+| **Kestrel .338** | Sniper rifle | One-shot kills at distance |
+
+Plus a sidearm, a battle rifle, a compact PDW and a hand cannon. Each weapon has its own scope or red-dot sight when you aim down the sights.
 
 Headshots deal about double damage and leg hits deal less. Damage drops off at long range.
 
