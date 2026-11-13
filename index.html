@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113212542';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113213058';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -595,7 +595,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
         <div class="prow" id="premRedeem"><input type="text" id="premCode" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Premium code" aria-label="Premium code"><button class="btn go" id="premBtn" type="button">Redeem</button></div>
       </div>
       <div class="bp-tiers" id="bpTiers"></div>
-      <p class="tip">A new season starts every week with a new color scheme and map decorations. Everything you unlock stays yours. Earn XP: 50 per elimination, 15 bonus for a headshot finish, 80 for finishing a match, 150 more for a win, 30 per Holdout wave, plus daily challenges on the Play tab. 75 tiers, with coins every 5 tiers. Premium pass adds +25% XP. Progress saves on this device and travels with your backup code.</p>
+      <p class="tip">A new season starts every week with a new color scheme and map decorations. Everything you unlock stays yours. Earn XP: 50 per elimination, 15 bonus for a headshot finish, 80 for finishing a match, 150 more for a win, 30 per Holdout wave, plus daily challenges on the Play tab. 75 tiers of 400 XP each, with coins every 5 tiers. Premium pass adds +25% XP. Progress saves on this device and travels with your backup code.</p>
     </section>
 
     <section class="pane" id="pane-career" hidden>
@@ -687,7 +687,7 @@ const CAMOS = {
   aurora:  { name: 'Aurora', c: [0x2affc0, 0x1a0a3a, 0xa06aff], crate: 'legendary', metal: true, only: 'vault' },
 };
 const SW = v => '#' + ((v == null ? 0x4d5a68 : v) >>> 0).toString(16).padStart(6, '0');
-const BP_XP = 1000;
+const BP_XP = 400; // XP per tier (Season 1 used 1000)
 const BP_S1 = { 2: ['title', 'Recruit'], 3: ['camo', 'sand'], 5: ['title', 'Marksman'], 8: ['camo', 'jungle'], 10: ['title', 'Veteran'],
   12: ['title', 'Hardened'], 14: ['camo', 'arctic'], 17: ['title', 'Breacher'], 20: ['title', 'Ghost Walker'], 21: ['camo', 'blood'], 25: ['title', 'Warlord'],
   28: ['title', 'Vanguard'], 30: ['camo', 'cobalt'], 33: ['title', 'Reaper'], 36: ['title', 'Juggernaut'], 40: ['title', 'Apex Operator'],
@@ -733,7 +733,7 @@ const BP = Object.assign({ xp: 0, premium: false, season: 1, owned: [] }, store.
 if (!Array.isArray(BP.owned)) BP.owned = [];
 if (BP.season !== SEASON) {
   // new season: keep everything earned last season, then reset the pass
-  const oS = +BP.season || 1, oT = Math.min(seasonTiers(oS), 1 + Math.floor((+BP.xp || 0) / BP_XP));
+  const oS = +BP.season || 1, oT = Math.min(seasonTiers(oS), 1 + Math.floor((+BP.xp || 0) / (oS <= 1 ? 1000 : BP_XP)));
   for (const [t, r] of Object.entries(seasonRewards(oS))) if (+t <= oT && r[0] !== 'coins') { const k = r[0] + ':' + r[1]; if (!BP.owned.includes(k)) BP.owned.push(k); }
   if (BP.premium && oT >= seasonTiers(oS) && !BP.owned.includes('weapon:vx')) BP.owned.push('weapon:vx');
   if (BP.xp > 0) BP.last = { s: oS, tier: oT };
