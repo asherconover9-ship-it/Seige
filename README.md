@@ -4,16 +4,17 @@
 
 **A free tactical arena shooter you play in your browser. No download, no account, no app store.**
 
-## ▶️ [PLAY NOW — latest version (v31)](https://gaayyynesss.github.io/Seige/?v=31)
+## ▶️ [PLAY NOW — latest version (v32)](https://gaayyynesss.github.io/Seige/?v=32)
 
-**Latest:** https://gaayyynesss.github.io/Seige/?v=31
+**Latest:** https://gaayyynesss.github.io/Seige/?v=32
 
 If the game looks like an older version, open the latest link above (the `?v=` number makes your browser load the newest copy).
 
 ### Version history
 | Version | Link | What's new |
 |---|---|---|
-| **v31** | https://gaayyynesss.github.io/Seige/?v=31 | Battle pass tiers now take 400 XP each (was 1,000) |
+| **v32** | https://gaayyynesss.github.io/Seige/?v=32 | Back to 1,000 XP per tier; Season 1 runs until Nov 19 and weekly seasons start Nov 20; new Premium code and the **SC-7 Scythe** premium SMG for Season 2 |
+| v31 | https://gaayyynesss.github.io/Seige/?v=31 | Battle pass tiers now take 400 XP each (was 1,000) |
 | v30 | https://gaayyynesss.github.io/Seige/?v=30 | **Weekly seasons** (75 tiers, new colors + map decorations each week, Christmas season), **daily rewards & challenges**, **kill streaks** (Map Scan at 10, Missile at 30), match coin bonuses, Team Battle to 100, bigger maps, shop daily item and bad-luck protection |
 | v29 | https://gaayyynesss.github.io/Seige/?v=29 | Crate prices 320 / 750, new 1,000-coin **Vault Crate** (Phantom skin + Aurora camo), and a **?** on each crate showing its odds and items |
 | v28 | https://gaayyynesss.github.io/Seige/?v=28 | Sliding no longer leaves you crouched — you stand back up when the slide ends |
@@ -79,24 +80,23 @@ Crates hold shop-only operator skins (Sand Viper, Midnight, Royal Guard, Neon Ru
 - **Daily item:** one crate item is for sale directly each day (Common 400, Rare 800, Epic 1,300, Legendary 2,000 coins). Everyone sees the same item. Your coins and crate items are saved on your device and in your backup code.
 
 ## Seasons
-A **new season starts every week** (Fridays). Each season has its own **color scheme**, **map decorations**, and a new season camo at tier 60. Everything you unlocked in earlier seasons stays yours.
+**Season 1** runs until Nov 19. From **Season 2 (Nov 20)** a **new season starts every week** (Fridays). Each season has its own **color scheme**, **map decorations**, and a new season camo at tier 60. Everything you unlocked in earlier seasons stays yours.
 
 | Season | Dates (2026) | Theme |
 |---|---|---|
-| 1 | until Nov 12 | Dust Storm (50 tiers) |
-| 2 | Nov 13–19 | Ember Ops: orange lanterns |
-| 3 | Nov 20–26 | Harvest: pumpkins and hay bales |
-| 4 | Nov 27–Dec 3 | Neon Grid: glowing neon posts |
-| 5 | Dec 4–10 | Frostbite: ice crystals and snowfall |
-| 6 | Dec 11–17 | Midnight: floating violet orbs |
-| 7 | Dec 18–24 | **Christmas:** snow on every map, decorated trees with presents, snowmen, candy canes |
-| 8 | Dec 25–31 | **Christmas & New Year:** Christmas decorations with gold |
+| 1 | until Nov 19 | Dust Storm (50 tiers) · Premium weapon: VX-9 Tempest |
+| 2 | Nov 20–26 | Harvest: pumpkins and hay bales · Premium weapon: **SC-7 Scythe** |
+| 3 | Nov 27–Dec 3 | Neon Grid: glowing neon posts |
+| 4 | Dec 4–10 | Frostbite: ice crystals and snowfall |
+| 5 | Dec 11–17 | Midnight: floating violet orbs |
+| 6 | Dec 18–24 | **Christmas:** snow on every map, decorated trees with presents, snowmen, candy canes |
+| 7 | Dec 25–31 | **Christmas & New Year:** Christmas decorations with gold |
 
 ## Battle pass & skins
-Each season has a free battle pass with **75 tiers of 400 XP each** (Season 1 had 50 tiers of 1,000 XP), with coins every 5 tiers. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.
+Each season has a free battle pass with **1,000 XP per tier**: Season 1 has 50 tiers, and every season from Season 2 has **75 tiers**, with coins every 5 tiers. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.
 
 ### Premium pass
-An optional **Premium Pass** unlocks 3 exclusive operator skins (Gold Rush, Obsidian, Prism), the **VIP** title, and **+25% XP**. Reach the final tier (75) of any season with Premium to earn the custom **VX-9 Tempest** rifle. It's unlocked by entering a premium code on the **Pass** tab. (The code is set by the game's creator — see the note in the project files for how to change it.)
+An optional **Premium Pass** unlocks 3 exclusive operator skins (Gold Rush, Obsidian, Prism), the **VIP** title, and **+25% XP**. **Each season has its own Premium code and its own premium weapon**, earned by reaching the season's final tier with Premium: the **VX-9 Tempest** rifle in Season 1 and the **SC-7 Scythe** SMG in Season 2. Skins, the VIP title and weapons you earn stay yours after the season ends. Enter the code on the **Pass** tab. (The codes are set by the game's creator in `PREMIUM_CODES` in index.html.)
 
 ## Loadouts
 | Weapon | Type | Best for |

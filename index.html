@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113213058';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113213830';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -591,11 +591,11 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
       <div class="acct" id="premiumBox">
         <span class="label">Premium Pass</span>
         <span class="amsg" id="premWho"></span>
-        <span class="amsg">Premium unlocks 3 exclusive operator skins — Gold Rush, Obsidian, Prism — plus the VIP title and +25% battle-pass XP. Reach the final tier with Premium to earn the custom <b>VX-9 Tempest</b> rifle.</span>
+        <span class="amsg" id="premInfo"></span>
         <div class="prow" id="premRedeem"><input type="text" id="premCode" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Premium code" aria-label="Premium code"><button class="btn go" id="premBtn" type="button">Redeem</button></div>
       </div>
       <div class="bp-tiers" id="bpTiers"></div>
-      <p class="tip">A new season starts every week with a new color scheme and map decorations. Everything you unlock stays yours. Earn XP: 50 per elimination, 15 bonus for a headshot finish, 80 for finishing a match, 150 more for a win, 30 per Holdout wave, plus daily challenges on the Play tab. 75 tiers of 400 XP each, with coins every 5 tiers. Premium pass adds +25% XP. Progress saves on this device and travels with your backup code.</p>
+      <p class="tip">A new season starts every week with a new color scheme and map decorations. Everything you unlock stays yours. Earn XP: 50 per elimination, 15 bonus for a headshot finish, 80 for finishing a match, 150 more for a win, 30 per Holdout wave, plus daily challenges on the Play tab. Season 1 has 50 tiers; from Season 2 every season has 75 tiers, with coins every 5 tiers. Premium pass adds +25% XP. Progress saves on this device and travels with your backup code.</p>
     </section>
 
     <section class="pane" id="pane-career" hidden>
@@ -687,35 +687,40 @@ const CAMOS = {
   aurora:  { name: 'Aurora', c: [0x2affc0, 0x1a0a3a, 0xa06aff], crate: 'legendary', metal: true, only: 'vault' },
 };
 const SW = v => '#' + ((v == null ? 0x4d5a68 : v) >>> 0).toString(16).padStart(6, '0');
-const BP_XP = 400; // XP per tier (Season 1 used 1000)
+const BP_XP = 1000;
 const BP_S1 = { 2: ['title', 'Recruit'], 3: ['camo', 'sand'], 5: ['title', 'Marksman'], 8: ['camo', 'jungle'], 10: ['title', 'Veteran'],
   12: ['title', 'Hardened'], 14: ['camo', 'arctic'], 17: ['title', 'Breacher'], 20: ['title', 'Ghost Walker'], 21: ['camo', 'blood'], 25: ['title', 'Warlord'],
   28: ['title', 'Vanguard'], 30: ['camo', 'cobalt'], 33: ['title', 'Reaper'], 36: ['title', 'Juggernaut'], 40: ['title', 'Apex Operator'],
   42: ['camo', 'gold'], 45: ['title', 'Iron Phantom'], 48: ['title', 'Dust Legend'], 50: ['title', 'Season 1 Champion'] };
 // Premium pass: unlocked with a code you hand out. Change this string to whatever code you sell.
-const PREMIUM_CODE = 'DUSTVIP';
+// A new Premium code every season. Change these strings to whatever codes you sell.
+const PREMIUM_CODES = { 1: 'DUSTVIP', 2: 'SCYTHE26' };
+const premiumCode = n => PREMIUM_CODES[n] || ('DUSTVIP' + n);
 const PREMIUM_SKINS = new Set(['gold', 'obsidian', 'prism']);
-// ---- weekly seasons: Season 2 started 13 Nov 2026, a new one every 7 days (UTC midnight) ----
+const WEAPONS_PREMIUM = { vx: 1, sc7: 2 }; // premium weapon -> the season whose Premium pass awards it at the final tier
+// ---- weekly seasons: Season 1 runs until 20 Nov 2026; Season 2 starts then, and a new one every 7 days (UTC midnight) ----
 // To add a season: add an entry below. Seasons without an entry reuse an older theme.
-const SEASON_START = Date.UTC(2026, 10, 13), WEEK_MS = 7 * 864e5;
+const SEASON_START = Date.UTC(2026, 10, 20), WEEK_MS = 7 * 864e5; // when Season 2 starts
 const SEASONS = {
-  2: { name: 'Ember Ops', accent: '#ff7a3a', camoName: 'Ember', camo: [0xff6a2a, 0x2a0f06, 0xffb070], deco: 'lanterns', light: 0xff8a3a },
-  3: { name: 'Harvest', accent: '#e0a03a', camoName: 'Harvest', camo: [0xc8782a, 0x3a2410, 0xe8c060], deco: 'harvest', light: 0xffa040 },
-  4: { name: 'Neon Grid', accent: '#2ee6c8', camoName: 'Neon Grid', camo: [0x2ee6c8, 0x081a20, 0xff3ad0], deco: 'neon', light: 0x2ee6c8 },
-  5: { name: 'Frostbite', accent: '#7cc8ff', camoName: 'Frostbite', camo: [0x9ad8ff, 0x1a3550, 0xeaf6ff], deco: 'crystals', light: 0x8ad0ff, snowfall: true },
-  6: { name: 'Midnight', accent: '#a07aff', camoName: 'Midnight Violet', camo: [0x7a4aff, 0x0c0820, 0xc8b0ff], deco: 'orbs', light: 0xa07aff },
-  7: { name: 'Christmas', accent: '#e8443a', camoName: 'Candy Cane', camo: [0xd02a2a, 0xf2f2f2, 0x0e5a2a], deco: 'christmas', light: 0xffd060, snowfall: true, snowGround: true },
-  8: { name: 'Christmas & New Year', accent: '#ffd24a', camoName: 'Golden Tinsel', camo: [0xffd24a, 0x14141c, 0xc0c8d8], deco: 'christmas', light: 0xffd24a, snowfall: true, snowGround: true, metal: true },
+  1: { name: 'Dust Storm', accent: '#f2a93b' },
+  2: { name: 'Harvest', accent: '#e0a03a', camoName: 'Harvest', camo: [0xc8782a, 0x3a2410, 0xe8c060], deco: 'harvest', light: 0xffa040 },
+  3: { name: 'Neon Grid', accent: '#2ee6c8', camoName: 'Neon Grid', camo: [0x2ee6c8, 0x081a20, 0xff3ad0], deco: 'neon', light: 0x2ee6c8 },
+  4: { name: 'Frostbite', accent: '#7cc8ff', camoName: 'Frostbite', camo: [0x9ad8ff, 0x1a3550, 0xeaf6ff], deco: 'crystals', light: 0x8ad0ff, snowfall: true },
+  5: { name: 'Midnight', accent: '#a07aff', camoName: 'Midnight Violet', camo: [0x7a4aff, 0x0c0820, 0xc8b0ff], deco: 'orbs', light: 0xa07aff },
+  6: { name: 'Christmas', accent: '#e8443a', camoName: 'Candy Cane', camo: [0xd02a2a, 0xf2f2f2, 0x0e5a2a], deco: 'christmas', light: 0xffd060, snowfall: true, snowGround: true },
+  7: { name: 'Christmas & New Year', accent: '#ffd24a', camoName: 'Golden Tinsel', camo: [0xffd24a, 0x14141c, 0xc0c8d8], deco: 'christmas', light: 0xffd24a, snowfall: true, snowGround: true, metal: true },
 };
-const seasonNum = () => Math.max(2, 2 + Math.floor((Date.now() - SEASON_START) / WEEK_MS));
+// themes reused for any season that has no entry yet
+const THEME_ROTATION = [{ name: 'Ember Ops', accent: '#ff7a3a', camoName: 'Ember', camo: [0xff6a2a, 0x2a0f06, 0xffb070], deco: 'lanterns', light: 0xff8a3a }, SEASONS[3], SEASONS[4], SEASONS[5], SEASONS[2]];
+const seasonNum = () => Date.now() < SEASON_START ? 1 : 2 + Math.floor((Date.now() - SEASON_START) / WEEK_MS);
 const seasonEnd = n => SEASON_START + (n - 1) * WEEK_MS;
 function seasonTheme(n) {
   if (SEASONS[n]) return SEASONS[n];
-  const base = [2, 3, 4, 5, 6][(n - 2) % 5];
-  return Object.assign({}, SEASONS[base], { name: 'Season ' + n + ': ' + SEASONS[base].name, camoName: SEASONS[base].camoName + ' ' + n });
+  const base = THEME_ROTATION[Math.max(0, n - 8) % THEME_ROTATION.length];
+  return Object.assign({}, base, { name: base.name + ' ' + n, camoName: base.camoName + ' ' + n });
 }
 const SEASON = seasonNum(), THEME = seasonTheme(SEASON);
-for (const n of new Set([...Object.keys(SEASONS).map(Number), SEASON])) { const t = seasonTheme(n); CAMOS['s' + n] = { name: t.camoName, c: t.camo, metal: !!t.metal, season: n }; }
+for (const n of new Set([...Object.keys(SEASONS).map(Number), SEASON])) { const t = seasonTheme(n); if (!t.camo) continue; CAMOS['s' + n] = { name: t.camoName, c: t.camo, metal: !!t.metal, season: n }; }
 function seasonRewards(n) {
   if (n <= 1) return BP_S1;
   const th = seasonTheme(n);
@@ -731,11 +736,16 @@ const seasonTiers = n => n <= 1 ? 50 : 75;
 const BP_TIERS = seasonTiers(SEASON), BP_REWARDS = seasonRewards(SEASON);
 const BP = Object.assign({ xp: 0, premium: false, season: 1, owned: [] }, store.get('pass', {}));
 if (!Array.isArray(BP.owned)) BP.owned = [];
+if (SEASON === 1 && BP.season === 2) {
+  // v30/v31 started Season 2 a week early: give Season 1 back with the XP from before plus anything earned since
+  BP.xp = (BP.last && BP.last.s === 1 ? (BP.last.tier - 1) * BP_XP : 0) + (+BP.xp || 0); BP.season = 1; delete BP.last; store.set('pass', BP);
+}
 if (BP.season !== SEASON) {
   // new season: keep everything earned last season, then reset the pass
-  const oS = +BP.season || 1, oT = Math.min(seasonTiers(oS), 1 + Math.floor((+BP.xp || 0) / (oS <= 1 ? 1000 : BP_XP)));
+  const oS = +BP.season || 1, oT = Math.min(seasonTiers(oS), 1 + Math.floor((+BP.xp || 0) / BP_XP));
   for (const [t, r] of Object.entries(seasonRewards(oS))) if (+t <= oT && r[0] !== 'coins') { const k = r[0] + ':' + r[1]; if (!BP.owned.includes(k)) BP.owned.push(k); }
-  if (BP.premium && oT >= seasonTiers(oS) && !BP.owned.includes('weapon:vx')) BP.owned.push('weapon:vx');
+  if (BP.premium && oT >= seasonTiers(oS)) for (const [k, w] of Object.entries(WEAPONS_PREMIUM)) if (w === oS && !BP.owned.includes('weapon:' + k)) BP.owned.push('weapon:' + k);
+  if (BP.premium) { if (!BP.owned.includes('premium:' + oS)) BP.owned.push('premium:' + oS); BP.premium = false; } // each season needs its own Premium code
   if (BP.xp > 0) BP.last = { s: oS, tier: oT };
   BP.xp = 0; BP.season = SEASON; store.set('pass', BP);
 }
@@ -765,7 +775,8 @@ function dailyRoll() {
 }
 dailyRoll();
 const bpTier = () => Math.min(BP_TIERS, 1 + Math.floor(BP.xp / BP_XP));
-function bpOwned(kind, id) { if (kind === 'skin') return SKINS[id] && SKINS[id].crate ? WALLET.skins.includes(id) : PREMIUM_SKINS.has(id) ? !!BP.premium : true; if (kind === 'camo' && CAMOS[id] && CAMOS[id].crate) return WALLET.camos.includes(id); if (kind === 'camo' && id === 'none') return true; if (BP.owned.includes(kind + ':' + id)) return true; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === kind && r[1] === id) return bpTier() >= +t; return false; }
+const everPremium = () => !!BP.premium || BP.owned.some(k => k.startsWith('premium:'));
+function bpOwned(kind, id) { if (kind === 'skin') return SKINS[id] && SKINS[id].crate ? WALLET.skins.includes(id) : PREMIUM_SKINS.has(id) ? everPremium() : true; if (kind === 'camo' && CAMOS[id] && CAMOS[id].crate) return WALLET.camos.includes(id); if (kind === 'camo' && id === 'none') return true; if (BP.owned.includes(kind + ':' + id)) return true; for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === kind && r[1] === id) return bpTier() >= +t; return false; }
 function rewardName(r) { return r[0] === 'coins' ? '◎ ' + r[1] + ' coins' : r[0] === 'skin' ? SKINS[r[1]].name + ' skin' : r[0] === 'camo' ? CAMOS[r[1]].name + ' camo' : '“' + r[1] + '” title'; }
 let mySkin = SKINS[store.get('skin', 'std')] ? store.get('skin', 'std') : 'std';
 let myCamo = CAMOS[store.get('camo', 'none')] ? store.get('camo', 'none') : 'none';
@@ -794,15 +805,17 @@ const WEAPONS = {
   pst: { name: 'P9 Sidearm', cls: 'Pistol', mag: 15, rate: 0.15, dmg: 28, head: 2, r0: 15, r1: 40, fall: 0.55, spread: 0.008, move: 0.01, recoil: 0.016, reload: 1.3, zoom: 1.25, mob: 1.1, snd: 'pst', stats: [0.45, 0.5, 0.4, 1] },
   br:  { name: 'MK17 Battle Rifle', cls: 'Battle rifle', mag: 20, rate: 0.16, dmg: 42, head: 2, r0: 35, r1: 78, fall: 0.72, spread: 0.006, move: 0.022, recoil: 0.021, reload: 2.2, zoom: 1.8, mob: 0.95, snd: 'ar', stats: [0.78, 0.4, 0.82, 0.5] },
   pdw: { name: 'Vektor PDW', cls: 'Machine pistol', mag: 40, rate: 0.055, dmg: 14, head: 1.6, r0: 10, r1: 28, fall: 0.45, spread: 0.014, move: 0.01, recoil: 0.006, reload: 1.5, zoom: 1.25, mob: 1.14, snd: 'smg', stats: [0.3, 1.0, 0.28, 0.95] },
-  vx:  { name: 'VX-9 Tempest', cls: 'Premium rifle', mag: 36, rate: 0.085, dmg: 27, head: 2.1, r0: 36, r1: 75, fall: 0.7, spread: 0.006, move: 0.016, recoil: 0.0085, reload: 1.9, zoom: 1.6, mob: 1.03, snd: 'ar', stats: [0.72, 0.74, 0.84, 0.8], premium: true },
+  sc7: { name: 'SC-7 Scythe', cls: 'Premium SMG', mag: 42, rate: 0.058, dmg: 20, head: 1.9, r0: 16, r1: 42, fall: 0.55, spread: 0.009, move: 0.009, recoil: 0.0065, reload: 1.6, zoom: 1.35, mob: 1.12, snd: 'smg', stats: [0.48, 0.96, 0.5, 0.94], premium: 2 },
+  vx:  { name: 'VX-9 Tempest', cls: 'Premium rifle', mag: 36, rate: 0.085, dmg: 27, head: 2.1, r0: 36, r1: 75, fall: 0.7, spread: 0.006, move: 0.016, recoil: 0.0085, reload: 1.9, zoom: 1.6, mob: 1.03, snd: 'ar', stats: [0.72, 0.74, 0.84, 0.8], premium: 1 },
   rev: { name: 'D50 Hand Cannon', cls: 'Revolver', mag: 6, rate: 0.5, dmg: 72, head: 2.2, r0: 22, r1: 52, fall: 0.6, spread: 0.004, move: 0.02, recoil: 0.06, reload: 2.5, zoom: 1.3, mob: 1.05, snd: 'snp', stats: [0.96, 0.18, 0.62, 0.68] },
 };
 // optic per weapon: holo/reddot keep the gun up with a centred reticle; scope/sniper magnify and hide the gun
-Object.assign(WEAPONS.ar,{optic:'holo',zoom:1.6}); Object.assign(WEAPONS.vx,{optic:'holo'}); Object.assign(WEAPONS.smg,{optic:'holo'}); Object.assign(WEAPONS.sg,{optic:'irons'}); Object.assign(WEAPONS.lmg,{optic:'reddot'}); Object.assign(WEAPONS.dmr,{optic:'scope',zoom:3}); Object.assign(WEAPONS.snp,{optic:'sniper',zoom:4.5}); Object.assign(WEAPONS.pst,{optic:'reddot'}); Object.assign(WEAPONS.br,{optic:'holo'}); Object.assign(WEAPONS.pdw,{optic:'reddot'}); Object.assign(WEAPONS.rev,{optic:'irons'});
+Object.assign(WEAPONS.ar,{optic:'holo',zoom:1.6}); Object.assign(WEAPONS.vx,{optic:'holo'}); Object.assign(WEAPONS.sc7,{optic:'holo'}); Object.assign(WEAPONS.smg,{optic:'holo'}); Object.assign(WEAPONS.sg,{optic:'irons'}); Object.assign(WEAPONS.lmg,{optic:'reddot'}); Object.assign(WEAPONS.dmr,{optic:'scope',zoom:3}); Object.assign(WEAPONS.snp,{optic:'sniper',zoom:4.5}); Object.assign(WEAPONS.pst,{optic:'reddot'}); Object.assign(WEAPONS.br,{optic:'holo'}); Object.assign(WEAPONS.pdw,{optic:'reddot'}); Object.assign(WEAPONS.rev,{optic:'irons'});
 let loadout = store.get('loadout', 'ar');
 if (!WEAPONS[loadout]) loadout = 'ar';
 // the VX-9 Tempest is the reward for reaching the last tier with the Premium pass
-function weaponOwned(k) { return !(WEAPONS[k] && WEAPONS[k].premium) || (!!BP.premium && (bpTier() >= BP_TIERS || BP.owned.includes('weapon:' + k))); }
+function weaponOwned(k) { const w = WEAPONS[k]; if (!w || !w.premium) return true; return BP.owned.includes('weapon:' + k) || (!!BP.premium && w.premium === SEASON && bpTier() >= BP_TIERS); }
+const PREM_W = Object.keys(WEAPONS).find(k => WEAPONS[k].premium === SEASON) || null;
 if (!weaponOwned(loadout)) loadout = 'ar';
 let selMap = store.get('map', 'outpost');
 
@@ -1271,6 +1284,7 @@ function applyCamo(force) {
   }
   mats.forEach(m => { m.needsUpdate = true; });
 }
+const SCM = { copper: new THREE.MeshStandardMaterial({ color: 0xb8673a, roughness: 0.3, metalness: 0.9 }), glow: new THREE.MeshBasicMaterial({ color: 0xff8a2a, toneMapped: false }) };
 const VXM = { gold: new THREE.MeshStandardMaterial({ color: 0xd8aa48, roughness: 0.28, metalness: 0.95 }), glow: new THREE.MeshBasicMaterial({ color: 0x46e6ff, toneMapped: false }) };
 const TILE = new Map([[GM.metal, 0.25], [GM.poly, 0.12], [GM.fde, 0.12], [GM.barrel, 0.1]]);
 function buildGunParts(key, grp) {
@@ -1344,6 +1358,16 @@ function buildGunParts(key, grp) {
     rail(0.118, -0.04, 0.34);
     B(0.09, 0.075, 0.12, 0, 0.17, 0.02, GM.metal); B(0.094, 0.012, 0.13, 0, 0.21, 0.02, gold); B(0.07, 0.05, 0.005, 0, 0.17, -0.04, glow); dot(0.175, -0.035);
     Object.assign(W, { muzzleZ: -0.97, opticY: 0.172, my: 0.01 });
+  } else if (key === 'sc7') {
+    const cu = SCM.copper, glow = SCM.glow;
+    B(0.11, 0.13, 0.4, 0, 0, 0, GM.metal); B(0.114, 0.016, 0.38, 0, 0.072, 0, cu); B(0.116, 0.012, 0.3, 0, -0.04, -0.02, glow);
+    B(0.085, 0.1, 0.22, 0, 0.0, -0.3, GM.poly); [-1, 1].forEach(sd => { B(0.006, 0.04, 0.18, sd * 0.045, 0.0, -0.3, glow); B(0.01, 0.12, 0.05, sd * 0.06, -0.01, 0.12, cu); });
+    Cy(0.018, 0.16, 0, 0.01, -0.48, GM.barrel); Cy(0.03, 0.12, 0, 0.01, -0.6, cu, 0.022); Cy(0.032, 0.01, 0, 0.01, -0.665, glow);
+    B(0.07, 0.15, 0.08, 0, -0.13, 0.08, GM.poly, 0.25); B(0.06, 0.3, 0.07, 0, -0.2, -0.1, GM.metal, -0.06); B(0.062, 0.02, 0.072, 0, -0.35, -0.11, cu, -0.06);
+    B(0.035, 0.035, 0.26, 0, 0.0, 0.32, cu); B(0.09, 0.11, 0.03, 0, -0.03, 0.46, GM.poly); B(0.092, 0.012, 0.03, 0, 0.03, 0.46, glow);
+    rail(0.09, -0.02, 0.26);
+    B(0.08, 0.07, 0.1, 0, 0.13, 0.02, GM.metal); B(0.084, 0.012, 0.11, 0, 0.17, 0.02, cu); B(0.06, 0.045, 0.005, 0, 0.13, -0.03, glow); dot(0.135, -0.03);
+    Object.assign(W, { muzzleZ: -0.68, opticY: 0.135, my: 0.01, hip: [0.16, -0.14, -0.44] });
   } else if (key === 'rev') {
     B(0.055, 0.1, 0.22, 0, 0.02, -0.08, GM.metal); Cy(0.02, 0.28, 0, 0.035, -0.22, GM.barrel);
     Cy(0.055, 0.09, 0, 0.0, -0.02, GM.metal); Cy(0.056, 0.085, 0, 0.0, -0.02, GM.barrel, 0.03);
@@ -1636,7 +1660,7 @@ function addXP(n, why) {
     for (let t = before + 1; t <= after; t++) if (BP_REWARDS[t]) { got.push(rewardName(BP_REWARDS[t])); if (BP_REWARDS[t][0] === 'coins') addCoins(BP_REWARDS[t][1]); }
     banner('TIER ' + after, got.length ? 'Unlocked ' + got.join(', ') : 'Battle pass rank up', 3);
     if (BP_REWARDS[after] && BP_REWARDS[after][0] === 'title' && !myTitle) { myTitle = BP_REWARDS[after][1]; store.set('title', myTitle); }
-    if (after >= BP_TIERS && before < BP_TIERS && BP.premium) banner('VX-9 TEMPEST UNLOCKED', 'Your Premium pass reward is in the Loadout tab', 4);
+    if (after >= BP_TIERS && before < BP_TIERS && BP.premium && PREM_W) banner(WEAPONS[PREM_W].name.toUpperCase() + ' UNLOCKED', 'Your Premium pass reward is in the Loadout tab', 4);
   }
 }
 function banner(text, sub, t = 2) { hud.banner.textContent = text; if (sub) { const s = document.createElement('small'); s.textContent = sub; hud.banner.appendChild(s); } bannerT = t; }
@@ -2258,14 +2282,15 @@ function renderLoadout() {
   const box = $('weaponList'); box.textContent = '';
   for (const [key, w] of Object.entries(WEAPONS)) {
     const owned = weaponOwned(key);
+    if (w.premium && w.premium > SEASON && !owned) continue; // next season's premium weapon stays hidden
     const b = document.createElement('button'); b.type = 'button'; b.className = 'wcard' + (w.premium ? ' prem' : '') + (owned ? '' : ' locked'); b.setAttribute('aria-pressed', String(loadout === key));
     const statNames = ['Damage', 'Fire rate', 'Range', 'Handling'];
     b.innerHTML = `<div class="wtop"><span class="wname"></span><span class="equipped">EQUIPPED</span></div><span class="wcls"></span>
       ${PREV[key] ? `<img alt="" src="${PREV[key]}">` : '<span class="ph"></span>'}
       <div class="bars">${statNames.map((n, i) => `<span class="label">${n}</span><span class="bar"><i style="width:${Math.round(w.stats[i] * 100)}%"></i></span>`).join('')}<span class="label">Level ${wLevel(key)}</span><span class="bar lv"><i style="width:${wLevel(key) >= WLV_MAX ? 100 : Math.round(((WL[key] || 0) - WLV_KILLS[wLevel(key) - 1]) / (WLV_KILLS[wLevel(key)] - WLV_KILLS[wLevel(key) - 1]) * 100)}%"></i></span><span class="label">Magazine</span><span class="num">${w.mag}</span></div>
       <small class="wlvtxt">${wLevel(key) >= WLV_MAX ? 'Max level · ' + (WL[key] || 0) + ' kills' : (WL[key] || 0) + ' / ' + WLV_KILLS[wLevel(key)] + ' kills to level ' + (wLevel(key) + 1)}</small>`;
-    b.querySelector('.wname').textContent = w.name; b.querySelector('.wcls').textContent = w.cls + (owned ? '' : ' · Premium pass, reach tier ' + BP_TIERS);
-    if (!owned) { b.setAttribute('aria-disabled', 'true'); b.addEventListener('click', () => { banner('LOCKED', 'Reach tier ' + BP_TIERS + ' with the Premium pass to unlock the ' + w.name, 2.5); showTab('pass'); }); box.appendChild(b); continue; }
+    b.querySelector('.wname').textContent = w.name; b.querySelector('.wcls').textContent = w.cls + (owned ? '' : w.premium === SEASON ? ' · Premium pass, reach tier ' + BP_TIERS : ' · Season ' + w.premium + ' Premium reward');
+    if (!owned) { b.setAttribute('aria-disabled', 'true'); b.addEventListener('click', () => { banner('LOCKED', w.premium === SEASON ? 'Reach tier ' + BP_TIERS + ' with the Premium pass to unlock the ' + w.name : 'The ' + w.name + ' was the Season ' + w.premium + ' Premium reward', 2.5); showTab('pass'); }); box.appendChild(b); continue; }
     b.addEventListener('click', () => { loadout = key; store.set('loadout', key); renderLoadout(); if (state === 'menu' || state === 'over') equip(key); });
     box.appendChild(b);
   }
@@ -2295,7 +2320,7 @@ function renderSkins() {
   for (const [k, d] of Object.entries(CAMOS)) cb.appendChild(swatchCard(d.name, k === 'none' ? [0x2a2c2e, 0x55595d, 0x8a7a5a] : d.c.map(c => c === 0xffffff ? 0x555a5e : c), cur === k, !camoOwned(k, w), d.crate ? (d.only ? 'Vault crate' : 'Shop crate') : d.season && d.season !== SEASON ? 'Season ' + d.season + ' pass' : d.lvl ? 'Gun level ' + d.lvl : 'Pass tier ' + unlockTier('camo', k),
     () => { WCAMO[w] = k; store.set('wcamo', WCAMO); if (P.w === w) applyCamo(); renderSkins(); }));
 }
-function ownedTitles() { const l = [''].concat(BP.owned.filter(k => k.startsWith('title:')).map(k => k.slice(6))); for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === 'title' && bpTier() >= +t && !l.includes(r[1])) l.push(r[1]); if (BP.premium) l.push('VIP'); return l; }
+function ownedTitles() { const l = [''].concat(BP.owned.filter(k => k.startsWith('title:')).map(k => k.slice(6))); for (const [t, r] of Object.entries(BP_REWARDS)) if (r[0] === 'title' && bpTier() >= +t && !l.includes(r[1])) l.push(r[1]); if (everPremium()) l.push('VIP'); return l; }
 function renderTitles() {
   const box = $('titleList'); if (!box) return; box.textContent = '';
   const list = ownedTitles();
@@ -2451,6 +2476,7 @@ $('dailyClaim').addEventListener('click', () => {
   renderDaily();
 });
 function renderPass() {
+  $('premInfo').innerHTML = 'Each season has its own Premium code. Premium unlocks 3 exclusive operator skins — Gold Rush, Obsidian, Prism — plus the VIP title and +25% battle-pass XP for the season. Reach tier ' + BP_TIERS + ' with Premium to earn this season\'s weapon' + (PREM_W ? ': the <b>' + WEAPONS[PREM_W].name + '</b>.' : '.') + ' Skins, title and weapons you earn stay yours.';
   const pw = $('premWho'); if (pw) { pw.textContent = BP.premium ? 'Premium active ✓ — all premium skins and the VIP title are unlocked, with +25% XP.' : 'Not active. Enter a premium code to unlock the exclusive skins, VIP title and +25% XP.'; }
   if ($('premRedeem')) $('premRedeem').hidden = !!BP.premium;
   const t = bpTier(), into = t >= BP_TIERS ? BP_XP : BP.xp % BP_XP;
@@ -2459,7 +2485,7 @@ function renderPass() {
   $('bpXp').textContent = BP.xp.toLocaleString() + ' XP' + (myTitle ? ' · “' + myTitle + '”' : '');
   $('bpFill').style.width = (t >= BP_TIERS ? 100 : Math.round(into / BP_XP * 100)) + '%';
   let nx = null; for (let i = t + 1; i <= BP_TIERS; i++) if (BP_REWARDS[i]) { nx = i; break; }
-  const vxLine = $('bpVx'); if (vxLine) vxLine.textContent = weaponOwned('vx') ? 'VX-9 Tempest unlocked — equip it in the Loadout tab.' : 'Premium reward: the VX-9 Tempest rifle at tier ' + BP_TIERS + (BP.premium ? ' — ' + (BP_TIERS - t) + ' tiers to go.' : ' — needs the Premium pass.');
+  const PWN = PREM_W ? WEAPONS[PREM_W].name : 'season weapon'; const vxLine = $('bpVx'); if (vxLine) vxLine.textContent = !PREM_W ? '' : weaponOwned(PREM_W) ? PWN + ' unlocked — equip it in the Loadout tab.' : 'Season ' + SEASON + ' Premium reward: the ' + PWN + ' at tier ' + BP_TIERS + (BP.premium ? ' — ' + (BP_TIERS - t) + ' tiers to go.' : ' — needs the Premium pass.');
   $('bpNext').textContent = t >= BP_TIERS ? 'Battle pass complete. Every reward is yours.' : (BP_XP - into) + ' XP to tier ' + (t + 1) + (nx ? ' · next reward at tier ' + nx + ': ' + rewardName(BP_REWARDS[nx]) : '');
   const box = $('bpTiers'); box.textContent = '';
   for (let i = 1; i <= BP_TIERS; i++) {
@@ -2470,8 +2496,8 @@ function renderPass() {
     else if (r && r[0] === 'camo') cols = CAMOS[r[1]].c.map(c => c === 0xffffff ? 0x555a5e : c);
     d.innerHTML = '<span class="tn"></span>' + (cols.length ? '<span class="sw">' + cols.map(c => '<i style="background:' + SW(c) + '"></i>').join('') + '</span>' : '') + '<span class="rw"></span><span class="st"></span>';
     d.querySelector('.tn').textContent = 'TIER ' + i;
-    d.querySelector('.rw').textContent = (i === 1 ? 'Standard skin + Factory camo' : r ? rewardName(r) : '+ Pass XP badge') + (i === BP_TIERS ? ' · PREMIUM: VX-9 Tempest rifle' : '');
-    if (i === BP_TIERS) { d.classList.add('prem'); if (PREV.vx) { const im = document.createElement('img'); im.src = PREV.vx; im.alt = 'VX-9 Tempest'; d.insertBefore(im, d.querySelector('.rw')); } }
+    d.querySelector('.rw').textContent = (i === 1 ? 'Standard skin + Factory camo' : r ? rewardName(r) : '+ Pass XP badge') + (i === BP_TIERS && PREM_W ? ' · PREMIUM: ' + WEAPONS[PREM_W].name : '');
+    if (i === BP_TIERS && PREM_W) { d.classList.add('prem'); if (PREV[PREM_W]) { const im = document.createElement('img'); im.src = PREV[PREM_W]; im.alt = WEAPONS[PREM_W].name; d.insertBefore(im, d.querySelector('.rw')); } }
     const st = d.querySelector('.st'); st.style.opacity = '.7';
     if (r && r[0] === 'title' && i <= t) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost'; b.style.cssText = 'padding:4px 8px;font-size:11px'; b.textContent = myTitle === r[1] ? 'Shown' : 'Show title'; b.addEventListener('click', () => { myTitle = r[1]; store.set('title', myTitle); renderPass(); }); st.appendChild(b); }
     else st.textContent = i <= t ? 'Unlocked' : 'Locked';
@@ -2520,7 +2546,7 @@ $('partyCopy').addEventListener('click', () => { const b = $('partyCopy'); try {
 $('premBtn').addEventListener('click', () => {
   const v = ($('premCode').value || '').trim().toUpperCase();
   if (!v) return;
-  if (v === PREMIUM_CODE.toUpperCase()) { BP.premium = true; store.set('pass', BP); if (!myTitle) { myTitle = 'VIP'; store.set('title', myTitle); } banner(bpTier() >= BP_TIERS ? 'VX-9 TEMPEST UNLOCKED' : 'PREMIUM UNLOCKED', bpTier() >= BP_TIERS ? 'Premium active, and you already reached tier ' + BP_TIERS + '. It is in your Loadout.' : 'Exclusive skins + VIP title + 25% XP', 3); renderPass(); renderLoadout(); }
+  if (v === premiumCode(SEASON).toUpperCase()) { BP.premium = true; store.set('pass', BP); if (!myTitle) { myTitle = 'VIP'; store.set('title', myTitle); } banner(bpTier() >= BP_TIERS && PREM_W ? WEAPONS[PREM_W].name.toUpperCase() + ' UNLOCKED' : 'PREMIUM UNLOCKED', bpTier() >= BP_TIERS ? 'Premium active, and you already reached tier ' + BP_TIERS + '. It is in your Loadout.' : 'Exclusive skins + VIP title + 25% XP', 3); renderPass(); renderLoadout(); }
   else { $('premWho').textContent = 'That code was not recognised. Check it and try again.'; }
 });
 const SETTINGS_UI = [
