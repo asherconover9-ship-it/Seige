@@ -4,16 +4,17 @@
 
 **A free tactical arena shooter you play in your browser. No download, no account, no app store.**
 
-## ▶️ [PLAY NOW — latest version (v25)](https://gaayyynesss.github.io/Seige/?v=25)
+## ▶️ [PLAY NOW — latest version (v26)](https://gaayyynesss.github.io/Seige/?v=26)
 
-**Latest:** https://gaayyynesss.github.io/Seige/?v=25
+**Latest:** https://gaayyynesss.github.io/Seige/?v=26
 
 If the game looks like an older version, open the latest link above (the `?v=` number makes your browser load the newest copy).
 
 ### Version history
 | Version | Link | What's new |
 |---|---|---|
-| **v25** | https://gaayyynesss.github.io/Seige/?v=25 | Coins (10 per elimination) and the **Shop** with Field and Elite crates |
+| **v26** | https://gaayyynesss.github.io/Seige/?v=26 | Shop tab always visible (tab row wraps instead of scrolling off-screen) |
+| v25 | https://gaayyynesss.github.io/Seige/?v=25 | Coins (10 per elimination) and the **Shop** with Field and Elite crates |
 | v24 | https://gaayyynesss.github.io/Seige/?v=24 | Tier 50 on the Pass tab shows the VX-9 Tempest |
 | v23 | https://gaayyynesss.github.io/Seige/?v=23 | VX-9 Tempest custom rifle for finishing the Premium pass |
 | v22 | https://gaayyynesss.github.io/Seige/?v=22 | Match leaderboard and personal leaderboards |
