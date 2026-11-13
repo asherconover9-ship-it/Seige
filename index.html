@@ -94,7 +94,7 @@ function matchRoom(hubId){
 window.claude={ use:function(n){ return Promise.resolve(n==='room' ? stubRoom() : null); } };
 })();
 </script>
-<script>(function(){var B='20261113184554';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
+<script>(function(){var B='20261113201811';try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=t.match(/var B='(\d+)'/);if(m&&m[1]!==B&&sessionStorage.getItem('ds-rl')!==m[1]){sessionStorage.setItem('ds-rl',m[1]);location.replace(location.pathname+'?v='+m[1]+location.hash);}}).catch(function(){});}catch(e){}})();</script>
 </head>
 <body>
 <title>Dustline</title>
@@ -278,6 +278,10 @@ button { font-family: inherit; }
 .wlvtxt { font-size: 12px; opacity: .75; }
 .equipped { font: 700 11px var(--display); letter-spacing: .16em; color: var(--accent); visibility: hidden; }
 .wcard[aria-pressed="true"] .equipped { visibility: visible; }
+.wcard.prem { border-color: rgba(216,170,72,.55); background: linear-gradient(160deg, rgba(216,170,72,.12), var(--panel2) 55%); }
+.wcard.prem .wname { color: #e8c060; }
+.wcard.locked { opacity: .55; }
+.wcard.locked img { filter: grayscale(.85) brightness(.7); }
 .sets { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
 .sec { background: var(--panel2); border: 1px solid rgba(239,232,214,.12); padding: 6px 16px 10px; }
 .sec h3 { margin: 8px 0 4px; font: 700 14px var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
@@ -508,7 +512,7 @@ details.kb summary { cursor: pointer; font: 600 12px var(--display); letter-spac
       <div class="acct" id="premiumBox">
         <span class="label">Premium Pass</span>
         <span class="amsg" id="premWho"></span>
-        <span class="amsg">Premium unlocks 3 exclusive operator skins — Gold Rush, Obsidian, Prism — plus the VIP title and +25% battle-pass XP.</span>
+        <span class="amsg">Premium unlocks 3 exclusive operator skins — Gold Rush, Obsidian, Prism — plus the VIP title and +25% battle-pass XP. Reach the final tier with Premium to earn the custom <b>VX-9 Tempest</b> rifle.</span>
         <div class="prow" id="premRedeem"><input type="text" id="premCode" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Premium code" aria-label="Premium code"><button class="btn go" id="premBtn" type="button">Redeem</button></div>
       </div>
       <div class="bp-tiers" id="bpTiers"></div>
@@ -627,12 +631,16 @@ const WEAPONS = {
   pst: { name: 'P9 Sidearm', cls: 'Pistol', mag: 15, rate: 0.15, dmg: 28, head: 2, r0: 15, r1: 40, fall: 0.55, spread: 0.008, move: 0.01, recoil: 0.016, reload: 1.3, zoom: 1.25, mob: 1.1, snd: 'pst', stats: [0.45, 0.5, 0.4, 1] },
   br:  { name: 'MK17 Battle Rifle', cls: 'Battle rifle', mag: 20, rate: 0.16, dmg: 42, head: 2, r0: 35, r1: 78, fall: 0.72, spread: 0.006, move: 0.022, recoil: 0.021, reload: 2.2, zoom: 1.8, mob: 0.95, snd: 'ar', stats: [0.78, 0.4, 0.82, 0.5] },
   pdw: { name: 'Vektor PDW', cls: 'Machine pistol', mag: 40, rate: 0.055, dmg: 14, head: 1.6, r0: 10, r1: 28, fall: 0.45, spread: 0.014, move: 0.01, recoil: 0.006, reload: 1.5, zoom: 1.25, mob: 1.14, snd: 'smg', stats: [0.3, 1.0, 0.28, 0.95] },
+  vx:  { name: 'VX-9 Tempest', cls: 'Premium rifle', mag: 36, rate: 0.085, dmg: 27, head: 2.1, r0: 36, r1: 75, fall: 0.7, spread: 0.006, move: 0.016, recoil: 0.0085, reload: 1.9, zoom: 1.6, mob: 1.03, snd: 'ar', stats: [0.72, 0.74, 0.84, 0.8], premium: true },
   rev: { name: 'D50 Hand Cannon', cls: 'Revolver', mag: 6, rate: 0.5, dmg: 72, head: 2.2, r0: 22, r1: 52, fall: 0.6, spread: 0.004, move: 0.02, recoil: 0.06, reload: 2.5, zoom: 1.3, mob: 1.05, snd: 'snp', stats: [0.96, 0.18, 0.62, 0.68] },
 };
 // optic per weapon: holo/reddot keep the gun up with a centred reticle; scope/sniper magnify and hide the gun
-Object.assign(WEAPONS.ar,{optic:'holo',zoom:1.6}); Object.assign(WEAPONS.smg,{optic:'holo'}); Object.assign(WEAPONS.sg,{optic:'irons'}); Object.assign(WEAPONS.lmg,{optic:'reddot'}); Object.assign(WEAPONS.dmr,{optic:'scope',zoom:3}); Object.assign(WEAPONS.snp,{optic:'sniper',zoom:4.5}); Object.assign(WEAPONS.pst,{optic:'reddot'}); Object.assign(WEAPONS.br,{optic:'holo'}); Object.assign(WEAPONS.pdw,{optic:'reddot'}); Object.assign(WEAPONS.rev,{optic:'irons'});
+Object.assign(WEAPONS.ar,{optic:'holo',zoom:1.6}); Object.assign(WEAPONS.vx,{optic:'holo'}); Object.assign(WEAPONS.smg,{optic:'holo'}); Object.assign(WEAPONS.sg,{optic:'irons'}); Object.assign(WEAPONS.lmg,{optic:'reddot'}); Object.assign(WEAPONS.dmr,{optic:'scope',zoom:3}); Object.assign(WEAPONS.snp,{optic:'sniper',zoom:4.5}); Object.assign(WEAPONS.pst,{optic:'reddot'}); Object.assign(WEAPONS.br,{optic:'holo'}); Object.assign(WEAPONS.pdw,{optic:'reddot'}); Object.assign(WEAPONS.rev,{optic:'irons'});
 let loadout = store.get('loadout', 'ar');
 if (!WEAPONS[loadout]) loadout = 'ar';
+// the VX-9 Tempest is the reward for reaching the last tier with the Premium pass
+function weaponOwned(k) { return !(WEAPONS[k] && WEAPONS[k].premium) || (!!BP.premium && bpTier() >= BP_TIERS); }
+if (!weaponOwned(loadout)) loadout = 'ar';
 let selMap = store.get('map', 'outpost');
 
 /* seeded random so every player sees the same map textures */
@@ -1031,6 +1039,7 @@ function applyCamo(force) {
   }
   mats.forEach(m => { m.needsUpdate = true; });
 }
+const VXM = { gold: new THREE.MeshStandardMaterial({ color: 0xd8aa48, roughness: 0.28, metalness: 0.95 }), glow: new THREE.MeshBasicMaterial({ color: 0x46e6ff, toneMapped: false }) };
 const TILE = new Map([[GM.metal, 0.25], [GM.poly, 0.12], [GM.fde, 0.12], [GM.barrel, 0.1]]);
 function buildGunParts(key, grp) {
   const B = (w, h, d, x, y, z, m, rx = 0) => { const t = TILE.get(m) || 0.2; const p = new THREE.Mesh(boxGeo(w, h, d, t, t), m); p.position.set(x, y, z); p.rotation.x = rx; grp.add(p); return p; };
@@ -1091,6 +1100,18 @@ function buildGunParts(key, grp) {
     B(0.07, 0.15, 0.08, 0, -0.12, 0.06, GM.poly, 0.22); B(0.05, 0.22, 0.055, 0, -0.17, -0.06, GM.metal, -0.04);
     B(0.045, 0.09, 0.16, 0, 0.0, 0.21, GM.metal); redDot(0.11, 0.0);
     Object.assign(W, { muzzleZ: -0.42, opticY: 0.11, my: 0.02, hip: [0.16, -0.14, -0.44] });
+  } else if (key === 'vx') {
+    const gold = VXM.gold, glow = VXM.glow;
+    B(0.115, 0.13, 0.62, 0, 0, 0.02, GM.metal); B(0.1, 0.05, 0.5, 0, 0.085, 0.0, GM.metal);
+    B(0.122, 0.018, 0.6, 0, -0.05, 0.02, gold); B(0.124, 0.012, 0.42, 0, 0.04, -0.02, glow);
+    [-1, 1].forEach(sd => { B(0.006, 0.03, 0.36, sd * 0.06, 0.0, -0.04, glow); B(0.008, 0.07, 0.08, sd * 0.06, 0.0, 0.2, gold); });
+    B(0.09, 0.1, 0.34, 0, 0.0, -0.45, GM.poly); for (let k = 0; k < 5; k++) [-1, 1].forEach(sd => B(0.006, 0.05, 0.026, sd * 0.047, 0.0, -0.34 - k * 0.05, gold));
+    Cy(0.02, 0.28, 0, 0.01, -0.74, GM.barrel); Cy(0.034, 0.1, 0, 0.01, -0.9, gold, 0.026); Cy(0.036, 0.012, 0, 0.01, -0.955, glow);
+    B(0.08, 0.17, 0.09, 0, -0.14, 0.1, GM.poly, 0.25); B(0.07, 0.24, 0.1, 0, -0.17, -0.15, GM.metal, -0.12); B(0.072, 0.02, 0.1, 0, -0.29, -0.17, gold, -0.12);
+    B(0.09, 0.12, 0.28, 0, -0.02, 0.44, GM.poly); B(0.094, 0.014, 0.28, 0, 0.045, 0.44, gold); B(0.11, 0.15, 0.03, 0, -0.03, 0.58, gold);
+    rail(0.118, -0.04, 0.34);
+    B(0.09, 0.075, 0.12, 0, 0.17, 0.02, GM.metal); B(0.094, 0.012, 0.13, 0, 0.21, 0.02, gold); B(0.07, 0.05, 0.005, 0, 0.17, -0.04, glow); dot(0.175, -0.035);
+    Object.assign(W, { muzzleZ: -0.97, opticY: 0.172, my: 0.01 });
   } else if (key === 'rev') {
     B(0.055, 0.1, 0.22, 0, 0.02, -0.08, GM.metal); Cy(0.02, 0.28, 0, 0.035, -0.22, GM.barrel);
     Cy(0.055, 0.09, 0, 0.0, -0.02, GM.metal); Cy(0.056, 0.085, 0, 0.0, -0.02, GM.barrel, 0.03);
@@ -1322,6 +1343,7 @@ function addXP(n, why) {
     for (let t = before + 1; t <= after; t++) if (BP_REWARDS[t]) got.push(rewardName(BP_REWARDS[t]));
     banner('TIER ' + after, got.length ? 'Unlocked ' + got.join(', ') : 'Battle pass rank up', 3);
     if (BP_REWARDS[after] && BP_REWARDS[after][0] === 'title' && !myTitle) { myTitle = BP_REWARDS[after][1]; store.set('title', myTitle); }
+    if (after >= BP_TIERS && before < BP_TIERS && BP.premium) banner('VX-9 TEMPEST UNLOCKED', 'Your Premium pass reward is in the Loadout tab', 4);
   }
 }
 function banner(text, sub, t = 2) { hud.banner.textContent = text; if (sub) { const s = document.createElement('small'); s.textContent = sub; hud.banner.appendChild(s); } bannerT = t; }
@@ -1937,13 +1959,15 @@ function pickNextMap(hs) {
 function renderLoadout() {
   const box = $('weaponList'); box.textContent = '';
   for (const [key, w] of Object.entries(WEAPONS)) {
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'wcard'; b.setAttribute('aria-pressed', String(loadout === key));
+    const owned = weaponOwned(key);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'wcard' + (w.premium ? ' prem' : '') + (owned ? '' : ' locked'); b.setAttribute('aria-pressed', String(loadout === key));
     const statNames = ['Damage', 'Fire rate', 'Range', 'Handling'];
     b.innerHTML = `<div class="wtop"><span class="wname"></span><span class="equipped">EQUIPPED</span></div><span class="wcls"></span>
       ${PREV[key] ? `<img alt="" src="${PREV[key]}">` : '<span class="ph"></span>'}
       <div class="bars">${statNames.map((n, i) => `<span class="label">${n}</span><span class="bar"><i style="width:${Math.round(w.stats[i] * 100)}%"></i></span>`).join('')}<span class="label">Level ${wLevel(key)}</span><span class="bar lv"><i style="width:${wLevel(key) >= WLV_MAX ? 100 : Math.round(((WL[key] || 0) - WLV_KILLS[wLevel(key) - 1]) / (WLV_KILLS[wLevel(key)] - WLV_KILLS[wLevel(key) - 1]) * 100)}%"></i></span><span class="label">Magazine</span><span class="num">${w.mag}</span></div>
       <small class="wlvtxt">${wLevel(key) >= WLV_MAX ? 'Max level · ' + (WL[key] || 0) + ' kills' : (WL[key] || 0) + ' / ' + WLV_KILLS[wLevel(key)] + ' kills to level ' + (wLevel(key) + 1)}</small>`;
-    b.querySelector('.wname').textContent = w.name; b.querySelector('.wcls').textContent = w.cls;
+    b.querySelector('.wname').textContent = w.name; b.querySelector('.wcls').textContent = w.cls + (owned ? '' : ' · Premium pass, reach tier ' + BP_TIERS);
+    if (!owned) { b.setAttribute('aria-disabled', 'true'); b.addEventListener('click', () => { banner('LOCKED', 'Reach tier ' + BP_TIERS + ' with the Premium pass to unlock the ' + w.name, 2.5); showTab('pass'); }); box.appendChild(b); continue; }
     b.addEventListener('click', () => { loadout = key; store.set('loadout', key); renderLoadout(); if (state === 'menu' || state === 'over') equip(key); });
     box.appendChild(b);
   }
@@ -1999,7 +2023,7 @@ function renderPass() {
     else if (r && r[0] === 'camo') cols = CAMOS[r[1]].c.map(c => c === 0xffffff ? 0x555a5e : c);
     d.innerHTML = '<span class="tn"></span>' + (cols.length ? '<span class="sw">' + cols.map(c => '<i style="background:' + SW(c) + '"></i>').join('') + '</span>' : '') + '<span class="rw"></span><span class="st"></span>';
     d.querySelector('.tn').textContent = 'TIER ' + i;
-    d.querySelector('.rw').textContent = i === 1 ? 'Standard skin + Factory camo' : r ? rewardName(r) : '+ Pass XP badge';
+    d.querySelector('.rw').textContent = (i === 1 ? 'Standard skin + Factory camo' : r ? rewardName(r) : '+ Pass XP badge') + (i === BP_TIERS ? ' · PREMIUM: VX-9 Tempest rifle' : '');
     const st = d.querySelector('.st'); st.style.opacity = '.7';
     if (r && r[0] === 'title' && i <= t) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost'; b.style.cssText = 'padding:4px 8px;font-size:11px'; b.textContent = myTitle === r[1] ? 'Shown' : 'Show title'; b.addEventListener('click', () => { myTitle = r[1]; store.set('title', myTitle); renderPass(); }); st.appendChild(b); }
     else st.textContent = i <= t ? 'Unlocked' : 'Locked';
@@ -2048,7 +2072,7 @@ $('partyCopy').addEventListener('click', () => { const b = $('partyCopy'); try {
 $('premBtn').addEventListener('click', () => {
   const v = ($('premCode').value || '').trim().toUpperCase();
   if (!v) return;
-  if (v === PREMIUM_CODE.toUpperCase()) { BP.premium = true; store.set('pass', BP); if (!myTitle) { myTitle = 'VIP'; store.set('title', myTitle); } banner('PREMIUM UNLOCKED', 'Exclusive skins + VIP title + 25% XP', 3); renderPass(); renderSkins(); }
+  if (v === PREMIUM_CODE.toUpperCase()) { BP.premium = true; store.set('pass', BP); if (!myTitle) { myTitle = 'VIP'; store.set('title', myTitle); } banner(bpTier() >= BP_TIERS ? 'VX-9 TEMPEST UNLOCKED' : 'PREMIUM UNLOCKED', bpTier() >= BP_TIERS ? 'Premium active, and you already reached tier ' + BP_TIERS + '. It is in your Loadout.' : 'Exclusive skins + VIP title + 25% XP', 3); renderPass(); renderLoadout(); }
   else { $('premWho').textContent = 'That code was not recognised. Check it and try again.'; }
 });
 const SETTINGS_UI = [

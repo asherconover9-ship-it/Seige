@@ -36,7 +36,7 @@ Everyone who opens the link plays in the same Team Battle. AI soldiers fill ever
 A free **Season 1** battle pass with **50 tiers**. Earn XP by getting eliminations, finishing and winning matches, and surviving Holdout waves. Ranking up unlocks **weapon camos** and **titles**. All **operator skins are free** to equip from the start on the **Loadout** tab; titles are equipped there too. Progress is saved on your device and travels with your backup code.
 
 ### Premium pass
-An optional **Premium Pass** unlocks 3 exclusive operator skins (Gold Rush, Obsidian, Prism), the **VIP** title, and **+25% XP**. It's unlocked by entering a premium code on the **Pass** tab. (The code is set by the game's creator — see the note in the project files for how to change it.)
+An optional **Premium Pass** unlocks 3 exclusive operator skins (Gold Rush, Obsidian, Prism), the **VIP** title, and **+25% XP**. Reach the final tier (50) with Premium to earn the custom **VX-9 Tempest** rifle. It's unlocked by entering a premium code on the **Pass** tab. (The code is set by the game's creator — see the note in the project files for how to change it.)
 
 ## Loadouts
 | Weapon | Type | Best for |
